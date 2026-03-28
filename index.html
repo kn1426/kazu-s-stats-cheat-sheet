@@ -6,8 +6,6 @@
 <title>データ分析 完全ガイド</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
 :root{--bg:#fafbfc;--surface:#fff;--border:#e1e4e8;--text:#1a1d23;--muted:#6b7280;--c1:#2563eb;--c1l:#eff6ff;--c1m:#bfdbfe;--c2:#16a34a;--c2l:#f0fdf4;--c2m:#bbf7d0;--c3:#7c3aed;--c3l:#f5f3ff;--c3m:#ddd6fe;--c4:#ea580c;--c4l:#fff7ed;--c4m:#fed7aa;--c5:#0891b2;--c5l:#ecfeff;--c5m:#a5f3fc;--c6:#db2777;--c6l:#fdf2f8;--c6m:#fbcfe8;--c7:#d97706;--c7l:#fffbeb;--c7m:#fde68a;--c8:#dc2626;--c8l:#fef2f2;--c8m:#fecaca;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text);display:flex;flex-direction:column;height:100vh;margin:0;overflow:hidden;}
@@ -180,6 +178,48 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
 .hist-back-btn:hover{background:var(--border);color:var(--text);}
 .wiz-step{font-size:10px;color:var(--c1);font-family:'JetBrains Mono',monospace;background:var(--c1l);border:1px solid var(--c1m);border-radius:20px;padding:3px 12px;display:inline-block;margin-bottom:14px;font-weight:600;}
 
+/* ===== デザイン改善 ===== */
+.topbar{gap:12px;}
+.topbar-hint{font-size:11px;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;}
+.ds p,.ds li,.hero p{font-size:13px;line-height:1.85;}
+.panel{box-shadow:inset -1px 0 0 var(--border);}
+
+/* ===== コードブロック改善 ===== */
+.code-wrap{position:relative;margin-top:6px;}
+.code-header{background:#161c2b;border-radius:6px 6px 0 0;padding:6px 13px;display:flex;align-items:center;justify-content:space-between;}
+.code-lang{font-size:10px;color:#6b7280;font-family:'JetBrains Mono',monospace;font-weight:600;text-transform:uppercase;}
+.copy-btn{background:transparent;border:1px solid #374151;color:#9ca3af;border-radius:4px;padding:2px 9px;font-size:10px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:.15s;}
+.copy-btn:hover{background:#374151;color:#fff;}
+.copy-btn.copied{background:#065f46;color:#6ee7b7;border-color:#065f46;}
+.code-wrap .code{border-radius:0 0 6px 6px;margin-top:0;}
+
+/* ===== 難易度バッジ ===== */
+.level-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle;letter-spacing:.3px;}
+.lvl-b{background:#dcfce7;color:#166534;}
+.lvl-m{background:#fef9c3;color:#854d0e;}
+.lvl-a{background:#fce7f3;color:#9d174d;}
+.card[data-level]::after{position:absolute;top:5px;right:6px;font-size:8px;font-weight:800;border-radius:3px;padding:1px 4px;}
+.card[data-level="b"]::after{content:'初';color:#166534;background:#dcfce7;}
+.card[data-level="m"]::after{content:'中';color:#854d0e;background:#fef9c3;}
+.card[data-level="a"]::after{content:'上';color:#9d174d;background:#fce7f3;}
+
+/* ===== 関連手法チップ ===== */
+.related-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+.related-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:7px;}
+.related-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.related-chip{font-size:11px;padding:4px 11px;border-radius:20px;background:var(--bg);color:var(--c1);border:1.5px solid var(--c1m);cursor:pointer;transition:.15s;font-family:'Noto Sans JP',sans-serif;font-weight:600;}
+.related-chip:hover{background:var(--c1);color:#fff;border-color:var(--c1);}
+
+/* ===== URLシェアボタン ===== */
+.share-btn{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:3px 9px;cursor:pointer;transition:.15s;font-family:'Noto Sans JP',sans-serif;margin-top:10px;}
+.share-btn:hover{border-color:var(--c1);color:var(--c1);}
+.share-btn.copied{color:var(--c2);border-color:var(--c2);}
+
+/* ===== フローチャート前提確認ノード ===== */
+.fn-check{border-color:#0891b2;background:#ecfeff;}
+.fn-check .fnode-ico{background:#a5f3fc;}
+.fn-check .fnode-title{color:#0891b2;}
+
 /* ===== モバイル対応 ===== */
 @media (max-width: 768px) {
   body{height:auto;overflow:auto;overflow-x:hidden;}
@@ -271,27 +311,36 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
         <div class="cat cc2" data-cat="compare">
           <div class="cath">📊 グループ比較・検定</div>
           <div class="grid">
-            <div class="card" data-cat="compare" onclick="showEnc('ttest')"><div class="ct">t検定（独立2標本）</div><div class="ce">Independent t-test</div><div class="tags"><span class="mtag">2群</span><span class="mtag">連続値</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('paired_t')"><div class="ct">対応ありt検定</div><div class="ce">Paired t-test</div><div class="tags"><span class="mtag">前後比較</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('anova')"><div class="ct">一元配置分散分析</div><div class="ce">One-way ANOVA</div><div class="tags"><span class="mtag">3群以上</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('twoway_anova')"><div class="ct">二元配置分散分析</div><div class="ce">Two-way ANOVA</div><div class="tags"><span class="mtag">2因子</span><span class="mtag">交互作用</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('ancova')"><div class="ct">共分散分析</div><div class="ce">ANCOVA</div><div class="tags"><span class="mtag">共変量コントロール</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('manova')"><div class="ct">多変量分散分析</div><div class="ce">MANOVA</div><div class="tags"><span class="mtag">複数目的変数</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('chi2')"><div class="ct">カイ二乗検定</div><div class="ce">Chi-squared Test</div><div class="tags"><span class="mtag">カテゴリ×カテゴリ</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('fisher')"><div class="ct">Fisherの正確確率検定</div><div class="ce">Fisher's Exact Test</div><div class="tags"><span class="mtag">小標本</span></div></div>
-            <div class="card" data-cat="compare" onclick="showEnc('mcnemar')"><div class="ct">McNemar検定</div><div class="ce">McNemar's Test</div><div class="tags"><span class="mtag">対応ありカテゴリ</span></div></div>
+            <div class="card" data-cat="compare" data-level="b" onclick="showEnc('ttest')"><div class="ct">t検定（独立2標本）</div><div class="ce">Independent t-test</div><div class="tags"><span class="mtag">2群</span><span class="mtag">連続値</span></div></div>
+            <div class="card" data-cat="compare" data-level="b" onclick="showEnc('paired_t')"><div class="ct">対応ありt検定</div><div class="ce">Paired t-test</div><div class="tags"><span class="mtag">前後比較</span></div></div>
+            <div class="card" data-cat="compare" data-level="b" onclick="showEnc('anova')"><div class="ct">一元配置分散分析</div><div class="ce">One-way ANOVA</div><div class="tags"><span class="mtag">3群以上</span></div></div>
+            <div class="card" data-cat="compare" data-level="m" onclick="showEnc('twoway_anova')"><div class="ct">二元配置分散分析</div><div class="ce">Two-way ANOVA</div><div class="tags"><span class="mtag">2因子</span><span class="mtag">交互作用</span></div></div>
+            <div class="card" data-cat="compare" data-level="m" onclick="showEnc('ancova')"><div class="ct">共分散分析</div><div class="ce">ANCOVA</div><div class="tags"><span class="mtag">共変量コントロール</span></div></div>
+            <div class="card" data-cat="compare" data-level="a" onclick="showEnc('manova')"><div class="ct">多変量分散分析</div><div class="ce">MANOVA</div><div class="tags"><span class="mtag">複数目的変数</span></div></div>
+            <div class="card" data-cat="compare" data-level="b" onclick="showEnc('chi2')"><div class="ct">カイ二乗検定</div><div class="ce">Chi-squared Test</div><div class="tags"><span class="mtag">カテゴリ×カテゴリ</span></div></div>
+            <div class="card" data-cat="compare" data-level="b" onclick="showEnc('fisher')"><div class="ct">Fisherの正確確率検定</div><div class="ce">Fisher's Exact Test</div><div class="tags"><span class="mtag">小標本</span></div></div>
+            <div class="card" data-cat="compare" data-level="m" onclick="showEnc('mcnemar')"><div class="ct">McNemar検定</div><div class="ce">McNemar's Test</div><div class="tags"><span class="mtag">対応ありカテゴリ</span></div></div>
           </div>
         </div>
         <div class="cat cc7" data-cat="nonparam">
           <div class="cath">🔢 ノンパラメトリック</div>
           <div class="grid">
-            <div class="card" data-cat="nonparam" onclick="showEnc('mannwhitney')"><div class="ct">Mann-Whitney U検定</div><div class="ce">Mann-Whitney U</div><div class="tags"><span class="mtag">t検定の代替</span></div></div>
-            <div class="card" data-cat="nonparam" onclick="showEnc('wilcoxon')"><div class="ct">Wilcoxon符号順位検定</div><div class="ce">Wilcoxon Signed-Rank</div><div class="tags"><span class="mtag">対応ありの代替</span></div></div>
-            <div class="card" data-cat="nonparam" onclick="showEnc('kruskal')"><div class="ct">Kruskal-Wallis検定</div><div class="ce">Kruskal-Wallis</div><div class="tags"><span class="mtag">ANOVAの代替</span></div></div>
-            <div class="card" data-cat="nonparam" onclick="showEnc('friedman')"><div class="ct">Friedman検定</div><div class="ce">Friedman Test</div><div class="tags"><span class="mtag">反復測定ANOVA代替</span></div></div>
-            <div class="card" data-cat="nonparam" onclick="showEnc('spearman')"><div class="ct">Spearman順位相関</div><div class="ce">Spearman's ρ</div><div class="tags"><span class="mtag">順序尺度</span></div></div>
-            <div class="card" data-cat="nonparam" onclick="showEnc('kendall')"><div class="ct">Kendallのτ</div><div class="ce">Kendall's Tau</div><div class="tags"><span class="mtag">小標本</span></div></div>
+            <div class="card" data-cat="nonparam" data-level="b" onclick="showEnc('mannwhitney')"><div class="ct">Mann-Whitney U検定</div><div class="ce">Mann-Whitney U</div><div class="tags"><span class="mtag">t検定の代替</span></div></div>
+            <div class="card" data-cat="nonparam" data-level="b" onclick="showEnc('wilcoxon')"><div class="ct">Wilcoxon符号順位検定</div><div class="ce">Wilcoxon Signed-Rank</div><div class="tags"><span class="mtag">対応ありの代替</span></div></div>
+            <div class="card" data-cat="nonparam" data-level="m" onclick="showEnc('kruskal')"><div class="ct">Kruskal-Wallis検定</div><div class="ce">Kruskal-Wallis</div><div class="tags"><span class="mtag">ANOVAの代替</span></div></div>
+            <div class="card" data-cat="nonparam" data-level="m" onclick="showEnc('friedman')"><div class="ct">Friedman検定</div><div class="ce">Friedman Test</div><div class="tags"><span class="mtag">反復測定ANOVA代替</span></div></div>
 
+          </div>
+        </div>
+      </div>
+      <!-- 相関分析 -->
+      <div class="row">
+        <div class="cat" data-cat="compare" style="align-items:center;">
+          <div class="cath" style="background:var(--c2l);color:var(--c2);border-color:var(--c2m);border:2px solid;">🔗 相関分析</div>
+          <div class="grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+            <div class="card" data-cat="compare" data-level="b" onclick="showEnc('pearson')" style="width:185px"><div class="ct">Pearson相関係数</div><div class="ce">Pearson r</div><div class="tags"><span class="mtag">連続値</span><span class="mtag">線形関係</span></div></div>
+            <div class="card" data-cat="nonparam" data-level="b" onclick="showEnc('spearman')" style="width:185px"><div class="ct">Spearman順位相関</div><div class="ce">Spearman's ρ</div><div class="tags"><span class="mtag">順序尺度</span></div></div>
+            <div class="card" data-cat="nonparam" data-level="m" onclick="showEnc('kendall')" style="width:185px"><div class="ct">Kendallのτ</div><div class="ce">Kendall's Tau</div><div class="tags"><span class="mtag">小標本</span></div></div>
           </div>
         </div>
       </div>
@@ -306,6 +355,9 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
             <div class="card" data-cat="supplement" onclick="showEnc('bootstrap')" style="width:185px"><div class="ct">ブートストラップ法</div><div class="ce">Bootstrap Resampling</div><div class="tags"><span class="mtag">信頼区間の推定</span></div></div>
             <div class="card" data-cat="supplement" onclick="showEnc('permutation')" style="width:185px"><div class="ct">順列検定</div><div class="ce">Permutation Test</div><div class="tags"><span class="mtag">分布仮定不要</span></div></div>
             <div class="card" data-cat="supplement" onclick="showEnc('confidence_interval')" style="width:185px"><div class="ct">信頼区間</div><div class="ce">Confidence Interval</div><div class="tags"><span class="mtag">点推定の不確実性</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('shapiro')" style="width:185px"><div class="ct">正規性検定</div><div class="ce">Shapiro-Wilk Test</div><div class="tags"><span class="mtag">パラメトリック前提確認</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('levene_test')" style="width:185px"><div class="ct">等分散検定</div><div class="ce">Levene's Test</div><div class="tags"><span class="mtag">ANOVA前提確認</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('mice')" style="width:185px"><div class="ct">多重代入法</div><div class="ce">MICE</div><div class="tags"><span class="mtag">欠損データ処理</span></div></div>
           </div>
           <div style="font-size:10px;color:#7c3aed;background:#fdf4ff;border:1px solid #ddd6fe;border-radius:8px;padding:6px 14px;margin-top:4px;text-align:center;">
             💡 検定後のセット：有意差あり → 効果量を確認 → 複数検定なら補正 → 信頼区間を報告
@@ -316,19 +368,19 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
         <div class="cat cc3" data-cat="regression">
           <div class="cath">📉 回帰分析</div>
           <div class="grid">
-            <div class="card" data-cat="regression" onclick="showEnc('ols')"><div class="ct">重回帰分析（OLS）</div><div class="ce">Multiple Linear Regression</div><div class="tags"><span class="mtag">連続値</span><span class="mtag">R²</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('ridge')"><div class="ct">Ridge回帰</div><div class="ce">Ridge (L2)</div><div class="tags"><span class="mtag">多重共線性</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('lasso')"><div class="ct">Lasso回帰</div><div class="ce">Lasso (L1)</div><div class="tags"><span class="mtag">変数選択</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('elasticnet')"><div class="ct">ElasticNet</div><div class="ce">ElasticNet (L1+L2)</div><div class="tags"><span class="mtag">バランス型</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('logistic')"><div class="ct">ロジスティック回帰</div><div class="ce">Logistic Regression</div><div class="tags"><span class="mtag">二値分類</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('multinomial')"><div class="ct">多項ロジスティック回帰</div><div class="ce">Multinomial Logistic</div><div class="tags"><span class="mtag">3クラス以上</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('ordinal_reg')"><div class="ct">順序ロジスティック回帰</div><div class="ce">Ordinal Logistic</div><div class="tags"><span class="mtag">順序尺度の目的変数</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('poisson')"><div class="ct">ポアソン回帰</div><div class="ce">Poisson Regression</div><div class="tags"><span class="mtag">カウントデータ</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('negbin')"><div class="ct">負の二項回帰</div><div class="ce">Negative Binomial</div><div class="tags"><span class="mtag">過分散カウント</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('quantile')"><div class="ct">分位点回帰</div><div class="ce">Quantile Regression</div><div class="tags"><span class="mtag">外れ値頑健</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('stepwise')"><div class="ct">ステップワイズ / AIC</div><div class="ce">Stepwise / AIC / BIC</div><div class="tags"><span class="mtag">モデル選択</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('mixed')"><div class="ct">線形混合効果モデル</div><div class="ce">LME</div><div class="tags"><span class="mtag">階層データ</span></div></div>
-            <div class="card" data-cat="regression" onclick="showEnc('glmm')"><div class="ct">一般化線形混合モデル</div><div class="ce">GLMM</div><div class="tags"><span class="mtag">非正規応答+階層</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('ols')"><div class="ct">重回帰分析（OLS）</div><div class="ce">Multiple Linear Regression</div><div class="tags"><span class="mtag">連続値</span><span class="mtag">R²</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('ridge')"><div class="ct">Ridge回帰</div><div class="ce">Ridge (L2)</div><div class="tags"><span class="mtag">多重共線性</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('lasso')"><div class="ct">Lasso回帰</div><div class="ce">Lasso (L1)</div><div class="tags"><span class="mtag">変数選択</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('elasticnet')"><div class="ct">ElasticNet</div><div class="ce">ElasticNet (L1+L2)</div><div class="tags"><span class="mtag">バランス型</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('logistic')"><div class="ct">ロジスティック回帰</div><div class="ce">Logistic Regression</div><div class="tags"><span class="mtag">二値分類</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('multinomial')"><div class="ct">多項ロジスティック回帰</div><div class="ce">Multinomial Logistic</div><div class="tags"><span class="mtag">3クラス以上</span></div></div>
+            <div class="card" data-cat="regression" data-level="a" onclick="showEnc('ordinal_reg')"><div class="ct">順序ロジスティック回帰</div><div class="ce">Ordinal Logistic</div><div class="tags"><span class="mtag">順序尺度の目的変数</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('poisson')"><div class="ct">ポアソン回帰</div><div class="ce">Poisson Regression</div><div class="tags"><span class="mtag">カウントデータ</span></div></div>
+            <div class="card" data-cat="regression" data-level="a" onclick="showEnc('negbin')"><div class="ct">負の二項回帰</div><div class="ce">Negative Binomial</div><div class="tags"><span class="mtag">過分散カウント</span></div></div>
+            <div class="card" data-cat="regression" data-level="a" onclick="showEnc('quantile')"><div class="ct">分位点回帰</div><div class="ce">Quantile Regression</div><div class="tags"><span class="mtag">外れ値頑健</span></div></div>
+            <div class="card" data-cat="regression" data-level="m" onclick="showEnc('stepwise')"><div class="ct">ステップワイズ / AIC</div><div class="ce">Stepwise / AIC / BIC</div><div class="tags"><span class="mtag">モデル選択</span></div></div>
+            <div class="card" data-cat="regression" data-level="a" onclick="showEnc('mixed')"><div class="ct">線形混合効果モデル</div><div class="ce">LME</div><div class="tags"><span class="mtag">階層データ</span></div></div>
+            <div class="card" data-cat="regression" data-level="a" onclick="showEnc('glmm')"><div class="ct">一般化線形混合モデル</div><div class="ce">GLMM</div><div class="tags"><span class="mtag">非正規応答+階層</span></div></div>
           </div>
         </div>
         <div class="cat cc4" data-cat="structure">
@@ -457,6 +509,14 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       <div class="ftags"><span class="ftag">fillna</span><span class="ftag">map()</span><span class="ftag">pd.cut</span><span class="ftag">get_dummies</span><span class="ftag">pd.concat</span></div>
     </div>
     <div class="farrow"><div class="farr-line"></div><div class="farr-lbl">分析目的に応じて手法を選ぶ</div><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 前提確認ノード -->
+    <div class="fnode fn-check" onclick="showFlow('assumption_check')">
+      <div class="fnode-hd"><div class="fnode-ico">🔬</div><div><div class="fnode-title">STEP 3.5｜前提条件の確認（検定前に必須）</div></div></div>
+      <div class="fnode-sub">正規性・等分散・欠損・外れ値を確認してから手法を選ぶ。ここを飛ばすと誤った検定を使うリスクがある</div>
+      <div class="ftags"><span class="ftag">Shapiro-Wilk</span><span class="ftag">Levene検定</span><span class="ftag">欠損率確認</span><span class="ftag">外れ値チェック</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-head"></div></div>
 
     <!-- 手法選択分岐1 -->
     <div class="seclabel">🔀 分析手法の選択：比較・検定</div>
@@ -1253,6 +1313,88 @@ code:`import ruptures as rpt
 algo = rpt.Pelt(model="rbf").fit(signal)
 result = algo.predict(pen=10)`},
 
+pearson:{t:"Pearson積率相関係数",en:"Pearson Correlation",cat:"相関分析",c:"var(--c7)",bg:"var(--c7l)",
+what:"2つの連続変数の線形関係の強さと方向を-1〜+1の値で表す。r=0.3〜0.5:弱い、r=0.5〜0.7:中程度、r>0.7:強い相関。",
+example:"例：従業員の年収と幸福度の相関を分析。r=0.42, p<0.001で中程度の正の相関。ただし相関は因果ではなく、年収が高い人が幸福なのか、幸福な人が高収入を得やすいのかは相関では判断できない。",
+when:["2つの連続変数の関係を調べたい","回帰分析の前に変数間の関係を確認","多変数の相関構造をヒートマップで把握"],
+formula:"r = Σ(xᵢ-x̄)(yᵢ-ȳ) / √[Σ(xᵢ-x̄)²·Σ(yᵢ-ȳ)²]\n|r|<0.3弱い、0.3〜0.5中、>0.5強い",
+notes:["正規分布・外れ値なしの仮定あり（外れると歪む）","順序尺度や非正規ならSpearman相関を使う","r²（決定係数）= Xで説明できるYの分散の割合"],
+code:`from scipy.stats import pearsonr
+import seaborn as sns
+import pandas as pd
+
+# 2変数の相関
+r, p = pearsonr(df["x"], df["y"])
+print(f"r={r:.3f}, p={p:.4f}")
+
+# 多変数の相関行列ヒートマップ
+corr = df[cols].corr(method='pearson')
+sns.heatmap(corr, annot=True, fmt=".2f",
+            cmap='RdYlGn', center=0, vmin=-1, vmax=1)`},
+
+shapiro:{t:"正規性検定（Shapiro-Wilk）",en:"Shapiro-Wilk Test",cat:"前提確認",c:"var(--c5)",bg:"var(--c5l)",
+what:"データが正規分布に従っているかを検定する。t検定・ANOVA・回帰などのパラメトリック検定を使う前に確認するべき前提条件の検定。",
+example:"例：幸福度スコアの正規性を検定。W=0.94, p=0.023→正規分布と言えない。そのためt検定ではなくMann-Whitney U検定を選択した。n>30の場合は中心極限定理によりt検定をある程度適用できる。",
+when:["パラメトリック検定（t検定・ANOVA）を使う前の前提確認","残差の正規性確認（回帰分析の診断）","n<50の場合に特に重要（大標本では機械的に有意になりやすい）"],
+formula:"帰無仮説：「正規分布に従う」\np<0.05 → 正規でない（ノンパラ検定を検討）",
+notes:["n>50では軽微な歪みでもp<0.05になりやすい→QQプロットと併用","Kolmogorov-Smirnovも選択肢（大標本向け）","実務では「n≥30で概ね正規」として扱うことも多い"],
+code:`from scipy.stats import shapiro
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+
+# Shapiro-Wilk検定
+W, p = shapiro(data)
+print(f"W={W:.4f}, p={p:.4f}")
+if p < 0.05:
+    print("→ 正規分布の仮定なし → ノンパラ検定を使用")
+else:
+    print("→ 正規分布の仮定あり → パラメトリック検定可")
+
+# QQプロット（視覚的確認）
+stats.probplot(data, dist="norm", plot=plt)
+plt.title("QQ Plot")
+plt.show()`},
+
+levene_test:{t:"Levene等分散検定",en:"Levene's Test",cat:"前提確認",c:"var(--c5)",bg:"var(--c5l)",
+what:"複数グループの分散が等しいか（等分散性）を検定する。ANOVAの前提条件の確認に使う。Welchのt検定は等分散でなくても安全（equal_var=False）。",
+example:"例：3グループ（営業・開発・管理部）の満足度スコアの等分散性を確認。Levene検定 p=0.032→等分散でない。そのため通常のANOVAではなくWelch's ANOVAを使用した。",
+when:["ANOVA・t検定の前の等分散確認","複数グループの分散を比較したい","Welch版が使えない場合の前提確認"],
+notes:["t検定はWelch版（equal_var=False）が安全なので等分散確認が不要になることも","ANOVAでp<0.05なら→Welch's ANOVA または ノンパラのKruskal-Wallis"],
+code:`from scipy.stats import levene
+from scipy.stats import f_oneway
+import statsmodels.stats.oneway as ow
+
+# Levene検定
+stat, p = levene(*groups)
+print(f"Levene統計量={stat:.3f}, p={p:.4f}")
+if p < 0.05:
+    print("→ 等分散でない → Welch's ANOVAを使用")
+    # Welch's ANOVA
+    result = ow.anova_oneway(y, groups=group_labels, use_var='unequal')
+else:
+    print("→ 等分散 → 通常のANOVA可能")
+    F, p2 = f_oneway(*groups)`},
+
+mice:{t:"多重代入法（MICE）",en:"Multiple Imputation by Chained Equations",cat:"前提確認",c:"var(--c5)",bg:"var(--c5l)",
+what:"欠損データをランダムな1値で補完するのではなく、他の変数を使って複数回予測・補完し、その不確実性も含めて分析する高度な欠損処理手法。",
+example:"例：300人調査で年収に52件の欠損（17%）。単純な平均補完では年収の分散が過小になる。MICE（10回多重代入）で補完し、10個のデータセットで別々に回帰分析→結果をRubin's rulesで統合。係数の標準誤差が正確に推定できた。",
+when:["欠損率が5〜30%ある場合（5%未満はリストワイズ削除でもよい）","欠損がランダムでない可能性がある場合（MAR/MCARの確認）","欠損変数が分析の重要な変数である場合"],
+notes:["listwise deletion（欠損行を全削除）はサンプルが減りバイアスが生じやすい","平均/中央値補完は分散を過小推定する","欠損率>30%はインタープリテーションに注意"],
+code:`from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
+import numpy as np
+
+# MICE（反復的補完）
+imputer = IterativeImputer(
+    max_iter=10, random_state=42, n_nearest_features=5
+)
+X_imputed = imputer.fit_transform(X_with_missing)
+
+# 欠損パターンの可視化
+import missingno as msno
+msno.matrix(df)          # 欠損パターン
+msno.heatmap(df)         # 欠損の相関（どの列が一緒に欠ける）`},
+
 confidence_interval:{t:"信頼区間（CI）",c:"var(--c7)",bg:"var(--c7l)",
 what:"点推定（例：平均値5.3）だけでなく、その推定の不確実性の幅を示す。95%信頼区間は「同じ手順を100回繰り返せば95回はこの区間に真値が含まれる」という意味。p値だけでなく信頼区間を必ず報告することが現代統計の標準。",
 example:"例：施策前後の顧客満足度の差=+1.8点、95%信頼区間=[+0.9, +2.7]。区間が0をまたいでいないので有意差あり。かつ少なくとも0.9点は改善しているという下限の解釈もでき、p値のみより情報量が多い。",
@@ -1505,6 +1647,31 @@ tree:[
   "生存時間に影響する変数 → Cox比例ハザードモデル",
   "時系列の構造変化の検出 → 変化点検出（ruptures）"
 ]},
+assumption_check:{t:"STEP 3.5｜前提条件の確認",c:"var(--c5)",bg:"var(--c5l)",
+what:"統計的検定には前提条件があり、それを確認せずに手法を選ぶと誤った結果になる。最低限この4点を確認する。",
+example:"例：幸福度スコアの2グループ比較をしようとして、t検定を選ぶ前に①正規性→Shapiro-Wilk: p=0.023（非正規）②欠損なし③外れ値1件を除外。結果としてMann-Whitney U検定を選択。前提確認のおかげで正しい検定を選べた。",
+tree:[
+  "① 正規性の確認 → Shapiro-Wilk検定（n<50）or QQプロット。p<0.05 → ノンパラ検定を検討",
+  "② 等分散の確認 → Levene検定。p<0.05 → Welch版（equal_var=False）を使用",
+  "③ 欠損の確認 → df.isna().sum() で欠損率確認。5%以上ならMICEで補完検討",
+  "④ 外れ値の確認 → 箱ひげ図・IQR法でチェック。外れ値の影響を受けにくい検定を選ぶ"
+],
+notes:["n≥30の場合、中心極限定理により正規性の仮定は緩やかになる","Welchのt検定（equal_var=False）は等分散でなくても安全 → Levene確認が不要になる","前提確認の結果をメモしておき、論文・報告書に記載するのが科学的な手続き"],
+code:`from scipy.stats import shapiro, levene
+
+# 正規性検定（各グループ）
+for g, grp in df.groupby("group")["y"]:
+    W, p = shapiro(grp.dropna())
+    print(f"グループ{g}: W={W:.3f}, p={p:.4f}")
+
+# 等分散検定
+groups = [df[df["group"]==g]["y"].dropna() for g in df["group"].unique()]
+stat, p_lev = levene(*groups)
+print(f"Levene検定: p={p_lev:.4f}")
+
+# 欠損率確認
+print(df.isna().sum() / len(df) * 100, "% 欠損")`},
+
 branch_ols:{t:"重回帰分析（OLS）の使いどころ",c:"var(--c3)",bg:"var(--c3l)",
 what:"目的変数が連続値で、多重共線性がない場合（VIF<10）に使う統計の基本手法。「他の変数を揃えた上でXがYに与える影響」を係数とp値で定量化できる。",
 example:"例：年収を年齢・経験年数・学歴・職種で重回帰分析。VIF確認後（全て<5）OLSを実行。経験年数の係数=12.3（p<0.001）で解釈しやすい結果を得た。",
@@ -2299,30 +2466,181 @@ const WIZARD = {
   },
 };
 
+// ── 難易度マップ ──────────────────────────
+const LEVELS = {
+  ttest:'b',paired_t:'b',chi2:'b',fisher:'b',pearson:'b',mannwhitney:'b',wilcoxon:'b',
+  effect_size:'b',confidence_interval:'b',spearman:'b',anova:'b',
+  twoway_anova:'m',ancova:'m',kruskal:'m',friedman:'m',kendall:'m',power:'m',
+  multiple_correction:'m',bootstrap:'m',ols:'m',ridge:'m',lasso:'m',elasticnet:'m',
+  logistic:'m',multinomial:'m',pca:'m',efa:'m',kmeans:'m',hierarchical:'m',tsne:'m',
+  arima:'m',survival:'m',cox:'m',shapiro:'b',levene_test:'m',cross_val:'m',mice:'m',
+  manova:'a',ordinal_reg:'a',poisson:'a',negbin:'a',quantile:'a',stepwise:'m',
+  mixed:'a',glmm:'a',cfa:'a',sem:'a',mediation:'a',moderation:'a',canonical:'a',
+  discriminant:'a',irt:'a',did:'a',psm:'a',iv:'a',rdd:'a',synth:'a',dag:'m',
+  hlm:'a',panel:'a',bayes_theorem:'m',bayesian_reg:'a',mcmc:'a',bayes_factor:'a',
+  credible_interval:'m',hierarchical_bayes:'a',rf:'m',gbm:'m',svm:'m',shap:'m',
+  permutation:'a',var_model:'a',granger:'a',cointegration:'a',changepoint:'m',
+};
+const LEVEL_LABEL = {b:'初級',m:'中級',a:'上級'};
+const LEVEL_CLASS = {b:'lvl-b',m:'lvl-m',a:'lvl-a'};
+
+// ── 関連手法マップ ─────────────────────────
+const RELATED = {
+  ttest:['effect_size','power','mannwhitney','multiple_correction','shapiro'],
+  paired_t:['wilcoxon','effect_size','ttest'],
+  anova:['effect_size','multiple_correction','kruskal','twoway_anova','levene_test'],
+  twoway_anova:['anova','ancova','manova'],
+  ancova:['anova','ols','twoway_anova'],
+  manova:['anova','pca','sem'],
+  chi2:['fisher','mcnemar','effect_size','logistic'],
+  fisher:['chi2','mcnemar'],
+  mcnemar:['chi2','paired_t'],
+  pearson:['spearman','ols','pca','confidence_interval'],
+  spearman:['pearson','kendall','mannwhitney'],
+  kendall:['spearman','pearson'],
+  mannwhitney:['ttest','spearman','wilcoxon','shapiro'],
+  wilcoxon:['paired_t','friedman','mannwhitney'],
+  kruskal:['anova','friedman','mannwhitney'],
+  friedman:['kruskal','anova','wilcoxon'],
+  effect_size:['power','confidence_interval','multiple_correction'],
+  power:['effect_size','ttest','anova'],
+  multiple_correction:['effect_size','confidence_interval','bootstrap'],
+  confidence_interval:['effect_size','bootstrap','ols'],
+  bootstrap:['permutation','confidence_interval'],
+  permutation:['bootstrap','cross_val'],
+  shapiro:['levene_test','ttest','mannwhitney','mice'],
+  levene_test:['shapiro','anova','ttest'],
+  mice:['shapiro','ols','ridge'],
+  ols:['ridge','lasso','logistic','pca','stepwise'],
+  ridge:['ols','lasso','elasticnet','pca'],
+  lasso:['ridge','elasticnet','ols','stepwise'],
+  elasticnet:['ridge','lasso','ols'],
+  logistic:['ols','rf','multinomial','ordinal_reg'],
+  multinomial:['logistic','ordinal_reg','discriminant'],
+  ordinal_reg:['logistic','multinomial','spearman'],
+  poisson:['negbin','ols','logistic'],
+  negbin:['poisson','ols'],
+  quantile:['ols','bootstrap'],
+  mixed:['glmm','hlm','ols'],
+  glmm:['mixed','logistic','hlm'],
+  stepwise:['ols','lasso','ridge'],
+  pca:['efa','kmeans','tsne','ridge'],
+  efa:['cfa','pca','sem'],
+  cfa:['sem','efa'],
+  sem:['cfa','mediation','moderation'],
+  mediation:['sem','moderation','ols'],
+  moderation:['sem','mediation','ols'],
+  kmeans:['hierarchical','tsne','pca'],
+  hierarchical:['kmeans','tsne'],
+  tsne:['pca','kmeans','umap'],
+  canonical:['pca','efa','discriminant'],
+  discriminant:['logistic','pca','kmeans'],
+  irt:['efa','cfa'],
+  did:['panel','psm','rdd'],
+  psm:['did','rdd','ols'],
+  iv:['did','ols','panel'],
+  rdd:['did','iv'],
+  synth:['did','panel'],
+  dag:['did','mediation','ols'],
+  hlm:['mixed','panel','ols'],
+  panel:['did','hlm','mixed'],
+  bayes_theorem:['bayesian_reg','bayes_factor','credible_interval'],
+  bayesian_reg:['mcmc','ols','bayes_factor'],
+  mcmc:['bayesian_reg','hierarchical_bayes'],
+  bayes_factor:['bayesian_reg','bayes_theorem'],
+  credible_interval:['confidence_interval','bayesian_reg'],
+  hierarchical_bayes:['mcmc','mixed','bayesian_reg'],
+  rf:['gbm','shap','cross_val'],
+  gbm:['rf','shap','cross_val'],
+  svm:['rf','logistic','cross_val'],
+  cross_val:['rf','gbm','lasso'],
+  shap:['rf','gbm','ols'],
+  arima:['var_model','changepoint','granger'],
+  var_model:['arima','granger','cointegration'],
+  granger:['var_model','arima','cointegration'],
+  cointegration:['var_model','granger'],
+  survival:['cox','changepoint'],
+  cox:['survival','logistic','mixed'],
+  changepoint:['arima','var_model'],
+};
+
+// ── コードコピー ──────────────────────────
+function copyCode(btn) {
+  const codeEl = btn.closest('.code-wrap').querySelector('.code');
+  const text = codeEl.innerText || codeEl.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ コピー完了';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ コピー完了'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── コードブロックHTML生成 ────────────────
+function codeBlock(code, lang='Python') {
+  const escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<div class="code-wrap">
+    <div class="code-header">
+      <span class="code-lang">${lang}</span>
+      <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    </div>
+    <div class="code">${escaped}</div>
+  </div>`;
+}
+
+// ── URLシェア ─────────────────────────────
+function shareURL(key) {
+  const url = location.origin + location.pathname + '?method=' + key;
+  navigator.clipboard.writeText(url).catch(() => {});
+  const btn = document.getElementById('share-btn-'+key);
+  if (btn) { btn.textContent = '✓ URLコピー完了'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '🔗 URLをシェア'; btn.classList.remove('copied'); }, 2000); }
+}
+
+// ── 百科事典パネル描画 ────────────────────
 let encEl = null;
-function showEnc(id) {
+function showEnc(id, fromEl) {
   const d = D[id];
   if (!d) return;
   if (encEl) encEl.classList.remove('active');
-  encEl = event.currentTarget;
-  encEl.classList.add('active');
+  encEl = fromEl || (typeof event !== 'undefined' && event ? event.currentTarget : null);
+  if (encEl) encEl.classList.add('active');
+  // URLパラメータ更新
+  history.replaceState(null, '', '?method=' + id);
   const c = d.c || 'var(--c1)';
   const bg = d.bg || 'var(--c1l)';
+  const lv = LEVELS[id];
+  const lvBadge = lv ? `<span class="level-badge ${LEVEL_CLASS[lv]}">${LEVEL_LABEL[lv]}</span>` : '';
   let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
-    <h2 style="color:${c}">${d.t}</h2>
+    <h2 style="color:${c}">${d.t}${lvBadge}</h2>
     <div class="en">${d.en||''}</div>
     <span style="font-size:10px;background:${bg};border:1px solid ${c}30;color:${c};padding:2px 10px;border-radius:20px;font-weight:600">${d.cat||''}</span>
     <p style="margin-top:10px">${d.what||''}</p>
   </div>`;
-  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:12px;line-height:1.8;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:13px;line-height:1.85;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
   if(d.when&&d.when.length){h+=`<div class="ds"><h3>使いどころ</h3><ul>${d.when.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
   if(d.formula){h+=`<div class="ds"><h3>数式</h3><div class="formula">${d.formula.replace(/\n/g,'<br>')}</div></div>`;}
   if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点・ポイント</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.code){h+=`<div class="ds"><h3>Pythonコード例</h3><div class="code">${d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;}
+  if(d.code){h+=`<div class="ds"><h3>Pythonコード例</h3>${codeBlock(d.code)}</div>`;}
+  // 関連手法
+  const rel = RELATED[id];
+  if(rel&&rel.length){
+    const chips = rel.filter(k=>D[k]).map(k=>`<button class="related-chip" onclick="showEnc('${k}')">${D[k].t}</button>`).join('');
+    h+=`<div class="related-section"><div class="related-title">関連手法</div><div class="related-chips">${chips}</div></div>`;
+  }
+  // シェアボタン
+  h+=`<div><button id="share-btn-${id}" class="share-btn" onclick="shareURL('${id}')">🔗 URLをシェア</button></div>`;
   document.getElementById('enc-ph').style.display='none';
   const db = document.getElementById('enc-db');
   db.innerHTML = h;
   db.classList.add('on');
+  // モバイル：パネルにスクロール
+  if(window.innerWidth<=768) document.getElementById('enc-panel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 let flowEl = null;
@@ -2330,8 +2648,8 @@ function showFlow(id) {
   const d = FD[id];
   if (!d) return;
   if (flowEl) flowEl.classList.remove('factive');
-  flowEl = event.currentTarget;
-  flowEl.classList.add('factive');
+  flowEl = typeof event !== 'undefined' && event ? event.currentTarget : null;
+  if (flowEl) flowEl.classList.add('factive');
   const c = d.c || 'var(--c1)';
   const bg = d.bg || 'var(--c1l)';
   let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
@@ -2339,7 +2657,7 @@ function showFlow(id) {
     <p style="margin-top:8px">${d.what||''}</p>
     ${d.what2 ? `<p style="margin-top:8px">${d.what2}</p>` : ''}
   </div>`;
-  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:12px;line-height:1.8;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:13px;line-height:1.85;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
   if(d.ex&&d.ex.length){h+=`<div class="ds"><h3>具体例</h3><ul>${d.ex.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
   if(d.points&&d.points.length){h+=`<div class="ds"><h3>やること</h3><ul>${d.points.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
   if(d.checklist&&d.checklist.length){h+=`<div class="ds"><h3>チェックリスト</h3><ul>${d.checklist.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
@@ -2348,11 +2666,12 @@ function showFlow(id) {
   if(d.guide&&d.guide.length){h+=`<div class="ds"><h3>グラフ選択ガイド</h3><ul>${d.guide.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
   if(d.levels&&d.levels.length){h+=`<div class="ds"><h3>解釈の3段階</h3><ul>${d.levels.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
   if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点・ポイント</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.code){h+=`<div class="ds"><h3>コード例</h3><div class="code">${d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;}
+  if(d.code){h+=`<div class="ds"><h3>コード例</h3>${codeBlock(d.code)}</div>`;}
   document.getElementById('flow-ph').style.display='none';
   const db = document.getElementById('flow-db');
   db.innerHTML = h;
   db.classList.add('on');
+  if(window.innerWidth<=768) document.getElementById('flow-panel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 let activeCats = new Set(['compare','nonparam','regression','structure','causal','bayes','ml','time','supplement']);
@@ -2496,31 +2815,18 @@ function wizRestart() {
 
 function wizGoToEnc(key) {
   switchTab('enc', document.querySelectorAll('.tab')[0]);
-  setTimeout(() => {
-    const d = D[key];
-    if (!d) return;
-    const c = d.c || 'var(--c1)';
-    const bg = d.bg || 'var(--c1l)';
-    let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
-      <h2 style="color:${c}">${d.t}</h2>
-      <div class="en">${d.en||''}</div>
-      <span style="font-size:10px;background:${bg};border:1px solid ${c}30;color:${c};padding:2px 10px;border-radius:20px;font-weight:600">${d.cat||''}</span>
-      <p style="margin-top:10px">${d.what||''}</p>
-    </div>`;
-    if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:12px;line-height:1.8;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
-    if(d.when&&d.when.length){h+=`<div class="ds"><h3>使いどころ</h3><ul>${d.when.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-    if(d.formula){h+=`<div class="ds"><h3>数式</h3><div class="formula">${d.formula.replace(/\n/g,'<br>')}</div></div>`;}
-    if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-    if(d.code){h+=`<div class="ds"><h3>コード例</h3><div class="code">${d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;}
-    document.getElementById('enc-ph').style.display='none';
-    const db = document.getElementById('enc-db');
-    db.innerHTML = h;
-    db.classList.add('on');
-  }, 150);
+  setTimeout(() => showEnc(key, null), 150);
 }
 
+// ── URLパラメータで直接表示 ───────────────
+(function() {
+  const m = new URLSearchParams(location.search).get('method');
+  if (m && D[m]) {
+    setTimeout(() => showEnc(m, null), 300);
+  }
+})();
 
-// グローバルスコープに明示的に登録
+// グローバルスコープ登録
 window.switchTab = switchTab;
 window.showEnc = showEnc;
 window.showFlow = showFlow;
@@ -2532,18 +2838,8 @@ window.wizBackTo = wizBackTo;
 window.wizBackOne = wizBackOne;
 window.wizGoToEnc = wizGoToEnc;
 window.wizInit = wizInit;
-// onclickから呼べるようにwindowに登録
-window.switchTab = switchTab;
-window.showEnc = showEnc;
-window.showFlow = showFlow;
-window.filt = filt;
-window.fc = fc;
-window.wizRestart = wizRestart;
-window.wizAnswer = wizAnswer;
-window.wizBackTo = wizBackTo;
-window.wizBackOne = wizBackOne;
-window.wizGoToEnc = wizGoToEnc;
-window.wizInit = wizInit;
+window.copyCode = copyCode;
+window.shareURL = shareURL;
 
 </script>
 </body>
