@@ -1,0 +1,2550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>データ分析 完全ガイド</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--bg:#fafbfc;--surface:#fff;--border:#e1e4e8;--text:#1a1d23;--muted:#6b7280;--c1:#2563eb;--c1l:#eff6ff;--c1m:#bfdbfe;--c2:#16a34a;--c2l:#f0fdf4;--c2m:#bbf7d0;--c3:#7c3aed;--c3l:#f5f3ff;--c3m:#ddd6fe;--c4:#ea580c;--c4l:#fff7ed;--c4m:#fed7aa;--c5:#0891b2;--c5l:#ecfeff;--c5m:#a5f3fc;--c6:#db2777;--c6l:#fdf2f8;--c6m:#fbcfe8;--c7:#d97706;--c7l:#fffbeb;--c7m:#fde68a;--c8:#dc2626;--c8l:#fef2f2;--c8m:#fecaca;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text);display:flex;flex-direction:column;height:100vh;margin:0;overflow:hidden;}
+
+/* トップバー */
+.topbar{background:var(--surface);border-bottom:2px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:20px;}
+.topbar h1{font-size:18px;font-weight:900;white-space:nowrap;}
+.topbar h1 span{color:var(--c1);}
+
+/* タブバー */
+.tabbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;}
+.tab{padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);transition:.15s;white-space:nowrap;}
+.tab.active{color:var(--c1);border-bottom-color:var(--c1);}
+.tab:hover:not(.active){color:var(--text);}
+
+/* タブコンテンツ */
+.tabcontent{display:none;overflow:hidden;flex:1;min-height:0;}
+.tabcontent.active{display:block;overflow:hidden;}
+#tab-enc.active{display:grid;grid-template-rows:auto 1fr;}
+#tab-flow.active{display:grid;grid-template-columns:1fr 360px;}
+#tab-wizard.active{display:grid;grid-template-columns:1fr 380px;}
+
+/* ===== 百科事典タブ ===== */
+
+.enc-toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.search-box{position:relative;flex:1;max-width:260px;}
+.search-box input{width:100%;padding:7px 12px 7px 30px;border:1.5px solid var(--border);border-radius:7px;font-family:inherit;font-size:13px;outline:none;background:var(--bg);}
+.search-box input:focus{border-color:var(--c1);}
+.search-box::before{content:'🔍';position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;}
+.chip{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;transition:.15s;white-space:nowrap;opacity:.4;}
+.chip.on{opacity:1;}
+
+/* 百科事典メイン */
+.enc-main{display:grid;grid-template-columns:1fr 360px;overflow:hidden;}
+.map{overflow:auto;padding:28px;}
+.mindmap{display:flex;flex-direction:column;align-items:center;gap:20px;min-width:980px;}
+.root{background:linear-gradient(135deg,#1e3a5f,#1a2f4a);color:#fff;padding:14px 28px;border-radius:14px;font-size:15px;font-weight:900;text-align:center;box-shadow:0 4px 20px rgba(37,99,235,.3);}
+.root p{font-size:11px;opacity:.6;margin-top:3px;font-weight:300;}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cat{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.cath{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:800;border:2px solid;text-align:center;}
+.grid{display:flex;flex-direction:column;gap:4px;}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:7px;padding:8px 11px;cursor:pointer;transition:.15s;width:190px;position:relative;}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.09);}
+.card.active{box-shadow:0 0 0 2.5px var(--c1);}
+.card.hide{display:none;}
+.ct{font-size:12px;font-weight:700;line-height:1.3;margin-bottom:2px;}
+.ce{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:4px;}
+.tags{display:flex;flex-wrap:wrap;gap:3px;}
+.mtag{font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.conn{width:2px;height:14px;background:var(--border);margin:0 auto;}
+.cc1 .cath{background:var(--c1l);color:var(--c1);border-color:var(--c1m);}
+.cc1 .card:hover{border-color:var(--c1);}
+.cc2 .cath{background:var(--c2l);color:var(--c2);border-color:var(--c2m);}
+.cc2 .card:hover{border-color:var(--c2);}
+.cc3 .cath{background:var(--c3l);color:var(--c3);border-color:var(--c3m);}
+.cc3 .card:hover{border-color:var(--c3);}
+.cc4 .cath{background:var(--c4l);color:var(--c4);border-color:var(--c4m);}
+.cc4 .card:hover{border-color:var(--c4);}
+.cc5 .cath{background:var(--c5l);color:var(--c5);border-color:var(--c5m);}
+.cc5 .card:hover{border-color:var(--c5);}
+.cc6 .cath{background:var(--c6l);color:var(--c6);border-color:var(--c6m);}
+.cc6 .card:hover{border-color:var(--c6);}
+.cc7 .cath{background:var(--c7l);color:var(--c7);border-color:var(--c7m);}
+.cc7 .card:hover{border-color:var(--c7);}
+.cc8 .cath{background:var(--c8l);color:var(--c8);border-color:var(--c8m);}
+.cc8 .card:hover{border-color:var(--c8);}
+
+/* 詳細パネル（共通） */
+.panel{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--muted);gap:10px;padding:40px;text-align:center;}
+.ph .ico{font-size:44px;opacity:.25;}
+.ph p{font-size:13px;line-height:1.6;}
+.dbody{padding:22px 20px;display:none;overflow-y:auto;}
+.dbody.on{display:block;}
+.hero{border-radius:9px;padding:14px 16px;margin-bottom:16px;}
+.hero h2{font-size:16px;font-weight:800;margin-bottom:2px;}
+.hero .en{font-size:10px;font-family:'JetBrains Mono',monospace;opacity:.65;margin-bottom:7px;}
+.hero p{font-size:12px;line-height:1.75;}
+.ds{margin-bottom:14px;}
+.ds h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid var(--border);}
+.ds p{font-size:12px;line-height:1.8;}
+.ds ul{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.ds li{font-size:12px;line-height:1.6;padding-left:13px;position:relative;}
+.ds li::before{content:'▸';position:absolute;left:0;color:var(--muted);font-size:10px;top:2px;}
+.code{background:#1e2330;border-radius:6px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#a6e22e;margin-top:6px;line-height:1.7;overflow-x:auto;white-space:pre;}
+.formula{background:#f8f9ff;border:1px solid #e0e7ff;border-radius:6px;padding:9px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c1);margin-top:6px;text-align:center;line-height:1.7;}
+
+/* ===== フローチャートタブ ===== */
+
+.flow-area{overflow:auto;padding:32px 40px;}
+.flow-inner{display:flex;flex-direction:column;align-items:center;gap:0;min-width:760px;}
+
+/* フローノード */
+.fnode{border-radius:11px;padding:14px 20px;cursor:pointer;border:1.5px solid;width:400px;transition:.15s;position:relative;background:var(--surface);}
+.fnode:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1);}
+.fnode.factive{box-shadow:0 0 0 3px var(--c1m);}
+.fnode-hd{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.fnode-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.fnode-title{font-size:13px;font-weight:800;line-height:1.3;}
+.fnode-sub{font-size:11px;color:var(--muted);line-height:1.6;}
+.ftags{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px;}
+.ftag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px;background:var(--bg);border:1px solid var(--border);color:var(--muted);}
+.seclabel{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:3px 12px;border-radius:20px;margin:4px 0;}
+
+/* ノード種別 */
+.fn-start{border-color:var(--c2);background:var(--c2l);}
+.fn-start .fnode-ico{background:var(--c2m);}
+.fn-start .fnode-title{color:var(--c2);}
+.fn-process{border-color:var(--c1);}
+.fn-process .fnode-ico{background:var(--c1l);}
+.fn-process .fnode-title{color:var(--c1);}
+.fn-warn{border-color:var(--c7);background:var(--c7l);}
+.fn-warn .fnode-ico{background:var(--c7m);}
+.fn-warn .fnode-title{color:var(--c7);}
+.fn-decision{border-color:var(--c3);border-style:dashed;background:var(--c3l);}
+.fn-decision .fnode-ico{background:var(--c3m);}
+.fn-decision .fnode-title{color:var(--c3);}
+.fn-output{border-color:var(--c4);background:var(--c4l);}
+.fn-output .fnode-ico{background:var(--c4m);}
+.fn-output .fnode-title{color:var(--c4);}
+
+/* 矢印 */
+.farrow{display:flex;flex-direction:column;align-items:center;margin:0;}
+.farr-line{width:2px;height:22px;background:var(--border);}
+.farr-head{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--border);}
+.farr-lbl{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;background:var(--surface);padding:2px 9px;border-radius:4px;border:1px solid var(--border);margin:-2px 0;z-index:1;}
+
+/* 分岐 */
+.fbranch-wrap{display:flex;gap:14px;align-items:flex-start;}
+.fbranch{display:flex;flex-direction:column;align-items:center;}
+.fbranch-lbl{font-size:10px;padding:3px 11px;border-radius:20px;font-weight:700;margin-bottom:7px;white-space:nowrap;border:1.5px solid;}
+.bl-yes{background:var(--c2l);color:var(--c2);border-color:var(--c2m);}
+.bl-no{background:var(--c8l);color:var(--c8);border-color:var(--c8m);}
+.bl-alt{background:var(--c3l);color:var(--c3);border-color:var(--c3m);}
+.bl-cat{background:var(--c4l);color:var(--c4);border-color:var(--c4m);}
+.bl-ml{background:var(--c1l);color:var(--c1);border-color:var(--c1m);}
+
+/* 小ノード */
+.fnode-sm{width:210px;}
+
+
+/* ── ウィザードスタイル ── */
+.wiz-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:8px;line-height:1.3;}
+.wiz-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.wiz-options{display:flex;flex-direction:column;gap:9px;max-width:560px;}
+.wiz-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:13px 18px;cursor:pointer;transition:all .15s;text-align:left;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px;}
+.wiz-btn:hover{border-color:var(--c1);background:var(--c1l);color:var(--c1);transform:translateX(4px);}
+.wiz-btn .wiz-arrow{margin-left:auto;color:var(--muted);font-size:15px;transition:all .15s;}
+.wiz-btn:hover .wiz-arrow{color:var(--c1);}
+.wiz-result{background:linear-gradient(135deg,#f0fdf4,#ecfeff);border:2px solid var(--c2);border-radius:14px;padding:22px;max-width:560px;}
+.wiz-result-title{font-size:19px;font-weight:900;color:var(--c2);margin-bottom:4px;}
+.wiz-result-subtitle{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.wiz-result-reason{font-size:13px;line-height:1.8;color:var(--text);background:white;border-radius:8px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--c2m);}
+.wiz-also{margin-bottom:12px;}
+.wiz-also-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.wiz-also ul{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.wiz-also li{font-size:12px;color:var(--text);padding-left:14px;position:relative;}
+.wiz-also li::before{content:'→';position:absolute;left:0;color:var(--c2);}
+.wiz-code{background:#1e2330;border-radius:7px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#a6e22e;line-height:1.7;overflow-x:auto;white-space:pre;margin-bottom:12px;}
+.wiz-link-btn{display:inline-flex;align-items:center;gap:6px;background:var(--c1l);border:1.5px solid var(--c1m);color:var(--c1);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Noto Sans JP',sans-serif;}
+.wiz-link-btn:hover{background:var(--c1);color:white;}
+.wiz-restart-btn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Noto Sans JP',sans-serif;}
+.wiz-restart-btn:hover{border-color:var(--text);color:var(--text);}
+.hist-item{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.hist-q{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.hist-a{font-size:11px;font-weight:700;color:var(--text);background:var(--c1l);border:1px solid var(--c1m);border-radius:5px;padding:3px 8px;display:inline-block;}
+.hist-back-btn{font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:4px;font-family:'Noto Sans JP',sans-serif;}
+.hist-back-btn:hover{background:var(--border);color:var(--text);}
+.wiz-step{font-size:10px;color:var(--c1);font-family:'JetBrains Mono',monospace;background:var(--c1l);border:1px solid var(--c1m);border-radius:20px;padding:3px 12px;display:inline-block;margin-bottom:14px;font-weight:600;}
+
+/* ===== モバイル対応 ===== */
+@media (max-width: 768px) {
+  body{height:auto;overflow:auto;overflow-x:hidden;}
+
+  /* トップバー */
+  .topbar{padding:10px 14px;flex-wrap:wrap;gap:8px;}
+  .topbar h1{font-size:15px;}
+  .topbar span{display:none;}
+
+  /* タブバー：横スクロール */
+  .tabbar{padding:0 10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:none;}
+  .tabbar::-webkit-scrollbar{display:none;}
+  .tab{padding:10px 14px;font-size:12px;white-space:nowrap;flex-shrink:0;}
+
+  /* タブコンテンツ：高さ固定を解除 */
+  .tabcontent{flex:none;overflow:visible;}
+  .tabcontent.active{display:block;overflow:visible;}
+  #tab-enc.active{display:block;}
+  #tab-flow.active{display:block;}
+  #tab-wizard.active{display:block;}
+
+  /* 百科事典ツールバー */
+  .enc-toolbar{padding:8px 12px;gap:8px;}
+  .search-box{max-width:100%;}
+  .chips{gap:4px;}
+  .chip{font-size:10px;padding:3px 8px;}
+
+  /* マインドマップ：横スクロール可能に */
+  .enc-main{display:block;overflow:visible;}
+  .map{overflow-x:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+  .mindmap{min-width:700px;}
+  .card{width:160px;}
+
+  /* 詳細パネル：マップの下に表示 */
+  .panel{border-left:none;border-top:1px solid var(--border);max-height:none;min-height:200px;}
+  .dbody{padding:16px;}
+
+  /* フローチャート */
+  .flow-area{overflow-x:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+  .flow-inner{min-width:420px;}
+  .fnode{width:300px;}
+  .fnode-sm{width:180px;}
+  .fbranch-wrap{gap:8px;}
+
+  /* ウィザード */
+  .wiz-area{padding:16px;}
+  .wiz-title{font-size:17px;}
+  .wiz-options{max-width:100%;}
+  .wiz-result{max-width:100%;}
+  .wiz-panel{border-left:none;border-top:1px solid var(--border);padding:16px;}
+  .wiz-hist{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>データ分析 <span>完全ガイド</span></h1>
+  <span style="font-size:11px;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:6px;border:1px solid var(--border)">← カードをクリックで詳細表示</span>
+</div>
+
+<div class="tabbar">
+  <div class="tab active" onclick="switchTab('enc',this)">📖 統計手法 百科事典</div>
+  <div class="tab" onclick="switchTab('flow',this)">🔀 分析フローチャート</div>
+  <div class="tab" onclick="switchTab('wizard',this)">🧭 手法診断ウィザード</div>
+</div>
+
+<!-- TAB 1: 百科事典 -->
+<div class="tabcontent active" id="tab-enc" style="display:grid;grid-template-rows:auto 1fr;overflow:hidden;">
+  <div class="enc-toolbar">
+    <div class="search-box"><input type="text" id="sq" placeholder="検索..." oninput="filt()"></div>
+    <div class="chips" id="chips">
+      <div class="chip on" style="background:var(--c2l);color:var(--c2);border-color:var(--c2m)" onclick="fc('compare',this)">📊 比較検定</div>
+      <div class="chip on" style="background:var(--c7l);color:var(--c7);border-color:var(--c7m)" onclick="fc('nonparam',this)">🔢 ノンパラ</div>
+      <div class="chip on" style="background:#fdf4ff;color:#6d28d9;border-color:#ddd6fe" onclick="fc('supplement',this)">✅ 検定補足</div>
+      <div class="chip on" style="background:var(--c3l);color:var(--c3);border-color:var(--c3m)" onclick="fc('regression',this)">📉 回帰</div>
+      <div class="chip on" style="background:var(--c4l);color:var(--c4);border-color:var(--c4m)" onclick="fc('structure',this)">🌀 構造探索</div>
+      <div class="chip on" style="background:var(--c5l);color:var(--c5);border-color:var(--c5m)" onclick="fc('causal',this)">⚗️ 因果推論</div>
+      <div class="chip on" style="background:var(--c6l);color:var(--c6);border-color:var(--c6m)" onclick="fc('bayes',this)">🎰 ベイズ</div>
+      <div class="chip on" style="background:var(--c1l);color:var(--c1);border-color:var(--c1m)" onclick="fc('ml',this)">🤖 機械学習</div>
+      <div class="chip on" style="background:var(--c8l);color:var(--c8);border-color:var(--c8m)" onclick="fc('time',this)">📈 時系列</div>
+    </div>
+  </div>
+  <div class="enc-main">
+    <div class="map"><div class="mindmap">
+      <div class="root">統計分析手法 大全<p>カードをクリックで詳細 ／ 右上で検索・フィルタ</p></div>
+      <div class="conn"></div>
+      <div class="row">
+        <div class="cat cc2" data-cat="compare">
+          <div class="cath">📊 グループ比較・検定</div>
+          <div class="grid">
+            <div class="card" data-cat="compare" onclick="showEnc('ttest')"><div class="ct">t検定（独立2標本）</div><div class="ce">Independent t-test</div><div class="tags"><span class="mtag">2群</span><span class="mtag">連続値</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('paired_t')"><div class="ct">対応ありt検定</div><div class="ce">Paired t-test</div><div class="tags"><span class="mtag">前後比較</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('anova')"><div class="ct">一元配置分散分析</div><div class="ce">One-way ANOVA</div><div class="tags"><span class="mtag">3群以上</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('twoway_anova')"><div class="ct">二元配置分散分析</div><div class="ce">Two-way ANOVA</div><div class="tags"><span class="mtag">2因子</span><span class="mtag">交互作用</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('ancova')"><div class="ct">共分散分析</div><div class="ce">ANCOVA</div><div class="tags"><span class="mtag">共変量コントロール</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('manova')"><div class="ct">多変量分散分析</div><div class="ce">MANOVA</div><div class="tags"><span class="mtag">複数目的変数</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('chi2')"><div class="ct">カイ二乗検定</div><div class="ce">Chi-squared Test</div><div class="tags"><span class="mtag">カテゴリ×カテゴリ</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('fisher')"><div class="ct">Fisherの正確確率検定</div><div class="ce">Fisher's Exact Test</div><div class="tags"><span class="mtag">小標本</span></div></div>
+            <div class="card" data-cat="compare" onclick="showEnc('mcnemar')"><div class="ct">McNemar検定</div><div class="ce">McNemar's Test</div><div class="tags"><span class="mtag">対応ありカテゴリ</span></div></div>
+          </div>
+        </div>
+        <div class="cat cc7" data-cat="nonparam">
+          <div class="cath">🔢 ノンパラメトリック</div>
+          <div class="grid">
+            <div class="card" data-cat="nonparam" onclick="showEnc('mannwhitney')"><div class="ct">Mann-Whitney U検定</div><div class="ce">Mann-Whitney U</div><div class="tags"><span class="mtag">t検定の代替</span></div></div>
+            <div class="card" data-cat="nonparam" onclick="showEnc('wilcoxon')"><div class="ct">Wilcoxon符号順位検定</div><div class="ce">Wilcoxon Signed-Rank</div><div class="tags"><span class="mtag">対応ありの代替</span></div></div>
+            <div class="card" data-cat="nonparam" onclick="showEnc('kruskal')"><div class="ct">Kruskal-Wallis検定</div><div class="ce">Kruskal-Wallis</div><div class="tags"><span class="mtag">ANOVAの代替</span></div></div>
+            <div class="card" data-cat="nonparam" onclick="showEnc('friedman')"><div class="ct">Friedman検定</div><div class="ce">Friedman Test</div><div class="tags"><span class="mtag">反復測定ANOVA代替</span></div></div>
+            <div class="card" data-cat="nonparam" onclick="showEnc('spearman')"><div class="ct">Spearman順位相関</div><div class="ce">Spearman's ρ</div><div class="tags"><span class="mtag">順序尺度</span></div></div>
+            <div class="card" data-cat="nonparam" onclick="showEnc('kendall')"><div class="ct">Kendallのτ</div><div class="ce">Kendall's Tau</div><div class="tags"><span class="mtag">小標本</span></div></div>
+
+          </div>
+        </div>
+      </div>
+      <!-- 検定の補足カテゴリ -->
+      <div class="row">
+        <div class="cat" style="align-items:center;" data-cat="supplement">
+          <div class="cath" style="background:#fdf4ff;color:#6d28d9;border-color:#ddd6fe;border:2px solid;">✅ 検定の補足（セットで使う）</div>
+          <div class="grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+            <div class="card" data-cat="supplement" onclick="showEnc('effect_size')" style="width:185px"><div class="ct">効果量</div><div class="ce">Cohen's d / η²</div><div class="tags"><span class="mtag">差の実質的大きさ</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('power')" style="width:185px"><div class="ct">検定力分析</div><div class="ce">Power Analysis</div><div class="tags"><span class="mtag">サンプルサイズ設計</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('multiple_correction')" style="width:185px"><div class="ct">多重比較補正</div><div class="ce">Bonferroni / FDR</div><div class="tags"><span class="mtag">多重検定</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('bootstrap')" style="width:185px"><div class="ct">ブートストラップ法</div><div class="ce">Bootstrap Resampling</div><div class="tags"><span class="mtag">信頼区間の推定</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('permutation')" style="width:185px"><div class="ct">順列検定</div><div class="ce">Permutation Test</div><div class="tags"><span class="mtag">分布仮定不要</span></div></div>
+            <div class="card" data-cat="supplement" onclick="showEnc('confidence_interval')" style="width:185px"><div class="ct">信頼区間</div><div class="ce">Confidence Interval</div><div class="tags"><span class="mtag">点推定の不確実性</span></div></div>
+          </div>
+          <div style="font-size:10px;color:#7c3aed;background:#fdf4ff;border:1px solid #ddd6fe;border-radius:8px;padding:6px 14px;margin-top:4px;text-align:center;">
+            💡 検定後のセット：有意差あり → 効果量を確認 → 複数検定なら補正 → 信頼区間を報告
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cat cc3" data-cat="regression">
+          <div class="cath">📉 回帰分析</div>
+          <div class="grid">
+            <div class="card" data-cat="regression" onclick="showEnc('ols')"><div class="ct">重回帰分析（OLS）</div><div class="ce">Multiple Linear Regression</div><div class="tags"><span class="mtag">連続値</span><span class="mtag">R²</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('ridge')"><div class="ct">Ridge回帰</div><div class="ce">Ridge (L2)</div><div class="tags"><span class="mtag">多重共線性</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('lasso')"><div class="ct">Lasso回帰</div><div class="ce">Lasso (L1)</div><div class="tags"><span class="mtag">変数選択</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('elasticnet')"><div class="ct">ElasticNet</div><div class="ce">ElasticNet (L1+L2)</div><div class="tags"><span class="mtag">バランス型</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('logistic')"><div class="ct">ロジスティック回帰</div><div class="ce">Logistic Regression</div><div class="tags"><span class="mtag">二値分類</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('multinomial')"><div class="ct">多項ロジスティック回帰</div><div class="ce">Multinomial Logistic</div><div class="tags"><span class="mtag">3クラス以上</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('ordinal_reg')"><div class="ct">順序ロジスティック回帰</div><div class="ce">Ordinal Logistic</div><div class="tags"><span class="mtag">順序尺度の目的変数</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('poisson')"><div class="ct">ポアソン回帰</div><div class="ce">Poisson Regression</div><div class="tags"><span class="mtag">カウントデータ</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('negbin')"><div class="ct">負の二項回帰</div><div class="ce">Negative Binomial</div><div class="tags"><span class="mtag">過分散カウント</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('quantile')"><div class="ct">分位点回帰</div><div class="ce">Quantile Regression</div><div class="tags"><span class="mtag">外れ値頑健</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('stepwise')"><div class="ct">ステップワイズ / AIC</div><div class="ce">Stepwise / AIC / BIC</div><div class="tags"><span class="mtag">モデル選択</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('mixed')"><div class="ct">線形混合効果モデル</div><div class="ce">LME</div><div class="tags"><span class="mtag">階層データ</span></div></div>
+            <div class="card" data-cat="regression" onclick="showEnc('glmm')"><div class="ct">一般化線形混合モデル</div><div class="ce">GLMM</div><div class="tags"><span class="mtag">非正規応答+階層</span></div></div>
+          </div>
+        </div>
+        <div class="cat cc4" data-cat="structure">
+          <div class="cath">🌀 構造探索・次元削減</div>
+          <div class="grid">
+            <div class="card" data-cat="structure" onclick="showEnc('pca')"><div class="ct">主成分分析</div><div class="ce">PCA</div><div class="tags"><span class="mtag">次元削減</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('efa')"><div class="ct">探索的因子分析</div><div class="ce">EFA</div><div class="tags"><span class="mtag">潜在因子</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('cfa')"><div class="ct">確認的因子分析</div><div class="ce">CFA</div><div class="tags"><span class="mtag">仮説検証型</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('sem')"><div class="ct">構造方程式モデリング</div><div class="ce">SEM</div><div class="tags"><span class="mtag">潜在変数</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('mediation')"><div class="ct">媒介分析</div><div class="ce">Mediation Analysis</div><div class="tags"><span class="mtag">間接効果</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('moderation')"><div class="ct">調整分析</div><div class="ce">Moderation Analysis</div><div class="tags"><span class="mtag">交互作用項</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('kmeans')"><div class="ct">K-meansクラスタリング</div><div class="ce">K-means</div><div class="tags"><span class="mtag">グループ化</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('hierarchical')"><div class="ct">階層クラスタリング</div><div class="ce">Hierarchical</div><div class="tags"><span class="mtag">デンドログラム</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('tsne')"><div class="ct">t-SNE / UMAP</div><div class="ce">t-SNE / UMAP</div><div class="tags"><span class="mtag">可視化次元削減</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('canonical')"><div class="ct">正準相関分析</div><div class="ce">Canonical Correlation</div><div class="tags"><span class="mtag">変数群間</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('discriminant')"><div class="ct">判別分析</div><div class="ce">LDA</div><div class="tags"><span class="mtag">分類</span></div></div>
+            <div class="card" data-cat="structure" onclick="showEnc('irt')"><div class="ct">項目反応理論</div><div class="ce">IRT</div><div class="tags"><span class="mtag">テスト理論</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cat cc5" data-cat="causal">
+          <div class="cath">⚗️ 因果推論</div>
+          <div class="grid">
+            <div class="card" data-cat="causal" onclick="showEnc('did')"><div class="ct">差の差分析</div><div class="ce">DID</div><div class="tags"><span class="mtag">政策評価</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('psm')"><div class="ct">傾向スコアマッチング</div><div class="ce">PSM</div><div class="tags"><span class="mtag">選択バイアス除去</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('iv')"><div class="ct">操作変数法</div><div class="ce">IV / 2SLS</div><div class="tags"><span class="mtag">内生性</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('rdd')"><div class="ct">回帰不連続デザイン</div><div class="ce">RDD</div><div class="tags"><span class="mtag">自然実験</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('synth')"><div class="ct">合成コントロール法</div><div class="ce">Synthetic Control</div><div class="tags"><span class="mtag">単一ユニット</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('dag')"><div class="ct">有向非巡回グラフ</div><div class="ce">DAG</div><div class="tags"><span class="mtag">因果構造</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('hlm')"><div class="ct">マルチレベル分析</div><div class="ce">HLM</div><div class="tags"><span class="mtag">階層構造データ</span></div></div>
+            <div class="card" data-cat="causal" onclick="showEnc('panel')"><div class="ct">パネルデータ分析</div><div class="ce">FE / RE</div><div class="tags"><span class="mtag">固定効果</span></div></div>
+          </div>
+        </div>
+        <div class="cat cc6" data-cat="bayes">
+          <div class="cath">🎰 ベイズ統計</div>
+          <div class="grid">
+            <div class="card" data-cat="bayes" onclick="showEnc('bayes_theorem')"><div class="ct">ベイズの定理</div><div class="ce">Bayes' Theorem</div><div class="tags"><span class="mtag">事前・事後分布</span></div></div>
+            <div class="card" data-cat="bayes" onclick="showEnc('bayesian_reg')"><div class="ct">ベイズ回帰</div><div class="ce">Bayesian Regression</div><div class="tags"><span class="mtag">係数の分布</span></div></div>
+            <div class="card" data-cat="bayes" onclick="showEnc('mcmc')"><div class="ct">MCMC / HMC</div><div class="ce">MCMC</div><div class="tags"><span class="mtag">サンプリング</span></div></div>
+            <div class="card" data-cat="bayes" onclick="showEnc('bayes_factor')"><div class="ct">ベイズ因子</div><div class="ce">Bayes Factor</div><div class="tags"><span class="mtag">仮説比較</span></div></div>
+            <div class="card" data-cat="bayes" onclick="showEnc('credible_interval')"><div class="ct">信用区間</div><div class="ce">Credible Interval</div><div class="tags"><span class="mtag">ベイズCI</span></div></div>
+            <div class="card" data-cat="bayes" onclick="showEnc('hierarchical_bayes')"><div class="ct">階層ベイズモデル</div><div class="ce">Hierarchical Bayesian</div><div class="tags"><span class="mtag">部分プーリング</span></div></div>
+          </div>
+        </div>
+        <div class="cat cc1" data-cat="ml">
+          <div class="cath">🤖 機械学習・予測</div>
+          <div class="grid">
+            <div class="card" data-cat="ml" onclick="showEnc('rf')"><div class="ct">ランダムフォレスト</div><div class="ce">Random Forest</div><div class="tags"><span class="mtag">非線形</span></div></div>
+            <div class="card" data-cat="ml" onclick="showEnc('gbm')"><div class="ct">勾配ブースティング</div><div class="ce">XGBoost / LightGBM</div><div class="tags"><span class="mtag">高精度</span></div></div>
+            <div class="card" data-cat="ml" onclick="showEnc('svm')"><div class="ct">サポートベクターマシン</div><div class="ce">SVM / SVR</div><div class="tags"><span class="mtag">高次元</span></div></div>
+            <div class="card" data-cat="ml" onclick="showEnc('cross_val')"><div class="ct">交差検証</div><div class="ce">k-fold CV</div><div class="tags"><span class="mtag">過学習防止</span></div></div>
+            <div class="card" data-cat="ml" onclick="showEnc('shap')"><div class="ct">SHAP値</div><div class="ce">Shapley Values</div><div class="tags"><span class="mtag">説明可能AI</span></div></div>
+
+          </div>
+        </div>
+        <div class="cat cc8" data-cat="time">
+          <div class="cath">📈 時系列・生存分析</div>
+          <div class="grid">
+            <div class="card" data-cat="time" onclick="showEnc('arima')"><div class="ct">ARIMA / SARIMA</div><div class="ce">ARIMA</div><div class="tags"><span class="mtag">時系列予測</span></div></div>
+            <div class="card" data-cat="time" onclick="showEnc('var_model')"><div class="ct">VARモデル</div><div class="ce">Vector Autoregression</div><div class="tags"><span class="mtag">多変量時系列</span></div></div>
+            <div class="card" data-cat="time" onclick="showEnc('granger')"><div class="ct">Granger因果性検定</div><div class="ce">Granger Causality</div><div class="tags"><span class="mtag">時間的先行性</span></div></div>
+            <div class="card" data-cat="time" onclick="showEnc('cointegration')"><div class="ct">共和分検定</div><div class="ce">Cointegration</div><div class="tags"><span class="mtag">長期均衡</span></div></div>
+            <div class="card" data-cat="time" onclick="showEnc('survival')"><div class="ct">Kaplan-Meier推定</div><div class="ce">Kaplan-Meier</div><div class="tags"><span class="mtag">生存分析</span></div></div>
+            <div class="card" data-cat="time" onclick="showEnc('cox')"><div class="ct">Cox比例ハザードモデル</div><div class="ce">Cox PH</div><div class="tags"><span class="mtag">ハザード比</span></div></div>
+            <div class="card" data-cat="time" onclick="showEnc('changepoint')"><div class="ct">変化点検出</div><div class="ce">Change Point</div><div class="tags"><span class="mtag">構造変化</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel" id="enc-panel">
+      <div class="ph" id="enc-ph"><div class="ico">📖</div><p>手法カードをクリックすると<br>詳細説明が表示されます</p></div>
+      <div class="dbody" id="enc-db"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: フローチャート -->
+<div class="tabcontent" id="tab-flow" style="display:none;grid-template-columns:1fr 360px;overflow:hidden;">
+  <div class="flow-area" style="overflow:auto;flex:1;min-height:0;">
+  <div class="flow-inner">
+
+    <!-- データの種類 -->
+    <div class="seclabel">まず確認：データの種類</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:400px;margin-bottom:4px;">
+      <div class="fnode fn-process" onclick="showFlow('nominal')" style="width:auto;padding:10px 14px;">
+        <div class="fnode-title" style="color:var(--c1);font-size:12px">🔵 名義尺度（カテゴリ）</div>
+        <div class="fnode-sub">性別・障害種別・地域<br>順序なし・計算不可</div>
+      </div>
+      <div class="fnode fn-process" onclick="showFlow('ordinal')" style="width:auto;padding:10px 14px;">
+        <div class="fnode-title" style="color:var(--c3);font-size:12px">🟣 順序尺度</div>
+        <div class="fnode-sub">5段階評価・等級<br>順序あり・差は不均等</div>
+      </div>
+      <div class="fnode fn-process" onclick="showFlow('interval')" style="width:auto;padding:10px 14px;">
+        <div class="fnode-title" style="color:var(--c2);font-size:12px">🟢 間隔尺度</div>
+        <div class="fnode-sub">幸福度0-10・気温<br>差は均等・絶対0なし</div>
+      </div>
+      <div class="fnode fn-process" onclick="showFlow('ratio')" style="width:auto;padding:10px 14px;">
+        <div class="fnode-title" style="color:var(--c4);font-size:12px">🟠 比例尺度（量的）</div>
+        <div class="fnode-sub">年齢・収入・件数<br>絶対0あり・全演算可</div>
+      </div>
+    </div>
+
+    <div class="farrow"><div class="farr-line"></div><div class="farr-lbl">データの種類を把握したら</div><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- STEP 1 -->
+    <div class="fnode fn-start" onclick="showFlow('step1')">
+      <div class="fnode-hd"><div class="fnode-ico">🎯</div><div><div class="fnode-title">STEP 1｜目的・仮説の設定</div></div></div>
+      <div class="fnode-sub">「何を明らかにしたいか」「目的変数は何か」を先に決める</div>
+      <div class="ftags"><span class="ftag">研究仮説</span><span class="ftag">目的変数</span><span class="ftag">説明変数候補</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- STEP 2 -->
+    <div class="fnode fn-process" onclick="showFlow('step2')">
+      <div class="fnode-hd"><div class="fnode-ico">🔍</div><div><div class="fnode-title">STEP 2｜データ確認・EDA</div></div></div>
+      <div class="fnode-sub">形式・欠損・分布・外れ値・カテゴリの種類を把握する</div>
+      <div class="ftags"><span class="ftag">df.shape</span><span class="ftag">df.describe()</span><span class="ftag">histogram</span><span class="ftag">value_counts</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- STEP 3 -->
+    <div class="fnode fn-process" onclick="showFlow('step3')">
+      <div class="fnode-hd"><div class="fnode-ico">🧹</div><div><div class="fnode-title">STEP 3｜データクリーニング</div></div></div>
+      <div class="fnode-sub">欠損処理・表記ゆれ統一・型変換・ダミー変数化・結合</div>
+      <div class="ftags"><span class="ftag">fillna</span><span class="ftag">map()</span><span class="ftag">pd.cut</span><span class="ftag">get_dummies</span><span class="ftag">pd.concat</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-lbl">分析目的に応じて手法を選ぶ</div><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 手法選択分岐1 -->
+    <div class="seclabel">🔀 分析手法の選択：比較・検定</div>
+    <div class="fbranch-wrap">
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-yes">2グループ比較</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_ttest')">
+          <div class="fnode-title" style="font-size:12px">📊 t検定 / Mann-Whitney</div>
+          <div class="fnode-sub" style="font-size:10px">連続値→t検定（Welch）<br>順序・非正規→Mann-Whitney U</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-alt">3グループ以上</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_anova')">
+          <div class="fnode-title" style="font-size:12px">📈 ANOVA / Kruskal-Wallis</div>
+          <div class="fnode-sub" style="font-size:10px">連続値→ANOVA＋Tukey<br>非正規→Kruskal-Wallis</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-cat">カテゴリ×カテゴリ</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_chi2')">
+          <div class="fnode-title" style="font-size:12px">🔢 カイ二乗 / Fisher</div>
+          <div class="fnode-sub" style="font-size:10px">n≥5→カイ二乗<br>小標本→Fisherの正確確率</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-no">前後・対応あり</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_paired')">
+          <div class="fnode-title" style="font-size:12px">🔁 対応あり検定</div>
+          <div class="fnode-sub" style="font-size:10px">連続値→対応ありt検定<br>カテゴリ→McNemar検定</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="farrow" style="margin-top:10px"><div class="farr-line"></div><div class="farr-lbl">目的変数が連続値なら</div><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 多重共線性チェック -->
+    <div class="fnode fn-warn" onclick="showFlow('vif')">
+      <div class="fnode-hd"><div class="fnode-ico">⚠️</div><div><div class="fnode-title">STEP 4｜多重共線性チェック（VIF）</div></div></div>
+      <div class="fnode-sub">説明変数同士が強く相関していないか確認する</div>
+      <div class="ftags"><span class="ftag">variance_inflation_factor</span><span class="ftag">VIF &gt; 10 は要注意</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 回帰分岐 -->
+    <div class="seclabel">🔀 回帰分析の選択</div>
+    <div class="fbranch-wrap">
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-yes">VIF &lt; 10</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_ols')">
+          <div class="fnode-title" style="font-size:12px">📐 重回帰分析（OLS）</div>
+          <div class="fnode-sub" style="font-size:10px">係数・p値・R²を解釈<br>statsmodels.OLS</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-no">VIF &gt; 10（多重共線性）</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-decision fnode-sm" onclick="showFlow('branch_ridge')">
+          <div class="fnode-title" style="font-size:12px">🛡️ Ridge回帰</div>
+          <div class="fnode-sub" style="font-size:10px">係数を安定させる<br>標準化必須・αをCV選択</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-alt">変数が多すぎる</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-decision fnode-sm" onclick="showFlow('branch_lasso')">
+          <div class="fnode-title" style="font-size:12px">✂️ Lasso / ElasticNet</div>
+          <div class="fnode-sub" style="font-size:10px">不要変数を自動で0に<br>スパースモデル</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-cat">目的変数が0/1</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_logistic')">
+          <div class="fnode-title" style="font-size:12px">🎲 ロジスティック回帰</div>
+          <div class="fnode-sub" style="font-size:10px">確率・オッズ比<br>3クラス以上→多項</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-ml" style="background:var(--c1l);color:var(--c1);border-color:var(--c1m)">精度重視・非線形</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_ml')">
+          <div class="fnode-title" style="font-size:12px;color:var(--c1)">🤖 機械学習系</div>
+          <div class="fnode-sub" style="font-size:10px">RF・XGBoost・SVM<br>交差検証＋SHAP</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="farrow" style="margin-top:10px"><div class="farr-line"></div><div class="farr-lbl">構造・パターンを探るなら</div><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 構造探索分岐 -->
+    <div class="seclabel">🔀 構造探索・因果推論の選択</div>
+    <div class="fbranch-wrap">
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-yes">次元削減・因子</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_dim')">
+          <div class="fnode-title" style="font-size:12px">🌀 PCA / EFA / CFA / SEM</div>
+          <div class="fnode-sub" style="font-size:10px">探索→EFA、検証→CFA<br>因果構造→SEM</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-alt">グループ化</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_cluster')">
+          <div class="fnode-title" style="font-size:12px">🫧 クラスタリング</div>
+          <div class="fnode-sub" style="font-size:10px">K数決定→K-means<br>K不要→階層クラスタ</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-cat">媒介・調整</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_medmod')">
+          <div class="fnode-title" style="font-size:12px">🔗 媒介 / 調整分析</div>
+          <div class="fnode-sub" style="font-size:10px">X→M→Y → 媒介分析<br>XとZの交互作用 → 調整</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl bl-no">因果を言いたい</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_causal')">
+          <div class="fnode-title" style="font-size:12px">⚗️ 因果推論手法</div>
+          <div class="fnode-sub" style="font-size:10px">縦断→DID・パネル<br>閾値→RDD・PSM</div>
+        </div>
+      </div>
+      <div class="fbranch">
+        <div class="fbranch-lbl" style="background:var(--c8l);color:var(--c8);border-color:var(--c8m);border:1.5px solid">時系列データ</div>
+        <div class="farrow"><div class="farr-line" style="height:14px"></div><div class="farr-head"></div></div>
+        <div class="fnode fn-process fnode-sm" onclick="showFlow('branch_time')">
+          <div class="fnode-title" style="font-size:12px;color:var(--c8)">📈 時系列 / 生存分析</div>
+          <div class="fnode-sub" style="font-size:10px">予測→ARIMA・VAR<br>事象時間→Cox・KM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="farrow" style="margin-top:10px"><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- コントロール変数 -->
+    <div class="fnode fn-warn" onclick="showFlow('control')">
+      <div class="fnode-hd"><div class="fnode-ico">🎛️</div><div><div class="fnode-title">STEP 5｜交絡因子・コントロール変数の確認</div></div></div>
+      <div class="fnode-sub">属性変数（年齢・性別・障害種別等）をモデルに加えて「純粋な効果」を推定する</div>
+      <div class="ftags"><span class="ftag">ダミー変数化</span><span class="ftag">DAGで交絡を整理</span><span class="ftag">コライダーに注意</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 解釈 -->
+    <div class="fnode fn-process" onclick="showFlow('interpret')">
+      <div class="fnode-hd"><div class="fnode-ico">🔬</div><div><div class="fnode-title">STEP 6｜結果の解釈・限界の整理</div></div></div>
+      <div class="fnode-sub">言い切れること・傾向として言えること・言えないことを区別する</div>
+      <div class="ftags"><span class="ftag">因果≠相関</span><span class="ftag">横断 vs 縦断データ</span><span class="ftag">代表性の確認</span><span class="ftag">効果量</span></div>
+    </div>
+    <div class="farrow"><div class="farr-line"></div><div class="farr-head"></div></div>
+
+    <!-- 可視化 -->
+    <div class="fnode fn-output" onclick="showFlow('viz')">
+      <div class="fnode-hd"><div class="fnode-ico">📊</div><div><div class="fnode-title">STEP 7｜可視化・アウトプット</div></div></div>
+      <div class="fnode-sub">データ型・比較目的に合ったグラフを選ぶ</div>
+      <div class="ftags"><span class="ftag">棒グラフ</span><span class="ftag">散布図</span><span class="ftag">ヒートマップ</span><span class="ftag">バブルチャート</span><span class="ftag">レーダー</span><span class="ftag">箱ひげ図</span></div>
+    </div>
+
+  </div>
+  </div>
+  <div class="panel" id="flow-panel">
+    <div class="ph" id="flow-ph"><div class="ico">🔀</div><p>ノードをクリックすると<br>詳細説明が表示されます</p></div>
+    <div class="dbody" id="flow-db"></div>
+  </div>
+</div>
+</div>
+
+<!-- TAB 3: 診断ウィザード -->
+<div class="tabcontent" id="tab-wizard" style="display:none;grid-template-columns:1fr 380px;overflow:hidden;">
+  <div style="overflow-y:auto;padding:32px 40px;background:var(--bg);">
+    <div style="overflow-y:auto;padding:32px 40px;background:var(--bg);">
+      <div id="wiz-main"></div>
+    </div>
+    <div style="background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:22px 18px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px;">📍 回答履歴</div>
+      <div id="wiz-history"><p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id, el) {
+  const isMobile = window.innerWidth <= 768;
+  document.querySelectorAll('.tabcontent').forEach(t => {
+    t.classList.remove('active');
+    t.style.display = 'none';
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const target = document.getElementById('tab-' + id);
+  target.classList.add('active');
+  if (isMobile) {
+    target.style.display = 'block';
+    target.style.overflow = 'visible';
+  } else {
+    target.style.overflow = 'hidden';
+    if (id === 'enc') target.style.display = 'grid';
+    else if (id === 'flow') target.style.display = 'grid';
+    else if (id === 'wizard') target.style.display = 'grid';
+  }
+  el.classList.add('active');
+  if (id === 'wizard') wizInit();
+}
+
+const D={
+ttest:{t:"t検定（独立2標本）",en:"Independent Samples t-test",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"2つの独立したグループの平均値の差が統計的に意味のある差かを判定する。p<0.05なら有意差あり。",
+example:"例：全国調査と別府市調査で幸福度スコア（0〜10点）を比較。全国平均5.35点vs別府平均6.72点の差が統計的に有意か検定。Welchのt検定でt=-4.69, p<0.001となり有意差を確認。",
+when:["2グループの平均値を比較したい","介入群 vs 統制群の比較","男女間のスコア比較"],
+formula:"t = (x̄₁ - x̄₂) / √(s₁²/n₁ + s₂²/n₂)",
+notes:["Welch版（equal_var=False）が安全（分散が異なっても使える）","正規分布の仮定あり（外れる場合はMann-Whitney U）","サンプルが小さい（n<30）場合は注意"],
+code:`from scipy import stats
+t, p = stats.ttest_ind(
+    group1.dropna(), group2.dropna(),
+    equal_var=False  # Welch's t-test
+)
+print(f"t={t:.3f}, p={p:.4f}")`},
+
+paired_t:{t:"対応ありt検定",en:"Paired t-test",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"同一対象者を2時点で測定した場合やペアマッチングされたデータの差を検定する。",
+example:"例：同じ50人の従業員に対し、働き方改革の導入前後で残業時間を測定。導入前：平均42時間/月、導入後：平均31時間/月。同一人物の前後比較なので対応ありt検定を適用しp=0.003で有意な削減を確認。",
+when:["介入前後の変化（同一人物）","ペアマッチング後の比較"],
+formula:"t = d̄ / (sd / √n)　　d = 各ペアの差",
+code:`t, p = stats.ttest_rel(before, after)`},
+
+anova:{t:"一元配置分散分析",en:"One-way ANOVA",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"3グループ以上の平均値を同時に比較する。t検定を繰り返すと多重検定問題が起きるためANOVAで一度に検定する。",
+example:"例：営業部・開発部・管理部の3部署（各40名）で職務満足度スコアを比較。F(2,117)=8.34, p<0.001で有意差あり。Tukey HSD事後検定で営業部vs管理部に差があることが判明した。",
+when:["3グループ以上の平均値比較","グループ内の誰に差があるかはTukey HSDで確認"],
+formula:"F = 群間分散 / 群内分散",
+notes:["有意差ありでも「どのグループ間に差があるか」はわからない（事後検定が必要）","等分散の仮定あり（Levene検定で確認）"],
+code:`from scipy.stats import f_oneway
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+groups = [df[df["group"]==g]["y"].dropna() for g in df["group"].unique()]
+F, p = f_oneway(*groups)
+tukey = pairwise_tukeyhsd(df["y"], df["group"])`},
+
+twoway_anova:{t:"二元配置分散分析",en:"Two-way ANOVA",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"2つの要因が目的変数に与える効果と交互作用効果を同時に検定する。",
+example:"例：性別（男女）と雇用形態（正規・非正規）の2因子が給与満足度に与える影響を検定。交互作用が有意（p=0.03）で、非正規雇用では女性の満足度が特に低いことが示された。",
+formula:"F_A = 主効果A/誤差　F_B = 主効果B/誤差　F_AB = 交互作用/誤差",
+notes:["交互作用が有意なら主効果の解釈に注意"],
+code:`import statsmodels.formula.api as smf
+import statsmodels.stats.anova as anova_lm
+model = smf.ols("y ~ C(A) + C(B) + C(A):C(B)", data=df).fit()
+print(anova_lm.anova_lm(model, typ=2))`},
+
+ancova:{t:"共分散分析",en:"ANCOVA",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"グループ比較に連続変数（共変量）を加えてコントロールする。「より公平な」グループ比較ができる。",
+example:"例：入社年次（共変量）をコントロールした上で、部署間の昇進スピードを比較。年次の差を除いても、マーケティング部の昇進が有意に速いことが確認された。",
+code:`model = smf.ols("y ~ C(group) + covariate", data=df).fit()`},
+
+manova:{t:"多変量分散分析",en:"MANOVA",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"目的変数が複数ある場合のANOVA。複数の従属変数を同時に考慮することでI種の誤りを制御できる。",
+example:"例：地方移住者vs都市居住者を比較し、生活満足度・健康状態・収入満足度の3指標を同時に分析。Wilks Lambda=0.72, p=0.001で全体的な有意差あり。",
+code:`from statsmodels.multivariate.manova import MANOVA
+maov = MANOVA.from_formula("y1 + y2 + y3 ~ group", data=df)
+print(maov.mv_test())`},
+
+chi2:{t:"カイ二乗検定",en:"Chi-squared Test",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"2つのカテゴリ変数が独立か（関連があるか）を検定する。クロス集計表の期待度数と観測度数のズレを測る。",
+example:"例：男女別に転職意向あり・なしを集計したクロス集計表を作成。カイ二乗値=6.43, p=0.011で有意。男性の方が転職意向を持つ割合が有意に高いことが示された。",
+formula:"χ² = Σ (観測 - 期待)² / 期待",
+notes:["期待度数が5未満のセルが多い場合はFisherの正確確率検定を使う"],
+code:`from scipy.stats import chi2_contingency
+crosstab = pd.crosstab(df["var1"], df["var2"])
+chi2, p, dof, expected = chi2_contingency(crosstab)`},
+
+fisher:{t:"Fisherの正確確率検定",en:"Fisher's Exact Test",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"2×2クロス集計表で期待度数が小さい場合にカイ二乗検定の代わりに使う正確な検定法。",
+example:"例：新薬の治験で治療群20名中3名、対照群20名中0名に副作用が発生。サンプルが小さいためFisherの正確確率検定を適用。p=0.231で有意差なし。",
+code:`from scipy.stats import fisher_exact
+odds_ratio, p = fisher_exact([[a,b],[c,d]])`},
+
+mcnemar:{t:"McNemar検定",en:"McNemar's Test",cat:"比較・検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"対応ありデータのカテゴリ変数を比較する。同一対象者の前後の二値応答の変化を検定する。",
+example:"例：同じ100人の消費者にキャンペーン前後でブランドAへの好意を調査。好き→嫌いが8人、嫌い→好きが23人。McNemar検定でp=0.018となり有意な態度変化が確認された。",
+code:`from statsmodels.stats.contingency_tables import mcnemar
+result = mcnemar([[a,b],[c,d]], exact=True)`},
+
+mannwhitney:{t:"Mann-Whitney U検定",en:"Mann-Whitney U Test",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"t検定のノンパラメトリック版。正規分布を仮定せず順位を使って2群を比較する。",
+example:"例：顧客満足度（1〜5点のリッカート尺度）を店舗AとBで比較。順序尺度で正規分布の仮定が難しいためMann-Whitney U検定を選択。U=1823, p=0.034で店舗Aの満足度が有意に高い。",
+notes:["厳密にはリッカート尺度などの順序尺度にはこちらが適切","効果量はrank-biserial correlation"],
+code:`from scipy.stats import mannwhitneyu
+U, p = mannwhitneyu(group1.dropna(), group2.dropna(), alternative="two-sided")`},
+
+wilcoxon:{t:"Wilcoxon符号順位検定",en:"Wilcoxon Signed-Rank",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"対応ありt検定のノンパラメトリック版。前後比較で正規分布の仮定が怪しい場合に使う。",
+example:"例：同じ30店舗の売上ランキング（順位データ）を施策前後で比較。順位データなのでWilcoxon符号順位検定を適用。p=0.007で施策後に順位が有意に上昇。",
+code:`from scipy.stats import wilcoxon
+stat, p = wilcoxon(before, after)`},
+
+kruskal:{t:"Kruskal-Wallis検定",en:"Kruskal-Wallis Test",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"ANOVAのノンパラメトリック版。3グループ以上を正規分布の仮定なしで比較する。",
+example:"例：低・中・高価格帯3商品に対する購入意欲（1〜5点）を比較。非正規分布のためKruskal-Wallis検定。H=12.4, p=0.002で価格帯間に有意差あり。",
+code:`from scipy.stats import kruskal
+H, p = kruskal(*groups)`},
+
+friedman:{t:"Friedman検定",en:"Friedman Test",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"反復測定ANOVAのノンパラメトリック版。同一対象者を3条件以上で比較する場合に使う。",
+example:"例：同じ被験者20人に3種類のUIデザインを評価してもらった（1〜7点）。反復測定のためFriedman検定を適用。カイ二乗値=9.8, p=0.007でデザイン間に有意差あり。",
+code:`from scipy.stats import friedmanchisquare
+stat, p = friedmanchisquare(cond1, cond2, cond3)`},
+
+spearman:{t:"Spearman順位相関係数",en:"Spearman's ρ",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"順序尺度や非正規分布データの相関を測る。単調関係を検出する。",
+example:"例：従業員の上司への信頼度（1〜5点）と組織へのコミットメント（1〜5点）の相関を分析。順序尺度なのでSpearman相関を選択。rho=0.61, p<0.001で中程度の正の相関。",
+formula:"ρ = 1 - 6Σd² / (n(n²-1))",
+code:`from scipy.stats import spearmanr
+rho, p = spearmanr(x, y)`},
+
+kendall:{t:"Kendallのτ",en:"Kendall's Tau",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"順位相関の一種。一致ペアと不一致ペアの比率。小標本でSpearmanより信頼性が高い。",
+example:"例：10本の映画を2人の評論家がそれぞれ順位付けした結果を比較。Kendallのtau=0.73で一致度が高い。小標本のためSpearmanよりKendallが適切。",
+code:`from scipy.stats import kendalltau
+tau, p = kendalltau(x, y)`},
+
+effect_size:{t:"効果量",en:"Effect Size",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"統計的有意性とは別に差の「実質的な大きさ」を表す。p値はサンプルサイズに依存するが効果量は依存しない。",
+example:"例：研修効果でt検定p=0.03（有意）だが、Cohen's d=0.18（小さい効果）。一方、別施策はp=0.08（非有意）でもd=0.48（中程度の効果）。p値だけでなく効果量を見ることで実質的な差の大きさを判断できる。",
+formula:"Cohen's d = (x̄₁-x̄₂)/SD_pooled\n小:0.2 中:0.5 大:0.8",
+code:`# Cohen's d
+d = (mean1 - mean2) / pooled_std
+# η²（ANOVA）
+eta_sq = SS_between / SS_total`},
+
+power:{t:"検定力分析",en:"Power Analysis",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"真の差がある場合にそれを検出できる確率（検定力）を計算する。サンプルサイズ設計に不可欠。",
+example:"例：施策効果（Cohen's d=0.5を想定）を検定力80%・α=0.05で検出したい。計算すると各群n=64、合計128人のサンプルが必要。研究開始前に計算しておくことで無駄な調査を防ぐ。",
+notes:["検定力0.8（80%）が一般的な基準","α=0.05・検定力=0.8・効果量からnを計算"],
+code:`from statsmodels.stats.power import TTestIndPower
+n = TTestIndPower().solve_power(
+    effect_size=0.5, power=0.8, alpha=0.05
+)`},
+
+multiple_correction:{t:"多重比較補正",en:"Bonferroni / FDR",cat:"ノンパラ",c:"var(--c7)",bg:"var(--c7l)",
+what:"複数の検定を同時に行うと偶然有意になる確率が上がる問題を補正する。",
+example:"例：20項目のアンケートを全てt検定した結果3項目がp<0.05。しかしBenjamini-Hochberg補正後は2項目のみ有意。補正なしだと偽陽性を報告するリスクがあった。",
+notes:["Bonferroni：α/検定数（保守的）","FDR（Benjamini-Hochberg）：より緩やかで実用的","検定数が多いほど補正が重要"],
+code:`from statsmodels.stats.multitest import multipletests
+rejected, p_corrected, _, _ = multipletests(
+    p_values, alpha=0.05, method='fdr_bh'
+)`},
+
+ols:{t:"重回帰分析（OLS）",en:"Multiple Linear Regression",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"複数の説明変数から連続値の目的変数を予測する。「他の変数を揃えた上でXがYに与える影響」を定量化する統計の基本手法。",
+example:"例：年収（万円）を、年齢・学歴年数・経験年数・職種ダミーで説明するモデル。R2=0.58で、経験年数の係数=12.3（p<0.001）→経験1年あたり約12.3万円の年収増加を示した。",
+when:["目的変数が連続値（幸福度・年収・売上など）","多重共線性がない（VIF<10）","各変数のp値で統計的有意性を確認したい","係数の解釈がしやすいシンプルなモデルが欲しい"],
+formula:"y = β₀ + β₁x₁ + β₂x₂ + ... + ε",
+notes:["VIF<10が前提（多重共線性なし）","残差の正規性・等分散性を確認","サンプル数 > 変数数×10〜15"],
+code:`import statsmodels.api as sm
+X = sm.add_constant(X_vars)
+model = sm.OLS(y, X).fit()
+print(model.summary())`},
+
+ridge:{t:"Ridge回帰",en:"Ridge Regression (L2)",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"多重共線性がある場合に使う正則化回帰。係数の二乗和にペナルティをかけることで係数を安定させる。",
+example:"例：顧客満足度を30項目のアンケートスコアで予測。項目間の相関が高くVIF=15〜30。Ridge回帰（alpha=10）でR2=0.67を達成。スタッフ対応の係数=0.42が最も高く重要な変数と判断。",
+when:["VIF>10の変数が複数あり多重共線性が深刻","アンケートの類似質問など互いに相関する変数が多い","変数を全部残したまま係数を安定させたい","Lassoと違い全変数を残す必要がある場合"],
+formula:"min Σ(y-Xβ)² + α×Σβ²",
+notes:["標準化が必須","係数はバイアスあり（真の値より小さめ）","p値が計算されない","αはRidgeCVで自動選択"],
+code:`from sklearn.linear_model import RidgeCV
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_sc = scaler.fit_transform(X)
+ridge = RidgeCV(alphas=[0.01,0.1,1,10,100], cv=5)
+ridge.fit(X_sc, y)
+print(ridge.alpha_, ridge.score(X_sc, y))`},
+
+lasso:{t:"Lasso回帰",en:"Lasso (L1)",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"不要な変数の係数をちょうど0にして変数選択を自動化する正則化回帰。",
+example:"例：100変数の顧客属性データから離反予測モデルを構築。Lasso回帰で100変数から18変数に自動絞り込み。残った18変数でOLSを再実行し、解釈しやすいモデルを完成させた。",
+when:["説明変数が多すぎて自動的に絞り込みたい","サンプル数/変数数が10未満になりそうな場合","どの変数が効いているかをデータに選ばせたい","変数選択＋回帰を同時にやりたい"],
+formula:"min Σ(y-Xβ)² + α×Σ|β|",
+code:`from sklearn.linear_model import LassoCV
+lasso = LassoCV(cv=5)
+lasso.fit(X_sc, y)
+selected = X.columns[lasso.coef_ != 0]`},
+
+elasticnet:{t:"ElasticNet",en:"ElasticNet (L1+L2)",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"RidgeのL2とLassoのL1を組み合わせた回帰。変数選択もしつつ係数の安定性も確保できる。",
+example:"例：50の地域特性変数でGDP成長率を予測。変数間に多重共線性もあり変数も多い。ElasticNet（l1_ratio=0.7）で変数選択と係数の安定化を同時に実現。",
+formula:"min Σ(y-Xβ)² + α·ρ·Σ|β| + α·(1-ρ)/2·Σβ²",
+code:`from sklearn.linear_model import ElasticNetCV
+en = ElasticNetCV(l1_ratio=[.1,.5,.9,1], cv=5)
+en.fit(X_sc, y)`},
+
+logistic:{t:"ロジスティック回帰",en:"Logistic Regression",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"目的変数が0/1の二値カテゴリの場合に使う回帰分析。確率をモデル化し係数をオッズ比で解釈する。",
+example:"例：顧客が次月に解約するか（1=解約, 0=継続）を予測。満足度のオッズ比=0.62→満足度が1点上がると解約オッズが38%低下。早期に離反リスクの高い顧客を特定するために活用。",
+formula:"log(p/1-p) = β₀+β₁x₁+...\nオッズ比 = exp(β)",
+notes:["オッズ比>1なら正の影響、<1なら負の影響"],
+code:`from sklearn.linear_model import LogisticRegression
+import numpy as np
+model = LogisticRegression()
+model.fit(X_sc, y_binary)
+odds = np.exp(model.coef_[0])`},
+
+multinomial:{t:"多項ロジスティック回帰",en:"Multinomial Logistic",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"目的変数が3クラス以上のカテゴリの場合に使う。各クラスを基準クラスと比較したオッズ比を推定する。",
+example:"例：就職先の選択（大企業/中小企業/起業）をGPA・インターン経験で予測。大企業を基準にすると、インターン経験のある人の起業選択オッズ比=2.8。",
+code:`from sklearn.linear_model import LogisticRegression
+model = LogisticRegression(multi_class='multinomial')
+model.fit(X_sc, y_multi)`},
+
+ordinal_reg:{t:"順序ロジスティック回帰",en:"Ordinal Logistic Regression",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"目的変数が順序尺度（1〜5点評価など）の場合に使う。カテゴリ間の順序を考慮した回帰モデル。",
+example:"例：顧客満足度（1=非常に不満〜5=非常に満足）を待ち時間・スタッフ態度・価格満足で予測。待ち時間の比例オッズ比=0.71→待ち時間が長いほど高評価になりにくい。",
+notes:["比例オッズモデルとも呼ばれる","リッカート尺度の目的変数には理論的にはこれが適切"],
+code:`from statsmodels.miscmodels.ordinal_model import OrderedModel
+model = OrderedModel(y_ordinal, X, distr='logit')
+result = model.fit()`},
+
+poisson:{t:"ポアソン回帰",en:"Poisson Regression",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"目的変数がカウントデータ（件数・頻度）の場合に使う一般化線形モデル。",
+example:"例：1週間の顧客来店回数（カウントデータ）をクーポン配布・天気・曜日で予測。クーポン配布のIRR=1.34→クーポンありで来店回数が1.34倍になる。",
+code:`import statsmodels.api as sm
+model = smf.glm("y ~ x1+x2", data=df,
+    family=sm.families.Poisson()).fit()`},
+
+negbin:{t:"負の二項回帰",en:"Negative Binomial",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"ポアソン回帰の拡張。カウントデータで過分散（分散＞平均）がある場合に使う。",
+example:"例：SNS投稿のいいね数はポアソン分布より分散が大きい（過分散）。負の二項回帰を使うとモデル適合度が改善し、フォロワー数の係数が安定して推定できた。",
+code:`model = smf.glm("y ~ x1+x2", data=df,
+    family=sm.families.NegativeBinomial()).fit()`},
+
+quantile:{t:"分位点回帰",en:"Quantile Regression",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"平均ではなく中央値や任意の分位点を目的として回帰する。外れ値の影響を受けにくい。",
+example:"例：年収の中央値回帰（50%分位点）と90%分位点回帰を比較。平均回帰では高収入層の外れ値に引っ張られるが、分位点回帰で所得層ごとに教育効果の違いを推定できた。",
+code:`model = smf.quantreg("y ~ x1+x2", data=df)
+result = model.fit(q=0.5)  # 中央値`},
+
+stepwise:{t:"ステップワイズ / AIC / BIC",en:"Stepwise / AIC / BIC",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"AICやBICを基準に変数を逐次追加・削除してモデルを選択する。",
+example:"例：15変数の候補から売上予測モデルをAIC基準のステップワイズ選択で構築。最終的に6変数が選ばれAIC=234.5。変数を増やすたびにAICが改善するか確認しながら選択する。",
+notes:["AIC：予測精度重視","BIC：モデルの簡潔さ重視","ステップワイズは理論的批判もある（LASSOを使う場合も）"],
+code:`full = sm.OLS(y, X).fit()
+print(f"AIC:{full.aic:.2f}  BIC:{full.bic:.2f}")`},
+
+mixed:{t:"線形混合効果モデル",en:"Linear Mixed Effects",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"固定効果（全体的な傾向）と変量効果（個人差・グループ差）を同時にモデル化する。階層データに適切。",
+example:"例：全国50校の生徒（各校30人）の学力データを分析。生徒レベル（学習時間）と学校レベル（教師経験年数）を同時にモデル化。ICC=0.18→学力の18%が学校間の違いで説明される。",
+when:["同一人物を複数回測定した繰り返しデータ","学校内生徒・病院内患者などの階層データ"],
+notes:["固定効果：全体の平均的傾向","変量効果：個人・グループごとのズレ"],
+code:`from statsmodels.formula.api import mixedlm
+model = mixedlm("y ~ x1+x2", data=df, groups=df["group"])
+result = model.fit()`},
+
+glmm:{t:"一般化線形混合モデル",en:"GLMM",cat:"回帰",c:"var(--c3)",bg:"var(--c3l)",
+what:"混合効果モデルを正規分布以外（二値・カウントなど）に拡張したもの。",
+example:"例：30病院の患者（各病院20〜80人）の再入院リスク（0/1）を予測。病院ごとの変量効果を含むGLMMを適用し、治療法の固定効果オッズ比=0.73（p=0.02）を推定。",
+code:`from pymer4.models import Lmer
+model = Lmer("y ~ x + (1|group)", data=df)
+model.fit()`},
+
+pca:{t:"主成分分析",en:"PCA",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"多数の変数を情報量が多い順に少数の合成変数に圧縮する。次元削減・多重共線性の解消に有効。",
+example:"例：30項目のワークエンゲージメント調査を主成分分析。第1主成分（寄与率42%）は活力・熱意因子、第2主成分（18%）は没頭因子として解釈。2成分で60%の分散を説明。",
+notes:["標準化が必須","スクリープロットで成分数を決める"],
+code:`from sklearn.decomposition import PCA
+pca = PCA(n_components=5)
+X_pca = pca.fit_transform(X_sc)
+print(pca.explained_variance_ratio_)`},
+
+efa:{t:"探索的因子分析",en:"EFA",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"多数の観測変数の背後にある「潜在因子」を探索的に発見する。尺度開発に使われる。",
+example:"例：顧客ロイヤルティ尺度20項目を探索的因子分析。バリマックス回転後、感情的愛着・行動的継続・推奨意向の3因子が判明。各因子の因子負荷量はいずれも0.5以上。",
+notes:["因子数はスクリープロット・平行分析で決める","回転（バリマックス・プロマックス）で解釈しやすくする"],
+code:`from factor_analyzer import FactorAnalyzer
+fa = FactorAnalyzer(n_factors=4, rotation="varimax")
+fa.fit(X)
+print(fa.loadings_)`},
+
+cfa:{t:"確認的因子分析",en:"CFA",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"仮説として設定した因子構造がデータに適合するかを検証する。EFAで探索した後にCFAで確認するのが典型的。",
+example:"例：EFAで得た3因子構造をCFAで検証。CFI=0.96、RMSEA=0.054で良好な適合。全因子負荷量が0.5以上で構成概念妥当性が確認された。",
+notes:["CFI>0.95、RMSEA<0.06が適合度の目安"],
+code:`import semopy
+model_desc = """
+    F1 =~ x1 + x2 + x3
+    F2 =~ x4 + x5 + x6
+"""
+model = semopy.Model(model_desc)
+result = model.fit(data=df)`},
+
+sem:{t:"構造方程式モデリング",en:"SEM",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"潜在変数を含む複雑な因果構造を一度にモデル化する。直接効果・間接効果・潜在変数を同時に推定できる。",
+example:"例：職務満足→組織コミットメント→離職意向という仮説モデルをSEMで検証。直接効果より間接効果（beta=-0.31）の方が大きく、コミットメントが重要な媒介変数と判明。",
+notes:["パス図で可視化する","大きいサンプル（200以上）が望ましい"],
+code:`import semopy
+model_desc = """
+    latent1 =~ x1 + x2
+    latent1 ~ x3 + x4
+"""
+model = semopy.Model(model_desc)
+result = model.fit(data=df)`},
+
+mediation:{t:"媒介分析",en:"Mediation Analysis",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"X→Yの関係が媒介変数M（X→M→Y）を通じて生じているかを検証する。間接効果の大きさを推定する。",
+example:"例：テレワーク導入（X）が生産性（Y）を高める経路を分析。ワークライフバランス満足度（M）を媒介変数に設定。直接効果は非有意だが間接効果=0.24（95%CI: 0.11〜0.38）で完全媒介を確認。",
+notes:["ブートストラップで間接効果の信頼区間を推定（Sobel検定より信頼性が高い）"],
+code:`import pingouin as pg
+result = pg.mediation_analysis(
+    data=df, x="X", m="M", y="Y", n_boot=1000
+)`},
+
+moderation:{t:"調整分析",en:"Moderation Analysis",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"XとYの関係が第3の変数Z（調整変数）によって変わるかを検証する。交互作用項を追加して検定する。",
+example:"例：広告費と売上の関係がブランド認知度によって調整されるか検証。交互作用項が有意（beta=0.31, p=0.02）→認知度の高いブランドほど広告費の効果が大きい。",
+formula:"y = β₀ + β₁X + β₂Z + β₃(X×Z) + ε",
+code:`df["interaction"] = df["x"] * df["moderator"]
+model = sm.OLS(df["y"],
+    sm.add_constant(df[["x","moderator","interaction"]])
+).fit()`},
+
+kmeans:{t:"K-meansクラスタリング",en:"K-means Clustering",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"データをK個のクラスターに分割する最もポピュラーなクラスタリング手法。ペルソナ発見に有効。",
+example:"例：購買データから顧客を4セグメントに分類。シルエット係数でK=4が最適と判断。高頻度・高単価、高頻度・低単価、低頻度・高単価、低頻度・低単価の4グループが抽出された。",
+notes:["Kを事前に決める（エルボー法・シルエット係数）","標準化必須","初期値依存があるためrandom_stateを固定"],
+code:`from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+for k in range(2,8):
+    km = KMeans(n_clusters=k, random_state=42)
+    labels = km.fit_predict(X_sc)
+    print(k, silhouette_score(X_sc, labels))`},
+
+hierarchical:{t:"階層クラスタリング",en:"Hierarchical Clustering",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"データを段階的に結合してデンドログラムを生成する。K数を事前に決めなくてよい。",
+example:"例：20の商品カテゴリを購買パターンの類似度で階層クラスタリング。デンドログラムで距離を確認しながら4グループに分割。K-meansと違いKを事前に決めずに済む。",
+code:`from scipy.cluster.hierarchy import dendrogram, linkage
+Z = linkage(X_sc, method='ward')
+dendrogram(Z)`},
+
+tsne:{t:"t-SNE / UMAP",en:"t-SNE / UMAP",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"高次元データを2〜3次元に圧縮して可視化する。PCAより非線形構造を捉えられる。",
+example:"例：100次元の顧客行動ベクトルをt-SNEで2次元に圧縮して可視化。K-meansで分類した5セグメントが2D空間でも明確に分離されており、クラスタの妥当性が視覚的に確認できた。",
+notes:["random_stateを固定で再現性確保","UMAPはt-SNEより高速","距離の絶対値は意味をなさない"],
+code:`from sklearn.manifold import TSNE
+X_2d = TSNE(n_components=2, random_state=42).fit_transform(X_sc)
+plt.scatter(X_2d[:,0], X_2d[:,1], c=labels)`},
+
+canonical:{t:"正準相関分析",en:"Canonical Correlation",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"2つの変数群の間の関係を、最大の相関を持つ線形結合のペアを求めることで分析する。",
+example:"例：マーケティング活動変数群（広告費・販促回数・価格）と成果変数群（売上・顧客満足・NPS）の関係を正準相関分析。第1正準相関係数=0.78で広告費と売上・NPSに強い関連。",
+code:`from sklearn.cross_decomposition import CCA
+cca = CCA(n_components=2)
+cca.fit(X_group1, X_group2)`},
+
+discriminant:{t:"判別分析",en:"LDA",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"グループを最もよく分離する線形結合を見つける。分類（予測）と次元削減の両方に使える。",
+example:"例：優良顧客・一般顧客・解約リスク顧客の3グループを利用頻度・満足度・契約年数で判別。的中率=82%。利用頻度が最も判別に寄与する変数と判明。",
+code:`from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+lda = LinearDiscriminantAnalysis()
+lda.fit(X_sc, y_group)`},
+
+irt:{t:"項目反応理論",en:"IRT",cat:"構造探索",c:"var(--c4)",bg:"var(--c4l)",
+what:"テストや尺度の各項目の特性（難易度・識別力）と回答者の潜在特性を同時に推定する。教育測定・心理測定の標準的手法。",
+example:"例：従業員エンゲージメント調査20項目をIRTで分析。識別力パラメータが0.3未満の2項目はエンゲージメントの差を検出できない弱い項目として次回調査から除外。",
+when:["アンケート尺度の項目特性を分析","テスト設計・標準化"]},
+
+did:{t:"差の差分析",en:"Difference-in-Differences",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"介入を受けたグループと受けなかったグループの介入前後の変化の差を取ることで因果効果を推定する。",
+example:"例：最低賃金を引き上げた県（介入群）とそうでない県（統制群）の雇用数を比較。引上げ後、介入群の雇用数は統制群より2.1%高く、賃上げが雇用を減らさなかったことが示された。",
+formula:"DID = (介入群after - 介入群before) - (統制群after - 統制群before)",
+notes:["平行トレンド仮定が必要","事前期間のデータが必要"],
+code:`df["post"] = (df["year"] >= cutoff_year).astype(int)
+df["treated"] = (df["group"] == "intervention").astype(int)
+df["did"] = df["post"] * df["treated"]
+model = sm.OLS(df["y"],
+    sm.add_constant(df[["post","treated","did"]])
+).fit()`},
+
+psm:{t:"傾向スコアマッチング",en:"Propensity Score Matching",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"介入を受ける確率（傾向スコア）が同じ対象者をマッチングして選択バイアスを除去する。",
+example:"例：大学進学が生涯年収に与える効果を推定。単純比較では年収差1200万円だが、傾向スコアマッチング後は800万円に縮小。家庭環境などの選択バイアスを除いた真の効果に近づいた。",
+notes:["観測できる交絡因子しかコントロールできない"],
+code:`from causalinference import CausalModel
+cm = CausalModel(Y=y, D=treatment, X=covariates)
+cm.est_via_matching()`},
+
+iv:{t:"操作変数法",en:"Instrumental Variables (2SLS)",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"内生性がある場合に操作変数（結果Yに直接影響せず説明変数Xとのみ相関する変数）を使って因果効果を推定する。",
+example:"例：教育年数が賃金に与える因果効果を推定。能力が高い人は教育も賃金も高いという内生性の問題に対し、義務教育延長政策を操作変数に使用。2SLS推定で教育1年あたり8%の賃金増加。",
+notes:["良い操作変数を見つけることが最大の難関","2段階最小二乗法（2SLS）で推定"],
+code:`from linearmodels.iv import IV2SLS
+result = IV2SLS(
+    dependent=y, exog=exog, endog=endog,
+    instruments=instruments
+).fit()`},
+
+rdd:{t:"回帰不連続デザイン",en:"RDD",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"ある閾値を境に処遇が変わる場合に、閾値近辺のジャンプを因果効果として推定する。",
+example:"例：65歳以上で医療費自己負担率が変わる閾値を利用。65歳直前後の受診率を比較すると閾値で約12%低下。負担率の変化が医療行動に大きく影響することを自然実験として示した。",
+code:`# pip install rdd
+from rdd import rdd
+result = rdd(df["outcome"], df["score"], cutoff=0)`},
+
+synth:{t:"合成コントロール法",en:"Synthetic Control",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"介入を受けた単一ユニットに対して他のユニットの加重平均で反事実を合成して効果を推定する。",
+example:"例：東京都が独自の喫煙規制を2018年に導入。他都道府県の加重平均で規制がなかった場合の東京を合成し比較。規制後の喫煙率は合成東京より4.2%低く、政策効果を確認。",
+when:["1つの市や国への政策介入の効果評価"]},
+
+dag:{t:"有向非巡回グラフ（DAG）",en:"DAG",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"変数間の因果関係を矢印で表したグラフ。どの変数をコントロールすべきか（バックドア基準）を整理するのに使う。",
+example:"例：収入→幸福度の効果を推定する際、健康状態が交絡因子であることをDAGで整理。健康状態をコントロールすることで収入の効果が過大推定されないことを事前に確認できる。",
+notes:["コントロールすべき変数とすべきでない変数（コライダー）を区別する"],
+code:`import networkx as nx
+G = nx.DiGraph()
+G.add_edges_from([("X","Y"),("Z","X"),("Z","Y")])`},
+
+hlm:{t:"マルチレベル分析（HLM）",en:"HLM",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"個人が集団に入れ子になった階層データを適切に分析する。個人レベルと集団レベルの効果を同時に推定する。",
+example:"例：全国1000校・30000人の生徒の学力データを分析。生徒レベル（学習時間・家庭環境）と学校レベル（規模・都市/地方）を同時推定。ICC=0.22→学力の22%は学校差で説明される。",
+notes:["ICC（グループ内相関）でマルチレベルの必要性を判断"],
+code:`model = mixedlm(
+    "y ~ x1 + group_var",
+    data=df, groups=df["group"],
+    re_formula="~x1"
+).fit()`},
+
+panel:{t:"パネルデータ分析",en:"Panel Data (FE/RE)",cat:"因果推論",c:"var(--c5)",bg:"var(--c5l)",
+what:"同一の個人・企業・地域を複数時点で観察したデータの分析。固定効果モデルは観測できない個体差をコントロールできる。",
+example:"例：47都道府県の10年間パネルデータで観光政策が経済成長に与える効果を分析。固定効果モデルで各県固有の特性をコントロール。観光支出1%増加がGDP成長率+0.08%に対応。",
+notes:["固定効果（FE）：時間不変の個体差をコントロール","変量効果（RE）：効率的だが外生性の仮定が強い","Hausman検定でFE vs REを選択"],
+code:`from linearmodels.panel import PanelOLS
+result = PanelOLS(y, X, entity_effects=True).fit()`},
+
+bayes_theorem:{t:"ベイズの定理",en:"Bayes' Theorem",cat:"ベイズ",c:"var(--c6)",bg:"var(--c6l)",
+what:"事前の知識（事前分布）にデータ（尤度）を組み合わせて事後確率を更新する確率論の基本定理。ベイズ統計の根幹。",
+example:"例：陽性率1%の疾患のスクリーニング検査（感度95%・特異度90%）。検査陽性でも実際の罹患確率はベイズ定理で8.7%。事前確率が低いと偽陽性が多くなることを示す重要な例。",
+formula:"P(θ|data) ∝ P(data|θ) × P(θ)\n事後分布 ∝ 尤度 × 事前分布",
+notes:["頻度論は「データが変わっても仮説は固定」","ベイズは「データを見て仮説の確率を更新」"]},
+
+bayesian_reg:{t:"ベイズ回帰",en:"Bayesian Regression",cat:"ベイズ",c:"var(--c6)",bg:"var(--c6l)",
+what:"回帰係数を点推定ではなく確率分布として推定する。不確実性が自然に定量化でき、小標本でも機能しやすい。",
+example:"例：新製品の売上予測モデルを構築。過去の類似製品データを事前分布として設定。少ない初期データ（n=30）でも合理的な推定が可能。95%信用区間で不確実性も定量化できた。",
+code:`import pymc as pm
+with pm.Model() as model:
+    alpha = pm.Normal("alpha", 0, 1)
+    beta = pm.Normal("beta", 0, 1, shape=X.shape[1])
+    sigma = pm.HalfNormal("sigma", 1)
+    mu = alpha + pm.math.dot(X, beta)
+    y_obs = pm.Normal("y", mu, sigma, observed=y)
+    trace = pm.sample(2000, tune=1000)`},
+
+mcmc:{t:"MCMC / ハミルトニアンモンテカルロ",en:"MCMC / HMC",cat:"ベイズ",c:"var(--c6)",bg:"var(--c6l)",
+what:"解析的に求められない事後分布をサンプリングで近似する手法。HMCはより効率的な現代的手法。",
+example:"例：消費者の支払意欲（WTP）を複雑な効用モデルで推定。MCMCで4チェーンを実行しR-hat<1.01で収束を確認。事後分布の中央値=3500円、95%信用区間: 2800〜4300円。",
+notes:["PyMC・StanがポピュラーなMCMCフレームワーク","収束診断（R-hat<1.01、ESS）を必ず確認"],
+code:`import arviz as az
+with model:
+    trace = pm.sample(2000, tune=1000, target_accept=0.9)
+    az.plot_trace(trace)
+    print(az.summary(trace))`},
+
+bayes_factor:{t:"ベイズ因子",en:"Bayes Factor",cat:"ベイズ",c:"var(--c6)",bg:"var(--c6l)",
+what:"2つの仮説の証拠の強さを比較する指標。p値と違い「帰無仮説を支持する証拠の強さ」も定量化できる。",
+example:"例：新採用基準が離職率を下げるか検定。BF10=12.3→効果ありを効果なしより12倍支持するデータが得られた。p値と違い帰無仮説を支持する証拠の強さも定量化できる。",
+formula:"BF₁₀ = P(data|H1) / P(data|H0)\nBF>10:強い証拠、BF>100:決定的証拠",
+code:`import pingouin as pg
+bf = pg.bayesfactor_ttest(t=2.5, nx=100, ny=100)`},
+
+credible_interval:{t:"信用区間（ベイズCI）",en:"Credible Interval",cat:"ベイズ",c:"var(--c6)",bg:"var(--c6l)",
+what:"「真のパラメータが95%の確率でこの区間に入る」という直感的な解釈ができる区間推定。頻度論の信頼区間とは解釈が異なる。",
+example:"例：幸福度スコア（0〜10点）、気温（0℃は寒さがゼロではない）、IQスコアが間隔尺度。「別府の幸福度は全国の1.25倍」という比率表現は厳密には誤りで、「1.37点高い」という差の表現が正しい。",
+example:"例：新施策の効果の95%信用区間が[+2.1%, +8.3%]と推定された。真の効果は95%の確率でこの区間にあるという直感的な解釈ができ、頻度論の信頼区間より意思決定に使いやすい。",
+notes:["頻度論95%CI：「同じ手順を100回繰り返せば95回は真値を含む」","ベイズ95%信用区間：「真のパラメータが95%の確率でこの区間内にある」","後者の方が自然な解釈"]},
+
+hierarchical_bayes:{t:"階層ベイズモデル",en:"Hierarchical Bayesian",cat:"ベイズ",c:"var(--c6)",bg:"var(--c6l)",
+what:"グループ間で情報を共有（部分プーリング）することで、小標本グループの推定を安定させる。",
+example:"例：全国50地域の広告効果を推定。サンプルが少ない地域（n=15）の推定値は全体平均に引き寄せられて安定。サンプルが多い地域（n=200）は独自の推定値を持つ。部分プーリングで大小地域を公平に比較できる。",
+notes:["サンプルが少ないグループの推定が全体平均に引き寄せられる（縮小推定）"],
+code:`with pm.Model() as model:
+    mu_g = pm.Normal("mu_g", 0, 5)
+    sigma_g = pm.HalfNormal("sigma_g", 1)
+    mu_group = pm.Normal("mu_group", mu_g, sigma_g, shape=n_groups)
+    trace = pm.sample(2000)`},
+
+rf:{t:"ランダムフォレスト",en:"Random Forest",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"多数の決定木の多数決で予測する。非線形な関係も捉えられ、変数重要度が得られる。",
+example:"例：住宅価格を30変数で予測。ランダムフォレスト（100本）でR2=0.89。変数重要度から築年数・最寄り駅距離・床面積が上位3位。非線形な関係（築年数と価格の急落）も自動的に捉えられる。",
+code:`from sklearn.ensemble import RandomForestRegressor
+rf = RandomForestRegressor(n_estimators=100, random_state=42)
+rf.fit(X_sc, y)
+importances = pd.Series(rf.feature_importances_, index=X.columns)
+importances.sort_values().plot(kind="barh")`},
+
+gbm:{t:"勾配ブースティング",en:"XGBoost / LightGBM",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"弱い学習器を逐次的に追加して残差を学習していくアンサンブル手法。表形式データでは最高精度を出すことが多い。",
+example:"例：クレジットカードの不正検知（不正0.5%の不均衡データ）。XGBoostでAUC=0.987を達成。ランダムフォレストのAUC=0.971より高く、early stoppingで過学習も防いだ。",
+notes:["early stoppingで過学習を防ぐ"],
+code:`import xgboost as xgb
+model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=3)
+model.fit(X_train, y_train,
+          eval_set=[(X_val, y_val)], early_stopping_rounds=10)`},
+
+svm:{t:"サポートベクターマシン",en:"SVM / SVR",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"クラス間のマージンを最大化する境界面を見つける分類・回帰手法。カーネルトリックで非線形も扱える。",
+example:"例：テキストからポジティブ・ネガティブを分類。TF-IDFで5000次元に変換後SVMで分類。高次元でも効果的に機能し精度85%、F1スコア0.84を達成。",
+code:`from sklearn.svm import SVR
+svr = SVR(kernel="rbf", C=1.0)
+svr.fit(X_sc, y)`},
+
+cross_val:{t:"交差検証",en:"k-fold Cross-Validation",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"データをk分割し、k-1分割で学習・1分割でテストをk回繰り返してモデルの汎化性能を評価する。過学習検出に不可欠。",
+example:"例：離反予測モデルを5-fold CVで評価。各分割のAUCが[0.82, 0.85, 0.81, 0.84, 0.83]→平均0.83+-0.015。テストデータのみの評価より信頼性の高い汎化性能の推定ができる。",
+notes:["k=5か10が一般的","時系列データにはTimeSeriesSplitを使う"],
+code:`from sklearn.model_selection import cross_val_score, KFold
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X_sc, y, cv=kf, scoring="r2")
+print(f"R²: {scores.mean():.3f} ± {scores.std():.3f}")`},
+
+shap:{t:"SHAP値（シャープレー値）",en:"SHAP",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"各変数が個々の予測にどれだけ貢献したかをゲーム理論で計算する。ブラックボックスモデルの説明可能性を高める。",
+example:"例：住宅ローン審査モデルの否決理由を個別説明。申請者Aの否決：負債比率（SHAP=+0.32で最大寄与）と勤続年数が短い（+0.18）が主要因。ブラックボックスモデルの判断を人に説明できるようになる。",
+code:`import shap
+explainer = shap.Explainer(model, X_sc)
+shap_values = explainer(X_sc)
+shap.plots.beeswarm(shap_values)`},
+
+bootstrap:{t:"ブートストラップ法",en:"Bootstrap Resampling",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"元データから復元抽出を繰り返すことで統計量の標本分布を近似する。信頼区間の推定に強力。",
+example:"例：中央値の95%信頼区間を推定したい（中央値の分布は解析的に難しい）。1000回のブートストラップリサンプリングで分布を推定。95%パーセンタイル区間：[42.3, 67.8]を計算。",
+code:`import numpy as np
+def bootstrap_ci(data, stat_func, n_boot=1000, ci=95):
+    boots = [stat_func(np.random.choice(data, len(data)))
+             for _ in range(n_boot)]
+    return np.percentile(boots, [(100-ci)/2, 100-(100-ci)/2])`},
+
+permutation:{t:"順列検定",en:"Permutation Test",cat:"機械学習",c:"var(--c1)",bg:"var(--c1l)",
+what:"ラベルをランダムにシャッフルした場合の検定統計量の分布を作成してp値を計算する。分布の仮定が一切不要。",
+example:"例：モデルの変数重要度を検証。年齢変数をシャッフルしたとき予測精度がどれだけ低下するかを30回繰り返す。AUCが平均0.067低下→年齢はモデルにとって重要な変数であることが確認できた。",
+code:`from sklearn.inspection import permutation_importance
+result = permutation_importance(
+    model, X_test, y_test, n_repeats=30, random_state=42
+)`},
+
+arima:{t:"ARIMA / SARIMA",en:"ARIMA",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"時系列データの予測モデル。過去の値（AR）と過去の予測誤差（MA）を使って将来を予測する。",
+example:"例：月次の新規顧客獲得数（36ヶ月分）をARIMA(2,1,1)でモデル化。AICで次数を選択し12ヶ月先の予測値と95%予測区間を算出。来年度の採用計画の定量的根拠として活用。",
+formula:"ARIMA(p,d,q): p=自己回帰次数, d=差分回数, q=移動平均次数",
+code:`from statsmodels.tsa.arima.model import ARIMA
+model = ARIMA(y_timeseries, order=(1,1,1))
+result = model.fit()
+forecast = result.forecast(steps=12)`},
+
+var_model:{t:"VARモデル",en:"Vector Autoregression",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"複数の時系列変数を同時にモデル化する。各変数が他の変数の過去値にも影響される構造を推定できる。",
+example:"例：GDP成長率・失業率・インフレ率の3変数をVAR(2)でモデル化。インパルス応答関数を見ると、金利ショックが失業率に影響するまで約4ヶ月のラグがあることが判明。",
+code:`from statsmodels.tsa.vector_ar.var_model import VAR
+model = VAR(df[["y1","y2","y3"]])
+result = model.fit(maxlags=4, ic="aic")`},
+
+granger:{t:"Granger因果性検定",en:"Granger Causality",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"変数XのラグがYの予測に有意に寄与するかを検定する。厳密な因果ではなく「時間的先行性」を検定する。",
+example:"例：SNS上のブランド言及数が翌週の売上をGranger因果するか検定。ラグ2週のモデルでF=6.23, p=0.0002。SNS言及数は売上の先行指標として活用できると判断。",
+code:`from statsmodels.tsa.stattools import grangercausalitytests
+results = grangercausalitytests(df[["y","x"]], maxlag=4)`},
+
+cointegration:{t:"共和分検定",en:"Cointegration Test",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"2つの単位根過程が長期的な均衡関係を持つかを検定する。非定常な時系列の分析に必要。",
+example:"例：広告費と売上の時系列が両方ともI(1)でも、共和分検定でp=0.03→長期均衡関係あり。長期的には広告費の増加が売上を押し上げる安定した関係が存在する。",
+code:`from statsmodels.tsa.stattools import coint
+score, p, _ = coint(series1, series2)`},
+
+survival:{t:"Kaplan-Meier推定",en:"Kaplan-Meier",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"「ある事象が起こるまでの時間」を打ち切りデータを含めて推定する生存分析の基本手法。",
+example:"例：SaaSサービスの契約継続分析。12ヶ月後の生存率（継続率）=68%。料金プランAとBのKaplan-Meier曲線を比較すると、プランBの方が有意に継続率が高い（log-rank p=0.02）。",
+code:`from lifelines import KaplanMeierFitter
+kmf = KaplanMeierFitter()
+kmf.fit(durations=df["duration"], event_observed=df["event"])
+kmf.plot_survival_function()`},
+
+cox:{t:"Cox比例ハザードモデル",en:"Cox PH Model",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"生存時間に影響する説明変数の効果をハザード比で推定する。生存分析における重回帰分析の位置づけ。",
+example:"例：SaaS解約リスクにどの変数が影響するか分析。ログイン頻度のハザード比=0.82→ログイン頻度が1回増えると解約リスクが18%低下。サポート問い合わせ回数のHR=1.35→問い合わせ多いと解約リスクが高い。",
+code:`from lifelines import CoxPHFitter
+cph = CoxPHFitter()
+cph.fit(df, duration_col="duration", event_col="event")
+cph.print_summary()`},
+
+changepoint:{t:"変化点検出",en:"Change Point Detection",cat:"時系列",c:"var(--c8)",bg:"var(--c8l)",
+what:"時系列データの統計的性質（平均・分散）が変化した時点を検出する。政策変更・イベントの影響点を自動検出する。",
+example:"例：月次売上の時系列60ヶ月分に変化点検出を適用。2021年4月と2023年1月に構造変化を検出。前者はコロナ禍の影響、後者は新製品リリースのタイミングと一致。",
+code:`import ruptures as rpt
+algo = rpt.Pelt(model="rbf").fit(signal)
+result = algo.predict(pen=10)`},
+
+confidence_interval:{t:"信頼区間（CI）",c:"var(--c7)",bg:"var(--c7l)",
+what:"点推定（例：平均値5.3）だけでなく、その推定の不確実性の幅を示す。95%信頼区間は「同じ手順を100回繰り返せば95回はこの区間に真値が含まれる」という意味。p値だけでなく信頼区間を必ず報告することが現代統計の標準。",
+example:"例：施策前後の顧客満足度の差=+1.8点、95%信頼区間=[+0.9, +2.7]。区間が0をまたいでいないので有意差あり。かつ少なくとも0.9点は改善しているという下限の解釈もでき、p値のみより情報量が多い。",
+tree:[
+  "平均値の信頼区間 → t検定の出力から取得、またはstats.sem()",
+  "回帰係数の信頼区間 → statsmodels.OLS().fit().conf_int()",
+  "比率の信頼区間 → Wilson区間 or Clopper-Pearson",
+  "複雑な統計量の信頼区間 → ブートストラップ法"
+],
+notes:["p値は「差がある/ない」の二値、CIは「差の大きさの範囲」を示す","CIが0をまたいでいない → 有意差あり（OLSの場合）","CIが狭いほど推定が精確（サンプルが多い）"],
+code:`import scipy.stats as stats
+import numpy as np
+
+# 平均の95%CI
+n, m, se = len(data), np.mean(data), stats.sem(data)
+ci = stats.t.interval(0.95, df=n-1, loc=m, scale=se)
+print(f"平均: "+str(round(m,2))+", 95%CI: ["+str(round(ci[0],2))+", "+str(round(ci[1],2))+"]")
+
+# OLSの係数CI
+model = sm.OLS(y, X).fit()
+print(model.conf_int())`}
+
+};
+
+// ===== フローチャート詳細データ =====
+const FD={
+nominal:{t:"名義尺度（カテゴリ）",c:"var(--c1)",bg:"var(--c1l)",
+what:"順序も大小もない「名前」としてのデータ。数値で表現しても足し算・平均は意味をなさない。",
+example:"例：性別（男性/女性/その他）、障害種別（身体/精神/療育）、居住地区（石垣/亀川/...）などが名義尺度。これらはダミー変数（0/1）に変換して分析に使う。",
+ex:["性別（男性/女性/その他）","障害種別（身体/精神/療育）","都道府県・地区名","色・ブランド名"],
+notes:["回帰分析ではダミー変数化（0/1）して使う","get_dummies()でdrop_first=Trueを忘れずに（多重共線性防止）","使える代表値：最頻値（モード）のみ"],
+methods:["カイ二乗検定","Fisherの正確確率検定","クロス集計","ロジスティック回帰（ダミー変数として）"]},
+
+ordinal:{t:"順序尺度",c:"var(--c3)",bg:"var(--c3l)",
+what:"順序は意味を持つが、カテゴリ間の差が均等かどうかは不明なデータ。「1→2の差」と「4→5の差」が同じとは言えない。",
+example:"例：顧客満足度の5段階評価（1=非常に不満〜5=非常に満足）、障害等級（1〜6級）、学歴（中卒/高卒/大卒/大学院卒）が順序尺度。順序は意味があるが1→2と4→5の差が等しいとは限らない。",
+ex:["5段階リッカート尺度（1〜5点）","学歴（中卒・高卒・大卒）","障害等級（1級・2級・3級）","満足度・重要度の評価"],
+notes:["厳密にはt検定・回帰分析は使えない（差が不均等）","ただし社会科学では5点以上のリッカート尺度を連続値として扱う慣習がある","厳密にやるならMann-Whitney・Spearman相関"],
+methods:["Mann-Whitney U検定","Kruskal-Wallis検定","Spearman順位相関","順序ロジスティック回帰"]},
+
+interval:{t:"間隔尺度",c:"var(--c2)",bg:"var(--c2l)",
+what:"差が均等で意味を持つが、絶対的な0点がない。「0＝何もない」ではないデータ。",
+ex:["幸福度0〜10点（0は「全く幸せでない」であり幸せが存在しないではない）","気温（0℃は寒さがゼロではない）","西暦年号"],
+notes:["「別府の幸福度は全国の1.3倍」という比率表現は厳密には誤り","「1.37点高い」という差の表現が正確","t検定・回帰・相関など多くの手法が使える"],
+methods:["t検定","ANOVA","重回帰・Ridge回帰","Pearson相関係数"]},
+
+ratio:{t:"比例尺度（量的データ）",c:"var(--c4)",bg:"var(--c4l)",
+what:"絶対的な0点があり、全ての演算（足し算・引き算・掛け算・割り算）が意味を持つ。最も情報量が多いデータ型。",
+example:"例：年齢（0歳は本当に0）、年収（0円は収入ゼロ）、来店回数、体重が比例尺度。「年収が2倍」という比率表現が有効で、全ての演算が意味を持つ。",
+ex:["年齢（0歳は本当に0）","収入・件数・回数","身長・体重","距離・時間"],
+notes:["「年収は平均の2倍」という比率表現が有効","対数変換（log）で分布の歪みを補正できる","全ての統計手法が使える"],
+methods:["全ての統計手法が適用可能"]},
+
+step1:{t:"STEP 1｜目的・仮説の設定",c:"var(--c2)",bg:"var(--c2l)",
+what:"分析を始める前に「何を明らかにしたいか」を言語化することが最も重要なステップ。これを先に決めることで後の手法選択が迷わなくなる。",
+example:"例：「別府市の障害者は全国より幸福度が高いか」という目的を先に設定し、目的変数=幸福度、説明変数候補=地域環境スコア・属性、比較軸=全国vs別府と決めてから分析を開始した。",
+points:["目的変数（結果として見たいもの）を1つ決める","説明変数の候補を考える","比較軸を決める（グループ比較なのか、関係を見るのか、予測なのか）","どのレベルまで言いたいか整理する（因果か相関か）"],
+notes:["「面白そうな分析を全部やる」ではなく「目的に必要な分析を選ぶ」という順番が重要","先に分析してから目的を決めると「HARKing（事後的に仮説を作る）」になり科学的に問題"]},
+
+step2:{t:"STEP 2｜データ確認・EDA",c:"var(--c1)",bg:"var(--c1l)",
+what:"分析に入る前にデータの全体像を把握する。外れ値・欠損・分布の偏りなどを発見するためのステップ。EDAを省くと後で気づかず結果が歪む。",
+example:"例：データを読み込んだら最初にdf.shape→(301, 87)で行列数を確認。df.dtypes で数値/文字列を確認。df.isna().sum()で欠損が多い列を特定。df.describe()で幸福度の分布（平均5.8、最小0、最大10）を把握。",
+checklist:["df.shape → 行数・列数の確認","df.dtypes → データ型（数値か文字か）の確認","df.isna().sum() → 欠損の件数確認","df.describe() → 基本統計量（平均・標準偏差・最大最小）","value_counts() → カテゴリ変数のユニーク値確認","histogram → 目的変数の分布確認","groupby + mean → グループ別平均の確認"],
+code:`df.shape
+df.dtypes
+df.isna().sum()
+df.describe()
+df["column"].value_counts()
+df["target"].hist(bins=20)`},
+
+step3:{t:"STEP 3｜データクリーニング",c:"var(--c1)",bg:"var(--c1l)",
+what:"分析に使えるきれいなデータに整える。このステップの品質が分析全体の品質を決める。",
+example:"例：全国データは数値コード（性別: 1=男性, 2=女性）だったのでmap()でテキストに変換。年齢の実数をpd.cut()で年齢区分に変換。療育手帳の表記ゆれ（療育手帳/療育手帳（※））をOR演算で統一。",
+checklist:["欠損値の処理（fillna・dropna・補完）","表記ゆれの統一（「男性」と「男」など）","数値コード→テキストラベルへの変換（map）","年齢の実数→年齢区分への変換（pd.cut）","カテゴリ変数のダミー変数化（get_dummies）","複数ファイルの結合（pd.concat・merge）","ターゲット列・source列の追加"],
+code:`# 欠損処理
+df["col"].fillna(df["col"].median(), inplace=True)
+# ラベル変換
+sex_map = {1:"男性", 2:"女性"}
+df["sex"] = df["sex_code"].map(sex_map)
+# 年齢区分化
+df["age_group"] = pd.cut(df["age"],
+    bins=[0,29,39,49,59,69,120],
+    labels=["〜29","30代","40代","50代","60代","70〜"])
+# ダミー変数化
+df = pd.get_dummies(df, columns=["category"], drop_first=True)`},
+
+vif:{t:"STEP 4｜多重共線性チェック（VIF）",c:"var(--c7)",bg:"var(--c7l)",
+what:"重回帰分析の前に必ず実施する。説明変数同士が強く相関していると（多重共線性）、係数の推定が不安定になり正しい解釈ができなくなる。",
+example:"例：30項目の満足度スコアを説明変数に入れたところVIF=15〜30の変数が多数。類似した質問項目が互いに相関しているのが原因。OLSは断念してRidge回帰に切り替えた。",
+what2:"VIF（Variance Inflation Factor）= 1つの説明変数が他の変数とどれだけ相関しているかを数値化。VIF=1は無相関、VIF>10は危険信号。",
+notes:["VIF=∞は完全に線形従属（目的変数が説明変数に混入しているなど）","対処法①：相関の高い変数を1つ除外する","対処法②：Ridge回帰に切り替える","対処法③：PCAで次元削減後に回帰する"],
+code:`from statsmodels.stats.outliers_influence import variance_inflation_factor
+import pandas as pd
+
+X = df[feature_cols]
+vif_vals = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+vif = pd.DataFrame({"変数": X.columns, "VIF": vif_vals}).sort_values("VIF", ascending=False)
+print(vif)`},
+
+control:{t:"STEP 5｜交絡因子・コントロール変数",c:"var(--c7)",bg:"var(--c7l)",
+what:"「AがBに影響する」と言いたい場合、第3の変数C（交絡因子）が両方に影響していないかを確認する必要がある。コントロール変数をモデルに加えることで「Cを揃えた上でのAの効果」を推定できる。",
+example:"例：別府の幸福度が高い理由として「別府に未成年が37%いる（全国は0%）」という構造的違いがあった。年齢・性別・障害種別をコントロール変数に加えてモデルに投入し、属性の違いを取り除いた上で地域効果を推定した。",
+ex:["年齢が幸福度に影響 → 年齢をコントロール","性別が回答パターンに影響 → 性別をダミー変数で追加","障害種別が満足度に影響 → 障害種別をコントロール"],
+notes:["DAG（有向非巡回グラフ）で交絡構造を整理してからコントロール変数を決める","コライダー（結果から出る共通の結果変数）はコントロールしてはいけない（バイアスが生じる）","コントロール変数は理論的な根拠が必要（むやみに追加しない）"]},
+
+interpret:{t:"STEP 6｜結果の解釈・限界の整理",c:"var(--c1)",bg:"var(--c1l)",
+what:"分析結果を「言い切れること」「傾向として言えること」「言えないこと」の3段階に整理する。これを怠ると過大な主張になる。",
+example:"例：「別府の幸福度が全国より有意に高い（t検定p<0.001）」は言い切れる。「年齢・障害種別を揃えても別府ダミーがプラス（Ridge係数+0.20）」は傾向として言える。しかし「別府がインクルーシブだから幸福度が高い」という因果は横断データでは言えない。",
+levels:[
+  "✅ 言い切れること：t検定で有意差がある、記述統計で平均が高い　など（データの範囲内の事実）",
+  "⚠️ 傾向として言えること：コントロール変数を加えてもXの係数がプラス　など（条件付きの傾向）",
+  "❌ 言えないこと：因果関係（横断データでは言えない）、全体の代表性（無作為抽出でない場合）"
+],
+notes:["横断データ（ある時点のスナップショット）では因果は言えない","縦断データ・DID・RDDなどを使って初めて因果に近いことが言える","複数の分析が一致して同じ方向を向いていることが傍証の積み重ね"]},
+
+viz:{t:"STEP 7｜可視化・アウトプット",c:"var(--c4)",bg:"var(--c4l)",
+what:"分析結果を伝えるためのグラフを選ぶ。「何を伝えたいか」によってグラフの種類が変わる。",
+example:"例：t検定結果は棒グラフ（誤差バー付き）で全国vs別府を比較。Ridge係数の大きさは横棒グラフで影響力ランキングを表示。幸福度の分布の違いはヒストグラムで重ね表示。3変数の関係はバブルチャート（X=t検定の差、Y=Ridge係数、サイズ=p値）で一度に可視化。",
+guide:[
+  "2グループの平均比較 → 棒グラフ（誤差バー付き）",
+  "分布の形を見たい → ヒストグラム・バイオリンプロット・箱ひげ図",
+  "2変数の関係 → 散布図（回帰線付き）",
+  "多変数の相関 → ヒートマップ",
+  "3変数を同時に → バブルチャート（X・Y・サイズ）",
+  "複数カテゴリの全体像 → レーダーチャート",
+  "グループ×項目の評価 → 積み上げ棒グラフ・ヒートマップ",
+  "時系列の変化 → 折れ線グラフ"
+],
+code:`import matplotlib.pyplot as plt
+import japanize_matplotlib
+import seaborn as sns
+
+# 基本
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.set_xlabel("ラベル", fontsize=11)
+ax.set_title("タイトル", fontsize=13)
+plt.tight_layout()
+plt.savefig("output.png", dpi=150)`},
+
+branch_ttest:{t:"2グループ比較の手法選択",c:"var(--c2)",bg:"var(--c2l)",
+what:"2グループの差を検定するとき、データの分布・対応の有無によって手法が変わる。",
+example:"例：満足度スコア（1〜5点）を2グループで比較したい。スコアが正規分布に近い（n=100以上）→Welchのt検定。スコアがリッカート尺度で厳密には順序尺度→Mann-Whitney U検定。どちらの結果も報告して頑健性を確認するのが丁寧。",
+tree:[
+  "連続値・正規分布に近い → Welchのt検定（equal_var=False）",
+  "順序尺度・非正規分布 → Mann-Whitney U検定",
+  "同一対象者の前後比較 → 対応ありt検定",
+  "対応あり・非正規 → Wilcoxon符号順位検定"
+],
+notes:["「正規かどうか」はShapiro-Wilk検定やQQプロットで確認","サンプルが大きい（n>30）場合は中心極限定理により正規分布の仮定は緩やかでよい"]},
+
+branch_anova:{t:"3グループ以上の比較の手法選択",c:"var(--c2)",bg:"var(--c2l)",
+what:"3グループ以上を比較するとき、t検定を複数回使うと多重検定問題が起きる。ANOVAで一度に検定する。",
+example:"例：障害種別（身体/精神/療育/サービス利用のみ/生活のしづらさあり）の5グループで幸福度を比較したい。f_oneway()でF値とp値を確認→有意ならpairwise_tukeyhsd()でどのグループ間に差があるかを多重比較。",
+tree:[
+  "1因子・正規・等分散 → 一元配置ANOVA＋Tukey HSD",
+  "1因子・非正規 → Kruskal-Wallis検定",
+  "2因子（交互作用あり） → 二元配置ANOVA",
+  "反復測定（同一対象者×条件） → 反復測定ANOVA or Friedman",
+  "共変量をコントロールしたい → ANCOVA",
+  "目的変数が複数 → MANOVA"
+]},
+
+branch_chi2:{t:"カテゴリ変数の検定の手法選択",c:"var(--c2)",bg:"var(--c2l)",
+what:"カテゴリ×カテゴリのデータに使う検定の選び方。",
+example:"例：性別（男/女）と転職意向（あり/なし）の関係を調べたい。2×2のクロス集計表を作成し、全セルの期待度数が5以上→カイ二乗検定。もしサンプルが少なくて期待度数が5未満のセルがある→Fisherの正確確率検定。",
+tree:[
+  "2×2以上・期待度数≥5 → カイ二乗検定",
+  "2×2・期待度数<5 → Fisherの正確確率検定",
+  "対応ありデータ（前後の二値変化） → McNemar検定",
+  "3グループ以上のカテゴリ比較 → カイ二乗検定（同様）"
+]},
+
+branch_paired:{t:"対応ありデータの検定",c:"var(--c2)",bg:"var(--c2l)",
+what:"同一対象者を2条件以上で比較する場合の手法。独立2標本の検定よりも検定力が高い（個人差を除去できるため）。",
+example:"例：同じ30店舗で施策前後の売上を比較したい。同一店舗の前後なので対応ありt検定を選択。もし正規性が怪しい（ヒストグラムが偏っている）→Wilcoxon符号順位検定。",
+tree:[
+  "連続値・正規分布 → 対応ありt検定",
+  "連続値・非正規 → Wilcoxon符号順位検定",
+  "カテゴリ（二値） → McNemar検定",
+  "3条件以上・連続値 → 反復測定ANOVA",
+  "3条件以上・非正規 → Friedman検定"
+]},
+
+branch_ml:{t:"機械学習系手法の選択",c:"var(--c1)",bg:"var(--c1l)",
+what:"予測精度を重視する場合や非線形な関係を捉えたい場合に使う。ただし解釈可能性は統計モデルより低い。",
+example:"例：幸福度を予測するモデルで解釈も必要な場合→ランダムフォレスト+SHAP値。とにかく精度を上げたい場合→XGBoost+交差検証。どのモデルが良いか迷う場合→5-fold CVでAUCを比較してから選ぶ。",
+tree:[
+  "解釈可能性が必要 → Ridge/Lasso回帰 または ランダムフォレスト（SHAP値で解釈）",
+  "最高精度を追求 → 勾配ブースティング（XGBoost・LightGBM）",
+  "高次元データ・分類 → SVM",
+  "全ての機械学習 → 交差検証でモデル評価は必須"
+],
+notes:["SHAP値で「どの変数が予測に効いているか」を説明できる","モデルの選択はクロスバリデーションで比較する"]},
+
+branch_dim:{t:"次元削減・因子分析の選択",c:"var(--c4)",bg:"var(--c4l)",
+what:"多変数データの背後にある構造を探索・圧縮する手法の選び方。",
+example:"例：アンケートの30項目が実は3〜4の潜在概念を測っているかを探りたい→EFA。EFAで見つかった構造を別データで検証したい→CFA。地域満足度→社会参加→幸福度という因果経路を同時推定したい→SEM。",
+tree:[
+  "変数を圧縮（線形） → PCA（標準化後に実施）",
+  "潜在因子を探索（仮説なし） → 探索的因子分析（EFA）",
+  "仮説の因子構造を検証 → 確認的因子分析（CFA）",
+  "潜在変数＋因果構造 → 構造方程式モデリング（SEM）",
+  "可視化目的の次元削減 → t-SNE / UMAP"
+]},
+
+branch_cluster:{t:"クラスタリングの選択",c:"var(--c4)",bg:"var(--c4l)",
+what:"データをグループに分けたいとき。グループ数が事前にわかるかどうかで選択が変わる。",
+example:"例：顧客の購買行動データから自然なグループを発見したい。まず階層クラスタリングでデンドログラムを確認しK=4が妥当と判断。K-meansで最終的な4グループに分類。t-SNEで2次元可視化してグループの分離を確認。",
+tree:[
+  "グループ数を事前に決められる → K-means（シルエット係数でK選択）",
+  "グループ数を決めたくない → 階層クラスタリング（デンドログラムで確認）",
+  "可視化目的（2D） → t-SNE / UMAP → その後K-means",
+  "グループの分類予測 → 判別分析（LDA）"
+],
+notes:["標準化は必須","エルボー法とシルエット係数で最適K数を確認する"]},
+
+branch_medmod:{t:"媒介・調整分析の選択",c:"var(--c4)",bg:"var(--c4l)",
+what:"変数間の「なぜ」「条件付き」の関係を分析する手法。",
+example:"例：医療充実（X）→幸福度（Y）の関係に、精神的健康（M）が媒介しているか→媒介分析。同じ関係が障害種別（Z）によって異なるか→調整分析（交互作用項を追加）。",
+tree:[
+  "X→Y の間にM（媒介変数）があるか検証 → 媒介分析（ブートストラップ法で）",
+  "XとYの関係がZによって変わるか検証 → 調整分析（交互作用項を追加）",
+  "媒介と調整を同時に → 調整媒介分析（PROCESS macro）",
+  "複雑な因果経路全体 → SEM（構造方程式モデリング）"
+]},
+
+branch_causal:{t:"因果推論手法の選択",c:"var(--c5)",bg:"var(--c5l)",
+what:"「XがYを引き起こしているか」という因果の主張をしたいときの手法。横断データでは原則使えない。",
+example:"例：新しい地域活性化政策が実施された市（介入群）としていない市（統制群）を比較し、政策前後の幸福度変化の差を分析したい→DID。政策の対象が65歳以上という閾値で決まっている→RDD。",
+tree:[
+  "介入前後のデータがある → 差の差分析（DID）",
+  "同一ユニットの複数時点データ → パネルデータ分析（固定効果モデル）",
+  "閾値で処遇が変わる → 回帰不連続デザイン（RDD）",
+  "処遇の選択バイアスが問題 → 傾向スコアマッチング（PSM）",
+  "内生性の問題 → 操作変数法（IV）",
+  "単一ユニットへの介入 → 合成コントロール法",
+  "因果構造の整理 → DAG（有向非巡回グラフ）で先に整理"
+],
+notes:["因果推論は「自然実験」（ランダムに近い状況）が理想","横断データの場合は「傾向として言える」止まりにする"]},
+
+branch_time:{t:"時系列・生存分析の選択",c:"var(--c8)",bg:"var(--c8l)",
+what:"時間的な変化を扱うデータや「いつ事象が起きるか」を分析する手法の選び方。",
+example:"例：月次の幸福度調査データが5年分ある場合→ARIMA/SARIMAで将来予測。一方で施策を実施した日を特定したい→変化点検出。支援サービスの利用継続期間を分析したい→Kaplan-Meier推定とCox回帰。",
+tree:[
+  "単一時系列の予測 → ARIMA（定常性を確認）/ SARIMA（季節性あり）",
+  "複数時系列の相互影響 → VARモデル",
+  "時系列の先行・後行関係 → Granger因果性検定",
+  "長期均衡関係の検定 → 共和分検定",
+  "事象が起きるまでの時間（生存分析）→ Kaplan-Meier推定（可視化）",
+  "生存時間に影響する変数 → Cox比例ハザードモデル",
+  "時系列の構造変化の検出 → 変化点検出（ruptures）"
+]},
+branch_ols:{t:"重回帰分析（OLS）の使いどころ",c:"var(--c3)",bg:"var(--c3l)",
+what:"目的変数が連続値で、多重共線性がない場合（VIF<10）に使う統計の基本手法。「他の変数を揃えた上でXがYに与える影響」を係数とp値で定量化できる。",
+example:"例：年収を年齢・経験年数・学歴・職種で重回帰分析。VIF確認後（全て<5）OLSを実行。経験年数の係数=12.3（p<0.001）で解釈しやすい結果を得た。",
+tree:[
+  "VIF < 10 が確認できた → OLS回帰を実行",
+  "係数のp値 < 0.05 → その変数は有意に影響あり",
+  "R²でモデル全体の説明力を確認（0.3以上あれば実用的）",
+  "残差プロットで等分散・正規性を確認",
+  "調整済みR²でモデル間の比較"
+],
+notes:["p値だけでなく効果量（標準化係数）も報告する","サンプル数 > 変数数×10〜15 が目安","残差が正規分布に近いかQQプロットで確認"],
+code:`import statsmodels.api as sm
+X = sm.add_constant(X_vars)
+model = sm.OLS(y, X).fit()
+print(model.summary())
+# 標準化係数（効果量として）
+from sklearn.preprocessing import StandardScaler
+X_sc = StandardScaler().fit_transform(X_vars)
+model_std = sm.OLS(y, sm.add_constant(X_sc)).fit()
+print(model_std.params)`},
+
+branch_ridge:{t:"Ridge回帰の使いどころ",c:"var(--c3)",bg:"var(--c3l)",
+what:"VIF > 10 の変数が複数ある場合（多重共線性）に使う。OLSの代替として係数を安定させながら回帰できる。説明変数同士が強く相関しているとき（アンケートの類似設問など）に特に有効。",
+example:"例：幸福度を22項目の満足度スコアで回帰。満足度同士が高相関でVIF=15〜30。Ridge（alpha=100）でR2=0.51。精神的に健康の係数=0.64が最大で最も影響力が高いと判断。",
+tree:[
+  "VIF > 10 の変数が多い → Ridge回帰を選択",
+  "全変数を標準化（StandardScaler）してからフィット",
+  "RidgeCVで最適なα（ペナルティの強さ）を自動選択",
+  "標準化済み係数の大きさで変数の影響力を比較",
+  "R²でモデルの説明力を確認"
+],
+notes:["標準化が必須（変数のスケールを揃えないと係数が比較できない）","係数は真の値より小さめに推定される（バイアスあり）","p値が計算されないため有意性の検定は別途行う","それでもプラス/マイナスの方向と相対的な大きさは解釈できる"],
+code:`from sklearn.linear_model import RidgeCV
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_sc = scaler.fit_transform(X)
+ridge = RidgeCV(alphas=[0.01, 0.1, 1, 10, 100], cv=5)
+ridge.fit(X_sc, y)
+
+print("最適alpha:", ridge.alpha_)
+print("R²:", round(ridge.score(X_sc, y), 3))
+
+# 係数の整理
+import pandas as pd
+coef_df = pd.DataFrame({"変数": X.columns, "係数": ridge.coef_}).sort_values("係数", ascending=False)
+print(coef_df)`},
+
+branch_lasso:{t:"Lasso / ElasticNetの使いどころ",c:"var(--c3)",bg:"var(--c3l)",
+what:"説明変数が多すぎる場合に、重要でない変数の係数を自動でちょうど0にして変数選択を行う。Ridgeは係数を小さくするだけだが、Lassoは完全に0にする点が違う。",
+example:"例：顧客の購買金額を100変数で予測。LassoでAICが最小となるalphaで100→23変数に自動選択。選ばれた変数でOLSを再実行し最終モデルとした。",
+tree:[
+  "説明変数が多い（目安：サンプル数/変数数 < 10） → Lasso検討",
+  "多重共線性もある場合 → ElasticNet（L1+L2の組み合わせ）",
+  "係数が0になった変数 → 「効かない変数」として除外",
+  "残った変数でOLSを再実行すると解釈しやすい"
+],
+notes:["標準化が必須","αはLassoCVで交差検証して自動選択","Lassoは変数が多いほど効果を発揮する","選ばれた変数を最終的にOLSで再推定する2段階アプローチも一般的"],
+code:`from sklearn.linear_model import LassoCV, ElasticNetCV
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_sc = scaler.fit_transform(X)
+
+# Lasso
+lasso = LassoCV(cv=5)
+lasso.fit(X_sc, y)
+selected = X.columns[lasso.coef_ != 0]
+print("選ばれた変数:", len(selected), "個:", list(selected))
+
+# ElasticNet（多重共線性も強い場合）
+en = ElasticNetCV(l1_ratio=[.1,.5,.9,1], cv=5)
+en.fit(X_sc, y)`},
+
+branch_logistic:{t:"ロジスティック回帰の使いどころ",c:"var(--c3)",bg:"var(--c3l)",
+what:"目的変数が0/1の二値（例：改善した/しない、別府か全国か）の場合に使う。重回帰とほぼ同じ感覚で使えるが、係数の解釈がオッズ比になる。",
+example:"例：顧客が解約するかを予測（1=解約, 0=継続）。ログイン頻度・満足度・利用期間を投入。満足度のオッズ比=0.62→満足度1点上昇で解約オッズが38%低下。",
+tree:[
+  "目的変数が0/1の二値 → ロジスティック回帰",
+  "目的変数が3クラス以上 → 多項ロジスティック回帰",
+  "目的変数が順序尺度（1〜5等級） → 順序ロジスティック回帰",
+  "係数をexp()するとオッズ比が得られる",
+  "オッズ比>1なら正の影響、<1なら負の影響"
+],
+notes:["多重共線性が強い場合はL1/L2正則化付きLogisticRegressionを使う","予測精度はROC-AUCで評価","サンプルが少ないと過学習しやすいため交差検証が重要"],
+code:`from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+scaler = StandardScaler()
+X_sc = scaler.fit_transform(X)
+
+model = LogisticRegression(C=1.0, random_state=42)
+model.fit(X_sc, y_binary)
+
+# オッズ比
+odds_ratio = np.exp(model.coef_[0])
+import pandas as pd
+result_df = pd.DataFrame({"変数": X.columns, "オッズ比": odds_ratio})
+print(result_df.sort_values("オッズ比", ascending=False))`}
+};
+const WIZARD = {
+
+  // ── スタート ──────────────────────────
+  start: {
+    type: 'question',
+    q: '分析の目的を教えてください',
+    sub: '分析の目的によって使うべき手法が根本的に変わります。まず「何をしたいか」を明確にすることが最も重要なステップです。',
+    options: [
+      { label: '📊 グループ間の差を調べたい', next: 'compare_start' },
+      { label: '📉 変数の影響・予測をしたい（回帰）', next: 'regression_start' },
+      { label: '🌀 データの構造・パターンを探りたい', next: 'structure_start' },
+      { label: '⚗️ 因果関係を言いたい', next: 'causal_start' },
+      { label: '📈 時系列・将来予測・事象の発生時間', next: 'time_start' },
+      { label: '🤖 とにかく予測精度を上げたい', next: 'ml_start' },
+    ]
+  },
+
+  // ── グループ比較 ─────────────────────
+  compare_start: {
+    type: 'question',
+    q: '比較したい変数（目的変数）はどんなデータですか？',
+    sub: '目的変数のデータ型によって使える検定が決まります。数値なら平均の差を、カテゴリなら比率・分布の差を検定します。',
+    options: [
+      { label: '数値（点数・金額・年齢など）', next: 'compare_numeric' },
+      { label: 'カテゴリ（はい/いいえ・属性など）', next: 'compare_cat' },
+    ]
+  },
+
+  compare_numeric: {
+    type: 'question',
+    q: 'グループは何個ありますか？',
+    sub: 't検定は2グループ専用です。3グループ以上でt検定を繰り返すと「多重検定問題」が起き、偶然有意になる確率が上がります。',
+    options: [
+      { label: '2グループ', next: 'compare_2g' },
+      { label: '3グループ以上', next: 'compare_3g' },
+    ]
+  },
+
+  compare_2g: {
+    type: 'question',
+    q: '同じ対象者を2回測定した（前後比較）ですか？',
+    sub: '同じ対象を2回測定した場合（対応あり）は個人差をキャンセルできるため、より精度の高い比較ができます。別々のグループなら対応なしの検定を使います。',
+    options: [
+      { label: 'はい（同じ人・同じ対象の前後）', next: 'compare_2g_paired' },
+      { label: 'いいえ（別々のグループ）', next: 'compare_2g_indep' },
+    ]
+  },
+
+  compare_2g_paired: {
+    type: 'question',
+    q: 'データは正規分布に近いですか？（ヒストグラムがベル型かどうか）',
+    sub: '正規分布かどうかで「パラメトリック検定」か「ノンパラメトリック検定」かが決まります。n≥30なら中心極限定理により概ね正規と仮定してOKです。',
+    options: [
+      { label: 'はい・よくわからない', next: 'r_paired_t' },
+      { label: 'いいえ（歪んでいる・順序尺度）', next: 'r_wilcoxon' },
+    ]
+  },
+
+  compare_2g_indep: {
+    type: 'question',
+    q: 'データは正規分布に近いですか？（ヒストグラムがベル型かどうか）',
+    sub: '正規分布かどうかで手法が変わります。リッカート尺度（1〜5点など）は厳密には順序尺度なのでノンパラが適切ですが、社会科学では慣習的にt検定も使われます。',
+    options: [
+      { label: 'はい・n≥30でよくわからない', next: 'r_ttest' },
+      { label: 'いいえ（歪んでいる・リッカート尺度）', next: 'r_mannwhitney' },
+    ]
+  },
+
+  compare_3g: {
+    type: 'question',
+    q: '同じ対象者を複数条件で測定しましたか？',
+    sub: '同じ対象者が複数条件に登場する場合（反復測定）は、個人差を除いた上で条件間の差を検定できます。',
+    options: [
+      { label: 'はい（同じ人が複数条件）', next: 'compare_3g_repeated' },
+      { label: 'いいえ（グループが別々）', next: 'compare_3g_indep' },
+    ]
+  },
+
+  compare_3g_repeated: {
+    type: 'question',
+    q: 'データは正規分布に近いですか？',
+    sub: '反復測定ANOVAは正規分布と球面性を仮定します。仮定が怪しければノンパラのFriedman検定を使います。',
+    options: [
+      { label: 'はい', next: 'r_repeated_anova' },
+      { label: 'いいえ', next: 'r_friedman' },
+    ]
+  },
+
+  compare_3g_indep: {
+    type: 'question',
+    q: 'データは正規分布に近いですか？',
+    sub: '正規分布かどうかで手法が変わります。分布が大きく歪んでいたり、順序尺度データの場合はノンパラ検定が適切です。',
+    options: [
+      { label: 'はい', next: 'compare_3g_factors' },
+      { label: 'いいえ', next: 'r_kruskal' },
+    ]
+  },
+
+  compare_3g_factors: {
+    type: 'question',
+    q: '比較したい要因（グループの分け方）はいくつありますか？',
+    sub: '要因の数によってモデルが変わります。2つの要因を同時に扱うと「交互作用効果」（AとBの組み合わせで特別な影響が出るか）も検定できます。',
+    options: [
+      { label: '1つ（例：部署別）', next: 'r_anova' },
+      { label: '2つ（例：部署×性別）', next: 'r_twoway_anova' },
+      { label: '共変量をコントロールしたい（例：年齢を除いて比較）', next: 'r_ancova' },
+      { label: '目的変数が複数ある', next: 'r_manova' },
+    ]
+  },
+
+  compare_cat: {
+    type: 'question',
+    q: '比較したい変数はカテゴリです。何と何を比べますか？',
+    sub: 'カテゴリ同士の比較はクロス集計表を作って検定します。前後の変化（対応あり）か独立したグループ間の比較かで手法が異なります。',
+    options: [
+      { label: 'カテゴリ × カテゴリ（クロス集計）', next: 'compare_cat_cat' },
+      { label: '同じ人の前後のカテゴリ変化', next: 'r_mcnemar' },
+    ]
+  },
+
+  compare_cat_cat: {
+    type: 'question',
+    q: 'クロス集計表の各セルの期待度数は5以上ですか？',
+    sub: 'カイ二乗検定は「期待度数が5以上」という条件があります。サンプルが少ないと期待度数が5を下回るセルが出てしまい、検定の精度が落ちます。',
+    sub: '（わからない場合はとりあえずカイ二乗検定を試して警告が出たら切り替え）',
+    options: [
+      { label: 'はい（n≥40程度）', next: 'r_chi2' },
+      { label: 'いいえ・サンプルが少ない', next: 'r_fisher' },
+    ]
+  },
+
+  // ── 回帰分析 ─────────────────────────
+  regression_start: {
+    type: 'question',
+    q: '目的変数（予測したいもの・結果）はどんなデータですか？',
+    sub: '目的変数のデータ型によって回帰モデルが根本的に変わります。連続値なら線形回帰、カテゴリなら分類モデル、カウントなら特殊な分布を仮定したモデルを使います。',
+    options: [
+      { label: '連続値（点数・金額・年齢など）', next: 'reg_continuous' },
+      { label: '0/1の二値（するか/しないか）', next: 'r_logistic' },
+      { label: '3クラス以上のカテゴリ', next: 'r_multinomial' },
+      { label: '順序尺度（1〜5段階評価など）', next: 'r_ordinal' },
+      { label: 'カウントデータ（件数・回数）', next: 'reg_count' },
+    ]
+  },
+
+  reg_continuous: {
+    type: 'question',
+    q: '説明変数の数はどのくらいですか？',
+    sub: 'サンプル数に対して変数が多すぎると過学習が起き、係数が不安定になります。目安はサンプル数÷変数数が10〜15以上です。',
+    options: [
+      { label: '少ない（サンプル数/変数数 > 15）', next: 'reg_vif' },
+      { label: '多い（サンプル数/変数数 ≤ 15）', next: 'r_lasso' },
+    ]
+  },
+
+  reg_vif: {
+    type: 'question',
+    q: '説明変数同士の相関は強いですか？（VIFを確認）',
+    sub: 'VIF（分散拡大要因）は説明変数同士の相関の強さを示します。VIF>10だと係数の推定が不安定になり、どの変数が影響しているか判別できなくなります。',
+    sub: 'VIF > 10 の変数が複数ある場合は「強い」',
+    options: [
+      { label: '弱い（VIF < 10）', next: 'reg_ols_group' },
+      { label: '強い（VIF > 10 が複数）', next: 'r_ridge' },
+    ]
+  },
+
+  reg_ols_group: {
+    type: 'question',
+    q: 'データに階層構造はありますか？',
+    sub: '同じ学校内の生徒や同じ地区内の住民など、個人がグループに入れ子になっている場合、通常のOLSは「独立性の仮定」を違反します。混合効果モデルで正しく扱えます。',
+    sub: '例：学校の中に生徒、病院の中に患者、地区の中に個人',
+    options: [
+      { label: 'いいえ（通常のデータ）', next: 'r_ols' },
+      { label: 'はい（グループ内に個人がいる）', next: 'r_mixed' },
+    ]
+  },
+
+  reg_count: {
+    type: 'question',
+    q: 'カウントデータに過分散はありますか？',
+    sub: 'ポアソン回帰は「分散＝平均」を仮定します。実際のカウントデータはこれより分散が大きい（過分散）ことが多く、その場合は負の二項回帰がより適切です。',
+    sub: '分散 >> 平均 の場合は過分散（ポアソン回帰のデフォルトが合わない）',
+    options: [
+      { label: 'いいえ（分散≒平均）', next: 'r_poisson' },
+      { label: 'はい（分散 >> 平均）', next: 'r_negbin' },
+    ]
+  },
+
+  // ── 構造探索 ─────────────────────────
+  structure_start: {
+    type: 'question',
+    q: '何を探りたいですか？',
+    sub: '構造探索は「仮説を持って検証するか」「データから発見するか」で手法が大きく変わります。まず何を探りたいかを明確にしましょう。',
+    options: [
+      { label: '変数の背後にある潜在的な因子・次元', next: 'structure_factor' },
+      { label: '似ているサンプルをグループ化したい', next: 'structure_cluster' },
+      { label: '変数間の相関・関連構造', next: 'r_corr_heatmap' },
+      { label: 'X→M→Yという媒介経路があるか', next: 'r_mediation' },
+      { label: 'XとYの関係がZによって変わるか', next: 'r_moderation' },
+    ]
+  },
+
+  structure_factor: {
+    type: 'question',
+    q: '因子構造についての仮説はありますか？',
+    sub: '探索的（EFA）は「因子がいくつあるか知らない」場合、確認的（CFA）は「こういう因子構造のはず」という仮説を検証する場合に使います。',
+    options: [
+      { label: 'いいえ、探索的に探りたい', next: 'r_efa' },
+      { label: 'はい、仮説を検証したい', next: 'structure_cfa_or_sem' },
+    ]
+  },
+
+  structure_cfa_or_sem: {
+    type: 'question',
+    q: '潜在変数間の因果経路も同時に推定しますか？',
+    sub: 'CFAは測定モデル（潜在変数と観測変数の関係）だけを推定します。SEMはそれに加えて潜在変数間の因果経路も同時に推定できます。',
+    options: [
+      { label: 'いいえ（測定モデルのみ）', next: 'r_cfa' },
+      { label: 'はい（因果パス図全体）', next: 'r_sem' },
+    ]
+  },
+
+  structure_cluster: {
+    type: 'question',
+    q: 'グループ数（K）を事前に決められますか？',
+    sub: 'K-meansはグループ数Kを事前に指定する必要があります。「いくつのグループが自然か」わからない場合は階層クラスタリングで視覚的に確認するのが先です。',
+    options: [
+      { label: 'はい（or エルボー法で決める）', next: 'r_kmeans' },
+      { label: 'いいえ（デンドログラムで確認したい）', next: 'r_hierarchical' },
+    ]
+  },
+
+  // ── 因果推論 ─────────────────────────
+  causal_start: {
+    type: 'question',
+    q: 'どんなデータが手元にありますか？',
+    sub: '因果推論の手法は「どんなデータが使えるか」に完全に依存します。横断データだけでは因果を言うのが難しく、縦断データや自然実験の状況が必要です。',
+    options: [
+      { label: '介入前後の複数時点データがある', next: 'causal_longitudinal' },
+      { label: '横断データのみ（1時点のスナップショット）', next: 'causal_cross' },
+      { label: '処遇が閾値（年齢・スコア）で決まっている', next: 'r_rdd' },
+    ]
+  },
+
+  causal_longitudinal: {
+    type: 'question',
+    q: 'データの構造はどれですか？',
+    sub: '複数時点のデータがあっても、介入群と統制群の両方があるか、1つのユニットだけかで使える手法が変わります。',
+    options: [
+      { label: '介入群と統制群の両方がある', next: 'r_did' },
+      { label: '同一ユニット（市・企業）の時系列のみ', next: 'r_synth' },
+      { label: '同一個人を複数時点で追跡', next: 'r_panel' },
+    ]
+  },
+
+  causal_cross: {
+    type: 'question',
+    q: '横断データでは因果は言えません。何が目的ですか？',
+    sub: '横断データ（1時点のスナップショット）では因果は言えません。できる最善の方法として、交絡因子をコントロールした上で「傾向として言える」分析を提案します。',
+    sub: '横断データでできる最善の方法を提案します',
+    options: [
+      { label: 'X→Yの関係を交絡因子コントロールして推定', next: 'r_ols_control' },
+      { label: '処遇の選択バイアスを除いて比較したい', next: 'r_psm' },
+      { label: '内生性の問題がある（逆因果・省略変数）', next: 'r_iv' },
+    ]
+  },
+
+  // ── 時系列 ───────────────────────────
+  time_start: {
+    type: 'question',
+    q: '何をしたいですか？',
+    sub: '時系列データでも「予測」「因果」「構造変化の検出」「生存分析」では使う手法が全く異なります。何をしたいかで分岐します。',
+    options: [
+      { label: '将来の値を予測したい', next: 'time_forecast' },
+      { label: '事象が起きるまでの時間を分析したい（生存分析）', next: 'r_survival' },
+      { label: '時系列の構造変化・変化点を検出したい', next: 'r_changepoint' },
+      { label: '変数間の時間的な先行関係を調べたい', next: 'r_granger' },
+    ]
+  },
+
+  time_forecast: {
+    type: 'question',
+    q: '予測したい時系列は何変数ですか？',
+    sub: '単一時系列の予測にはARIMAが基本ですが、複数の変数が互いに影響し合う場合はVARモデルで同時にモデル化する必要があります。',
+    options: [
+      { label: '1変数（単一時系列）', next: 'r_arima' },
+      { label: '複数変数（互いに影響し合う）', next: 'r_var' },
+    ]
+  },
+
+  // ── 機械学習 ─────────────────────────
+  ml_start: {
+    type: 'question',
+    q: '予測したいもの（目的変数）は何ですか？',
+    sub: '機械学習では目的変数の型が最初の分岐点です。連続値を予測するのか（回帰）、クラスに分類するのか（分類）で使うアルゴリズムが変わります。',
+    options: [
+      { label: '連続値（売上・スコアなど）', next: 'ml_reg' },
+      { label: 'カテゴリ（0/1・クラス分類）', next: 'ml_cls' },
+    ]
+  },
+
+  ml_reg: {
+    type: 'question',
+    q: '解釈可能性は必要ですか？',
+    sub: '解釈可能性が必要かどうかは重要な判断です。ランダムフォレスト＋SHAPなら精度と説明性を両立できます。精度だけ最大化したい場合はXGBoostが強力です。',
+    options: [
+      { label: 'はい（なぜその予測か説明が必要）', next: 'r_rf_shap' },
+      { label: 'いいえ（精度最優先）', next: 'r_gbm' },
+    ]
+  },
+
+  ml_cls: {
+    type: 'question',
+    q: '解釈可能性は必要ですか？',
+    sub: '分類も同様に、「なぜその予測か」を説明する必要があるかで手法を選びます。医療・金融など説明責任が求められる分野では解釈可能性が必須です。',
+    options: [
+      { label: 'はい（理由の説明が必要）', next: 'r_rf_shap' },
+      { label: 'いいえ（精度最優先）', next: 'r_gbm' },
+    ]
+  },
+
+  // ══════════════════════════════════════
+  // ── 結論ノード ─────────────────────────
+  // ══════════════════════════════════════
+
+  r_ttest: {
+    type: 'result',
+    method: 'Welchのt検定（独立2標本）',
+    encKey: 'ttest',
+    reason: '2グループの連続値を比較し、正規分布に近い場合の基本手法。equal_var=Falseで分散が異なっても安全に使える。',
+    also: ['効果量（Cohen\'s d）も合わせて報告', '複数項目を一括検定するなら多重比較補正を忘れずに'],
+    code: `from scipy import stats\nt, p = stats.ttest_ind(group1, group2, equal_var=False)\nprint(f"t={t:.3f}, p={p:.4f}")`
+  },
+
+  r_paired_t: {
+    type: 'result',
+    method: '対応ありt検定',
+    encKey: 'paired_t',
+    reason: '同一対象者の前後比較。個人差を除いて純粋な変化を検定できるため、独立2標本t検定より検定力が高い。',
+    code: `t, p = stats.ttest_rel(before, after)`
+  },
+
+  r_mannwhitney: {
+    type: 'result',
+    method: 'Mann-Whitney U検定',
+    encKey: 'mannwhitney',
+    reason: '非正規分布やリッカート尺度に対応したt検定の代替。順位を使って2グループを比較する。',
+    code: `from scipy.stats import mannwhitneyu\nU, p = mannwhitneyu(group1, group2, alternative="two-sided")`
+  },
+
+  r_wilcoxon: {
+    type: 'result',
+    method: 'Wilcoxon符号順位検定',
+    encKey: 'wilcoxon',
+    reason: '対応ありt検定のノンパラメトリック版。前後比較で正規性が怪しい場合に使う。',
+    code: `from scipy.stats import wilcoxon\nstat, p = wilcoxon(before, after)`
+  },
+
+  r_anova: {
+    type: 'result',
+    method: '一元配置分散分析（ANOVA）＋Tukey HSD',
+    encKey: 'anova',
+    reason: '3グループ以上の平均値を一度に比較。有意差が出たらTukey HSDでどのグループ間に差があるかを特定する。',
+    also: ['等分散の仮定をLevene検定で確認', '非正規ならKruskal-Wallis検定'],
+    code: `from scipy.stats import f_oneway\nfrom statsmodels.stats.multicomp import pairwise_tukeyhsd\nF, p = f_oneway(*groups)\ntukey = pairwise_tukeyhsd(y, group_labels)`
+  },
+
+  r_twoway_anova: {
+    type: 'result',
+    method: '二元配置分散分析',
+    encKey: 'twoway_anova',
+    reason: '2つの要因の主効果と交互作用を同時に検定。「性別×職種」など組み合わせ効果を見るのに有効。',
+    code: `import statsmodels.formula.api as smf\nmodel = smf.ols("y ~ C(A) + C(B) + C(A):C(B)", data=df).fit()`
+  },
+
+  r_ancova: {
+    type: 'result',
+    method: '共分散分析（ANCOVA）',
+    encKey: 'ancova',
+    reason: '年齢・事前スコアなどの共変量をコントロールした上でグループを比較。「より公平な比較」ができる。',
+    code: `model = smf.ols("y ~ C(group) + covariate", data=df).fit()`
+  },
+
+  r_manova: {
+    type: 'result',
+    method: '多変量分散分析（MANOVA）',
+    encKey: 'manova',
+    reason: '複数の目的変数を同時にグループ比較。個別にt検定を繰り返すより多重検定の問題が少ない。',
+    code: `from statsmodels.multivariate.manova import MANOVA\nmaov = MANOVA.from_formula("y1+y2+y3 ~ group", data=df)\nprint(maov.mv_test())`
+  },
+
+  r_repeated_anova: {
+    type: 'result',
+    method: '反復測定ANOVA',
+    encKey: 'anova',
+    reason: '同じ対象者を3条件以上で比較。個人差を除いて条件間の差を検定できる。',
+    code: `from pingouin import rm_anova\nresult = rm_anova(data=df, dv="y", within="condition", subject="id")`
+  },
+
+  r_friedman: {
+    type: 'result',
+    method: 'Friedman検定',
+    encKey: 'friedman',
+    reason: '反復測定ANOVAのノンパラメトリック版。同一対象者×3条件以上で正規性が怪しい場合に使う。',
+    code: `from scipy.stats import friedmanchisquare\nstat, p = friedmanchisquare(cond1, cond2, cond3)`
+  },
+
+  r_kruskal: {
+    type: 'result',
+    method: 'Kruskal-Wallis検定',
+    encKey: 'kruskal',
+    reason: 'ANOVAのノンパラメトリック版。3グループ以上で正規性が怪しい場合の代替手法。',
+    code: `from scipy.stats import kruskal\nH, p = kruskal(*groups)`
+  },
+
+  r_chi2: {
+    type: 'result',
+    method: 'カイ二乗検定',
+    encKey: 'chi2',
+    reason: 'カテゴリ×カテゴリのクロス集計表から独立性を検定。期待度数が全セルで5以上なら信頼性が高い。',
+    code: `from scipy.stats import chi2_contingency\ncrosstab = pd.crosstab(df["var1"], df["var2"])\nchi2, p, dof, expected = chi2_contingency(crosstab)`
+  },
+
+  r_fisher: {
+    type: 'result',
+    method: 'Fisherの正確確率検定',
+    encKey: 'fisher',
+    reason: 'サンプルが小さくカイ二乗検定の仮定を満たせない場合の正確な検定法。2×2表に最適。',
+    code: `from scipy.stats import fisher_exact\nodds_ratio, p = fisher_exact([[a,b],[c,d]])`
+  },
+
+  r_mcnemar: {
+    type: 'result',
+    method: 'McNemar検定',
+    encKey: 'mcnemar',
+    reason: '同一対象者の前後でカテゴリが変化したかを検定。介入前後の態度変化などに使う。',
+    code: `from statsmodels.stats.contingency_tables import mcnemar\nresult = mcnemar([[a,b],[c,d]], exact=True)`
+  },
+
+  r_ols: {
+    type: 'result',
+    method: '重回帰分析（OLS）',
+    encKey: 'ols',
+    reason: '目的変数が連続値で多重共線性がない場合の基本回帰手法。係数・p値・R²で結果を解釈する。',
+    also: ['残差の正規性・等分散性をプロットで確認', '属性変数をコントロール変数として加える'],
+    code: `import statsmodels.api as sm\nmodel = sm.OLS(y, sm.add_constant(X)).fit()\nprint(model.summary())`
+  },
+
+  r_ols_control: {
+    type: 'result',
+    method: '重回帰分析（コントロール変数付き）',
+    encKey: 'ols',
+    reason: '横断データで交絡因子をコントロールする最善手。因果とは言えないが「他の条件を揃えた上での傾向」として報告できる。',
+    also: ['DAGで交絡構造を整理してからコントロール変数を決める', '「傾向として言える」止まりで因果とは言わない'],
+    code: `model = sm.OLS(y, sm.add_constant(X_with_controls)).fit()\nprint(model.summary())`
+  },
+
+  r_ridge: {
+    type: 'result',
+    method: 'Ridge回帰',
+    encKey: 'ridge',
+    reason: 'VIF > 10 の多重共線性がある場合の回帰手法。係数を安定させるためにL2ペナルティをかける。標準化が必須。',
+    also: ['係数にp値はないが方向と相対的な大きさは解釈できる', 'alphaはRidgeCVで交差検証して選ぶ'],
+    code: `from sklearn.linear_model import RidgeCV\nfrom sklearn.preprocessing import StandardScaler\nX_sc = StandardScaler().fit_transform(X)\nridge = RidgeCV(alphas=[0.01,0.1,1,10,100], cv=5)\nridge.fit(X_sc, y)`
+  },
+
+  r_lasso: {
+    type: 'result',
+    method: 'Lasso回帰（変数選択）',
+    encKey: 'lasso',
+    reason: '変数が多すぎる場合に不要な変数の係数を自動でゼロにする。重要な変数を自動選択できる。',
+    also: ['標準化が必須', '選ばれた変数でOLSを再実行すると解釈しやすい'],
+    code: `from sklearn.linear_model import LassoCV\nlasso = LassoCV(cv=5)\nlasso.fit(X_sc, y)\nselected = X.columns[lasso.coef_ != 0]`
+  },
+
+  r_logistic: {
+    type: 'result',
+    method: 'ロジスティック回帰',
+    encKey: 'logistic',
+    reason: '目的変数が0/1の二値の場合の回帰。係数はオッズ比（exp(β)）として解釈する。',
+    code: `from sklearn.linear_model import LogisticRegression\nimport numpy as np\nmodel = LogisticRegression()\nmodel.fit(X_sc, y_binary)\nodds = np.exp(model.coef_[0])`
+  },
+
+  r_multinomial: {
+    type: 'result',
+    method: '多項ロジスティック回帰',
+    encKey: 'multinomial',
+    reason: '目的変数が3クラス以上のカテゴリの場合。基準クラスとの比較でオッズ比を推定する。',
+    code: `from sklearn.linear_model import LogisticRegression\nmodel = LogisticRegression(multi_class='multinomial')\nmodel.fit(X_sc, y_multi)`
+  },
+
+  r_ordinal: {
+    type: 'result',
+    method: '順序ロジスティック回帰',
+    encKey: 'ordinal_reg',
+    reason: '目的変数が順序尺度（1〜5段階など）の場合。カテゴリ間の順序を考慮した回帰モデル。理論的には最も適切。',
+    code: `from statsmodels.miscmodels.ordinal_model import OrderedModel\nmodel = OrderedModel(y_ordinal, X, distr='logit')\nresult = model.fit()`
+  },
+
+  r_poisson: {
+    type: 'result',
+    method: 'ポアソン回帰',
+    encKey: 'poisson',
+    reason: '目的変数がカウントデータ（件数・回数）で、分散≒平均の場合に使う一般化線形モデル。',
+    code: `import statsmodels.formula.api as smf\nmodel = smf.glm("y ~ x1+x2", data=df,\n    family=sm.families.Poisson()).fit()`
+  },
+
+  r_negbin: {
+    type: 'result',
+    method: '負の二項回帰',
+    encKey: 'negbin',
+    reason: 'カウントデータで過分散（分散 >> 平均）がある場合のポアソン回帰の拡張版。',
+    code: `model = smf.glm("y ~ x1+x2", data=df,\n    family=sm.families.NegativeBinomial()).fit()`
+  },
+
+  r_mixed: {
+    type: 'result',
+    method: '線形混合効果モデル（LME）',
+    encKey: 'mixed',
+    reason: '個人が学校・地区などに入れ子になった階層データに適切。固定効果と変量効果を同時に推定できる。',
+    code: `from statsmodels.formula.api import mixedlm\nmodel = mixedlm("y ~ x1+x2", data=df, groups=df["group"]).fit()`
+  },
+
+  r_efa: {
+    type: 'result',
+    method: '探索的因子分析（EFA）',
+    encKey: 'efa',
+    reason: 'アンケートの多数の設問が何次元の概念を測っているか探索的に発見する。尺度開発に不可欠。',
+    also: ['スクリープロットか平行分析で因子数を決める', 'バリマックス回転で解釈しやすくする'],
+    code: `from factor_analyzer import FactorAnalyzer\nfa = FactorAnalyzer(n_factors=4, rotation="varimax")\nfa.fit(X)\nprint(fa.loadings_)`
+  },
+
+  r_cfa: {
+    type: 'result',
+    method: '確認的因子分析（CFA）',
+    encKey: 'cfa',
+    reason: 'EFAで見つけた因子構造や理論的な仮説をデータで検証する。CFI > 0.95、RMSEA < 0.06が目安。',
+    code: `import semopy\nmodel_desc = "F1 =~ x1 + x2 + x3\\nF2 =~ x4 + x5 + x6"\nmodel = semopy.Model(model_desc)\nresult = model.fit(data=df)`
+  },
+
+  r_sem: {
+    type: 'result',
+    method: '構造方程式モデリング（SEM）',
+    encKey: 'sem',
+    reason: '潜在変数を含む複雑な因果経路（直接効果・間接効果）を一度に推定。CFAと回帰を統合した手法。',
+    code: `import semopy\nmodel_desc = """\n  latent =~ x1 + x2 + x3\n  latent ~ z1 + z2\n"""\nmodel = semopy.Model(model_desc)\nresult = model.fit(data=df)`
+  },
+
+  r_kmeans: {
+    type: 'result',
+    method: 'K-meansクラスタリング',
+    encKey: 'kmeans',
+    reason: 'データをK個のグループに分割。エルボー法・シルエット係数で最適K数を決める。標準化が必須。',
+    also: ['エルボー法でK数を探索', 't-SNEで2次元可視化してクラスタを確認'],
+    code: `from sklearn.cluster import KMeans\nfrom sklearn.metrics import silhouette_score\nfor k in range(2,8):\n    km = KMeans(n_clusters=k, random_state=42)\n    print(k, silhouette_score(X_sc, km.fit_predict(X_sc)))`
+  },
+
+  r_hierarchical: {
+    type: 'result',
+    method: '階層クラスタリング',
+    encKey: 'hierarchical',
+    reason: 'K数を事前に決めずにデンドログラムでクラスター構造を視覚的に確認できる。小〜中規模データに適する。',
+    code: `from scipy.cluster.hierarchy import dendrogram, linkage\nZ = linkage(X_sc, method='ward')\ndendrogram(Z)`
+  },
+
+  r_corr_heatmap: {
+    type: 'result',
+    method: '相関分析 ＋ ヒートマップ',
+    encKey: 'spearman',
+    reason: '変数間の相関構造を把握するには相関行列をヒートマップで可視化するのが最も直感的。',
+    also: ['連続値→Pearson相関', '順序尺度→Spearman相関', '相関は因果でない点に注意'],
+    code: `import seaborn as sns\ncorr = df[cols].corr(method='spearman')\nsns.heatmap(corr, annot=True, cmap='RdYlGn', center=0)`
+  },
+
+  r_mediation: {
+    type: 'result',
+    method: '媒介分析',
+    encKey: 'mediation',
+    reason: 'X→M→Yという間接効果の存在と大きさをブートストラップで検定する。因果経路の解明に使う。',
+    code: `import pingouin as pg\nresult = pg.mediation_analysis(\n    data=df, x="X", m="M", y="Y", n_boot=1000\n)`
+  },
+
+  r_moderation: {
+    type: 'result',
+    method: '調整分析（交互作用）',
+    encKey: 'moderation',
+    reason: 'XとYの関係がZの値によって変わるかを交互作用項で検定。「どんな条件で効果があるか」がわかる。',
+    code: `df["X_Z"] = df["X"] * df["Z"]\nmodel = sm.OLS(df["Y"],\n    sm.add_constant(df[["X","Z","X_Z"]])).fit()`
+  },
+
+  r_did: {
+    type: 'result',
+    method: '差の差分析（DID）',
+    encKey: 'did',
+    reason: '介入群と統制群の前後変化の差から因果効果を推定。政策評価の代表的手法。平行トレンド仮定の確認が必須。',
+    code: `df["post"] = (df["year"] >= cutoff).astype(int)\ndf["treated"] = (df["group"] == "treatment").astype(int)\ndf["did"] = df["post"] * df["treated"]\nmodel = sm.OLS(df["y"], sm.add_constant(df[["post","treated","did"]])).fit()`
+  },
+
+  r_panel: {
+    type: 'result',
+    method: 'パネルデータ分析（固定効果モデル）',
+    encKey: 'panel',
+    reason: '同一個人を複数時点で追跡したデータ。固定効果で時間不変の個体差をコントロールして因果に近い推定ができる。',
+    code: `from linearmodels.panel import PanelOLS\nresult = PanelOLS(y, X, entity_effects=True).fit()`
+  },
+
+  r_synth: {
+    type: 'result',
+    method: '合成コントロール法',
+    encKey: 'synth',
+    reason: '単一ユニット（1つの市・企業）への政策介入の効果を評価。他のユニットの加重平均で反事実を合成する。',
+  },
+
+  r_psm: {
+    type: 'result',
+    method: '傾向スコアマッチング（PSM）',
+    encKey: 'psm',
+    reason: '処遇を受ける確率が同じ対象者をマッチングして選択バイアスを除去。観察研究での因果推定に使う。',
+    code: `from causalinference import CausalModel\ncm = CausalModel(Y=y, D=treatment, X=covariates)\ncm.est_via_matching()`
+  },
+
+  r_iv: {
+    type: 'result',
+    method: '操作変数法（IV / 2SLS）',
+    encKey: 'iv',
+    reason: '逆因果・省略変数バイアスによる内生性を操作変数で解決。良い操作変数を見つけることが最大の難関。',
+    code: `from linearmodels.iv import IV2SLS\nresult = IV2SLS(\n    dependent=y, exog=exog,\n    endog=endog, instruments=instruments\n).fit()`
+  },
+
+  r_rdd: {
+    type: 'result',
+    method: '回帰不連続デザイン（RDD）',
+    encKey: 'rdd',
+    reason: '閾値（年齢・スコアなど）を境に処遇が変わる場合に、閾値近傍のジャンプを因果効果として推定する。',
+  },
+
+  r_arima: {
+    type: 'result',
+    method: 'ARIMA / SARIMA',
+    encKey: 'arima',
+    reason: '単一時系列の将来予測。ACF/PACFで次数を確認し、季節性があればSARIMAを使う。',
+    code: `from statsmodels.tsa.arima.model import ARIMA\nmodel = ARIMA(y, order=(1,1,1))\nresult = model.fit()\nforecast = result.forecast(steps=12)`
+  },
+
+  r_var: {
+    type: 'result',
+    method: 'VARモデル',
+    encKey: 'var_model',
+    reason: '複数の時系列変数が互いに影響し合う場合にVARで同時モデル化。インパルス応答関数で動的な相互影響を分析。',
+    code: `from statsmodels.tsa.vector_ar.var_model import VAR\nmodel = VAR(df[["y1","y2","y3"]])\nresult = model.fit(maxlags=4, ic="aic")`
+  },
+
+  r_survival: {
+    type: 'result',
+    method: 'Kaplan-Meier推定 ＋ Cox比例ハザードモデル',
+    encKey: 'survival',
+    reason: '生存曲線の可視化にはKaplan-Meier、変数の影響を推定するにはCox比例ハザードモデルを使う。',
+    code: `from lifelines import KaplanMeierFitter, CoxPHFitter\nkmf = KaplanMeierFitter()\nkmf.fit(df["duration"], df["event"])\nkmf.plot_survival_function()\n\ncph = CoxPHFitter()\ncph.fit(df, duration_col="duration", event_col="event")`
+  },
+
+  r_changepoint: {
+    type: 'result',
+    method: '変化点検出',
+    encKey: 'changepoint',
+    reason: '時系列の統計的性質（平均・分散）が変化した時点を自動検出。政策変更やイベントの影響点の特定に使う。',
+    code: `import ruptures as rpt\nalgo = rpt.Pelt(model="rbf").fit(signal)\nresult = algo.predict(pen=10)`
+  },
+
+  r_granger: {
+    type: 'result',
+    method: 'Granger因果性検定',
+    encKey: 'granger',
+    reason: '変数Xのラグが変数Yの予測に有意に寄与するかを検定。厳密な因果ではなく「時間的先行性」の検定。',
+    code: `from statsmodels.tsa.stattools import grangercausalitytests\nresults = grangercausalitytests(df[["y","x"]], maxlag=4)`
+  },
+
+  r_rf_shap: {
+    type: 'result',
+    method: 'ランダムフォレスト ＋ SHAP値',
+    encKey: 'rf',
+    reason: '予測精度と解釈可能性を両立。ランダムフォレストで予測し、SHAP値で「なぜその予測か」を説明する。',
+    code: `from sklearn.ensemble import RandomForestRegressor\nimport shap\nrf = RandomForestRegressor(n_estimators=100, random_state=42)\nrf.fit(X_sc, y)\nexplainer = shap.Explainer(rf, X_sc)\nshap_values = explainer(X_sc)\nshap.plots.beeswarm(shap_values)`
+  },
+
+  r_gbm: {
+    type: 'result',
+    method: '勾配ブースティング（XGBoost / LightGBM）',
+    encKey: 'gbm',
+    reason: '表形式データで最高精度を出すことが多い手法。early stoppingで過学習を防ぎ、交差検証でモデルを評価する。',
+    code: `import xgboost as xgb\nmodel = xgb.XGBRegressor(\n    n_estimators=100, learning_rate=0.1\n)\nmodel.fit(X_train, y_train,\n    eval_set=[(X_val, y_val)],\n    early_stopping_rounds=10)`
+  },
+};
+
+let encEl = null;
+function showEnc(id) {
+  const d = D[id];
+  if (!d) return;
+  if (encEl) encEl.classList.remove('active');
+  encEl = event.currentTarget;
+  encEl.classList.add('active');
+  const c = d.c || 'var(--c1)';
+  const bg = d.bg || 'var(--c1l)';
+  let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
+    <h2 style="color:${c}">${d.t}</h2>
+    <div class="en">${d.en||''}</div>
+    <span style="font-size:10px;background:${bg};border:1px solid ${c}30;color:${c};padding:2px 10px;border-radius:20px;font-weight:600">${d.cat||''}</span>
+    <p style="margin-top:10px">${d.what||''}</p>
+  </div>`;
+  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:12px;line-height:1.8;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+  if(d.when&&d.when.length){h+=`<div class="ds"><h3>使いどころ</h3><ul>${d.when.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.formula){h+=`<div class="ds"><h3>数式</h3><div class="formula">${d.formula.replace(/\n/g,'<br>')}</div></div>`;}
+  if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点・ポイント</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.code){h+=`<div class="ds"><h3>Pythonコード例</h3><div class="code">${d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;}
+  document.getElementById('enc-ph').style.display='none';
+  const db = document.getElementById('enc-db');
+  db.innerHTML = h;
+  db.classList.add('on');
+}
+
+let flowEl = null;
+function showFlow(id) {
+  const d = FD[id];
+  if (!d) return;
+  if (flowEl) flowEl.classList.remove('factive');
+  flowEl = event.currentTarget;
+  flowEl.classList.add('factive');
+  const c = d.c || 'var(--c1)';
+  const bg = d.bg || 'var(--c1l)';
+  let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
+    <h2 style="color:${c}">${d.t}</h2>
+    <p style="margin-top:8px">${d.what||''}</p>
+    ${d.what2 ? `<p style="margin-top:8px">${d.what2}</p>` : ''}
+  </div>`;
+  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:12px;line-height:1.8;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+  if(d.ex&&d.ex.length){h+=`<div class="ds"><h3>具体例</h3><ul>${d.ex.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.points&&d.points.length){h+=`<div class="ds"><h3>やること</h3><ul>${d.points.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.checklist&&d.checklist.length){h+=`<div class="ds"><h3>チェックリスト</h3><ul>${d.checklist.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.methods&&d.methods.length){h+=`<div class="ds"><h3>使える統計手法</h3><ul>${d.methods.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.tree&&d.tree.length){h+=`<div class="ds"><h3>選択フロー</h3><ul>${d.tree.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.guide&&d.guide.length){h+=`<div class="ds"><h3>グラフ選択ガイド</h3><ul>${d.guide.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.levels&&d.levels.length){h+=`<div class="ds"><h3>解釈の3段階</h3><ul>${d.levels.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点・ポイント</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.code){h+=`<div class="ds"><h3>コード例</h3><div class="code">${d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;}
+  document.getElementById('flow-ph').style.display='none';
+  const db = document.getElementById('flow-db');
+  db.innerHTML = h;
+  db.classList.add('on');
+}
+
+let activeCats = new Set(['compare','nonparam','regression','structure','causal','bayes','ml','time','supplement']);
+function filt() {
+  const q = document.getElementById('sq').value.toLowerCase();
+  document.querySelectorAll('.card').forEach(c => {
+    const match = !q || c.textContent.toLowerCase().includes(q);
+    const catMatch = activeCats.has(c.dataset.cat);
+    c.classList.toggle('hide', !(match && catMatch));
+  });
+}
+function fc(cat, el) {
+  if (activeCats.has(cat)) { activeCats.delete(cat); el.classList.remove('on'); }
+  else { activeCats.add(cat); el.classList.add('on'); }
+  filt();
+}
+
+
+let wizHistory = [];
+let wizCurrent = 'start';
+
+function wizInit() {
+  if (document.getElementById('wiz-main').innerHTML === '') {
+    wizRestart();
+  }
+}
+
+function wizRender(nodeId) {
+  wizCurrent = nodeId;
+  const node = WIZARD[nodeId];
+  if (!node) { 
+    document.getElementById('wiz-main').innerHTML = '<p>ノードが見つかりません: ' + nodeId + '</p>';
+    return;
+  }
+  const main = document.getElementById('wiz-main');
+  const step = wizHistory.length + 1;
+
+  if (node.type === 'question') {
+    main.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div class="wiz-step" style="margin-bottom:0">STEP ${step}</div>
+        ${wizHistory.length > 0 ? `
+          <div style="display:flex;gap:8px;">
+            <button class="wiz-restart-btn" style="padding:4px 12px;font-size:11px;" onclick="wizBackOne()">← 前の質問に戻る</button>
+            <button class="wiz-restart-btn" style="padding:4px 12px;font-size:11px;" onclick="wizRestart()">🏠 最初から</button>
+          </div>
+        ` : ''}
+      </div>
+      <div class="wiz-title">${node.q}</div>
+      ${node.sub ? `<div class="wiz-sub">💡 ${node.sub}</div>` : ''}
+      <div class="wiz-options">
+        ${node.options.map(opt => `
+          <button class="wiz-btn" onclick="wizAnswer('${opt.next}', \`${opt.label.replace(/`/g,"'")}\`, \`${node.q.replace(/`/g,"'")}\`)">
+            ${opt.label}
+            <span class="wiz-arrow">→</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  } else if (node.type === 'result') {
+    // 最後の履歴アイテムに「→ この手法に決定」を設定
+    if (wizHistory.length > 0) {
+      wizHistory[wizHistory.length - 1].reason = `→ <strong>${node.method}</strong> に決定！`;
+    }
+    main.innerHTML = `
+      <div class="wiz-step">🎯 結論</div>
+      <div class="wiz-result">
+        <div class="wiz-result-title">✅ ${node.method}</div>
+        <div class="wiz-result-subtitle">あなたのデータと目的に最適な手法</div>
+        <div class="wiz-result-reason">${node.reason}</div>
+        ${node.also && node.also.length ? `
+          <div class="wiz-also">
+            <div class="wiz-also-title">合わせてやること</div>
+            <ul>${node.also.map(a => `<li>${a}</li>`).join('')}</ul>
+          </div>
+        ` : ''}
+        ${node.code ? `<div class="wiz-code">${node.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+          ${node.encKey ? `<button class="wiz-link-btn" onclick="wizGoToEnc('${node.encKey}')">📖 百科事典で詳細を見る →</button>` : ''}
+          <button class="wiz-restart-btn" onclick="wizRestart()">🔄 最初からやり直す</button>
+        </div>
+      </div>
+    `;
+  }
+  wizRenderHistory();
+}
+
+function wizAnswer(nextId, label, question) {
+  const nextNode = WIZARD[nextId];
+  let reason = '';
+  if (nextNode) {
+    if (nextNode.type === 'result') {
+      // 結論ノードの場合は手法名を先に見せる（result renderで更新される）
+      reason = '→ 手法を特定中...';
+    } else if (nextNode.type === 'question') {
+      // 次の質問のテーマを簡潔に表示
+      const preview = nextNode.q.length > 28 ? nextNode.q.slice(0, 28) + '...' : nextNode.q;
+      reason = `→ 次：${preview}`;
+    }
+  }
+  wizHistory.push({ q: question, a: label, nodeId: wizCurrent, reason: reason });
+  wizRender(nextId);
+}
+
+function wizRenderHistory() {
+  const hist = document.getElementById('wiz-history');
+  if (wizHistory.length === 0) {
+    hist.innerHTML = '<p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p>';
+    return;
+  }
+  hist.innerHTML = wizHistory.map((item, i) => `
+    <div class="hist-item">
+      <div class="hist-q" style="font-size:10px;color:var(--muted);margin-bottom:3px;">Q${i+1}. ${item.q}</div>
+      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px;">
+        <span class="hist-a">${item.a}</span>
+        <button class="hist-back-btn" onclick="wizBackTo(${i})">↩ 戻る</button>
+      </div>
+      ${item.reason ? `<div style="font-size:10px;color:var(--muted);font-style:italic;padding-left:2px;">${item.reason}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function wizBackTo(idx) {
+  const target = wizHistory[idx];
+  wizHistory = wizHistory.slice(0, idx);
+  wizRender(target.nodeId);
+}
+
+function wizBackOne() {
+  if (wizHistory.length === 0) return;
+  const prev = wizHistory[wizHistory.length - 1];
+  wizHistory = wizHistory.slice(0, -1);
+  wizRender(prev.nodeId);
+}
+
+function wizRestart() {
+  wizHistory = [];
+  document.getElementById('wiz-history').innerHTML = '<p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p>';
+  wizRender('start');
+}
+
+function wizGoToEnc(key) {
+  switchTab('enc', document.querySelectorAll('.tab')[0]);
+  setTimeout(() => {
+    const d = D[key];
+    if (!d) return;
+    const c = d.c || 'var(--c1)';
+    const bg = d.bg || 'var(--c1l)';
+    let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
+      <h2 style="color:${c}">${d.t}</h2>
+      <div class="en">${d.en||''}</div>
+      <span style="font-size:10px;background:${bg};border:1px solid ${c}30;color:${c};padding:2px 10px;border-radius:20px;font-weight:600">${d.cat||''}</span>
+      <p style="margin-top:10px">${d.what||''}</p>
+    </div>`;
+    if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:12px;line-height:1.8;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+    if(d.when&&d.when.length){h+=`<div class="ds"><h3>使いどころ</h3><ul>${d.when.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+    if(d.formula){h+=`<div class="ds"><h3>数式</h3><div class="formula">${d.formula.replace(/\n/g,'<br>')}</div></div>`;}
+    if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+    if(d.code){h+=`<div class="ds"><h3>コード例</h3><div class="code">${d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;}
+    document.getElementById('enc-ph').style.display='none';
+    const db = document.getElementById('enc-db');
+    db.innerHTML = h;
+    db.classList.add('on');
+  }, 150);
+}
+
+
+// グローバルスコープに明示的に登録
+window.switchTab = switchTab;
+window.showEnc = showEnc;
+window.showFlow = showFlow;
+window.filt = filt;
+window.fc = fc;
+window.wizRestart = wizRestart;
+window.wizAnswer = wizAnswer;
+window.wizBackTo = wizBackTo;
+window.wizBackOne = wizBackOne;
+window.wizGoToEnc = wizGoToEnc;
+window.wizInit = wizInit;
+// onclickから呼べるようにwindowに登録
+window.switchTab = switchTab;
+window.showEnc = showEnc;
+window.showFlow = showFlow;
+window.filt = filt;
+window.fc = fc;
+window.wizRestart = wizRestart;
+window.wizAnswer = wizAnswer;
+window.wizBackTo = wizBackTo;
+window.wizBackOne = wizBackOne;
+window.wizGoToEnc = wizGoToEnc;
+window.wizInit = wizInit;
+
+</script>
+</body>
+</html>
