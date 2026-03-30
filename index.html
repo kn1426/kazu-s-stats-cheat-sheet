@@ -872,21 +872,18 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
     <thead>
       <tr>
         <th>手法</th>
-        <th>English</th>
         <th>SEとの関係・仕組み</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><span class="method-name">t検定</span><span class="method-en">t-test</span></td>
-        <td><span class="btag btag-b">compare</span></td>
         <td>平均の差 ÷ SE = t値 → t分布でp値に変換<br>
           <span style="color:var(--muted);font-size:11px;">例：幸福度の差1.37 ÷ 合成SE0.292 = t値4.69 → p≒0.0000（偶然この差が起きる確率がほぼゼロ）</span><br>
           <span style="color:var(--muted);font-size:11px;">nが大きいほどt分布は正規分布に近づく。t検定はANOVAの2グループ版で F = t² の関係がある</span></td>
       </tr>
       <tr>
         <td><span class="method-name">分散分析</span><span class="method-en">ANOVA</span></td>
-        <td><span class="btag btag-b">compare</span></td>
         <td>F値 = グループ間分散 ÷ グループ内分散 → F分布でp値に変換<br>
           <span style="color:var(--muted);font-size:11px;">グループ間分散：各グループの平均が全体平均から離れている度合い（二乗平均）</span><br>
           <span style="color:var(--muted);font-size:11px;">グループ内分散：各グループ内の個人差（SD）の平均</span><br>
@@ -894,20 +891,17 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       </tr>
       <tr>
         <td><span class="method-name">多重比較</span><span class="method-en">Tukey HSD</span></td>
-        <td><span class="btag btag-o">post-hoc</span></td>
         <td>ANOVAで「どこかに差がある」とわかった後に「どのペアに差があるか」を特定<br>
           <span style="color:var(--muted);font-size:11px;">なぜt検定を繰り返してはダメか：α=0.05は「1回で偽陽性5%以内」の約束。15回繰り返すと1-(0.95)¹⁵=54%で偶然有意になる</span><br>
           <span style="color:var(--muted);font-size:11px;">Tukey HSDは「15ペア全体として偽陽性5%以内」になるようp値の基準を厳しくする → p-adjはt検定のp値より大きくなる</span></td>
       </tr>
       <tr>
         <td><span class="method-name">重回帰分析</span><span class="method-en">OLS Regression</span></td>
-        <td><span class="btag btag-b">regression</span></td>
         <td>係数 ÷ SE = t値 → t分布でp値に変換<br>
           <span style="color:var(--muted);font-size:11px;">係数・p値・R²で結果を解釈する</span></td>
       </tr>
       <tr>
         <td><span class="method-name">Ridge回帰</span><span class="method-en">Ridge Regression</span></td>
-        <td><span class="btag btag-o">regularize</span></td>
         <td>正則化でSEが計算不可 → ブートストラップCIで不確実性を推定<br>
           <span style="color:var(--muted);font-size:11px;">多重共線性がある場合に使う正則化回帰</span></td>
       </tr>
