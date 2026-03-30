@@ -290,6 +290,18 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
 .pval-table{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
 .pval-badge{border-radius:8px;padding:10px 16px;font-size:12px;font-weight:700;border:1.5px solid;}
 
+/* ===== 言語切替 ===== */
+.lang-toggle{margin-left:auto;background:var(--bg);border:1.5px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:.15s;white-space:nowrap;}
+.lang-toggle:hover{border-color:var(--c1);color:var(--c1);}
+html[lang="en"] .only-jp{display:none!important;}
+.only-en{display:none!important;}
+html[lang="en"] .only-en{display:inline!important;}
+html[lang="en"] .only-en-block{display:block!important;}
+.only-en-block{display:none!important;}
+/* EN mode: swap card title hierarchy */
+html[lang="en"] .ct{font-size:10px;color:var(--muted);font-weight:500;margin-bottom:0;}
+html[lang="en"] .ce{font-size:12px;font-weight:800;color:var(--text);margin-bottom:4px;}
+
 /* ===== モバイル対応 ===== */
 @media (max-width: 768px) {
   body{height:auto;overflow:auto;overflow-x:hidden;}
@@ -357,15 +369,18 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
 <body>
 
 <div class="topbar">
-  <h1>データ分析 <span>完全ガイド</span></h1>
-  <span style="font-size:11px;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:6px;border:1px solid var(--border)">← カードをクリックで詳細表示</span>
+  <h1 class="only-jp">データ分析 <span>完全ガイド</span></h1>
+  <h1 class="only-en-block">Data Analysis <span>Complete Guide</span></h1>
+  <span class="only-jp" style="font-size:11px;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:6px;border:1px solid var(--border)">← カードをクリックで詳細表示</span>
+  <span class="only-en" style="font-size:11px;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:6px;border:1px solid var(--border)">← Click a card to view details</span>
+  <button class="lang-toggle" id="lang-toggle" onclick="setLang('en')">🇺🇸 English</button>
 </div>
 
 <div class="tabbar">
-  <div class="tab active" onclick="switchTab('enc',this)">📖 統計手法 百科事典</div>
-  <div class="tab" onclick="switchTab('flow',this)">🔀 分析フローチャート</div>
-  <div class="tab" onclick="switchTab('wizard',this)">🧭 手法診断ウィザード</div>
-  <div class="tab" onclick="switchTab('basics',this)">📐 統計の基礎</div>
+  <div class="tab active" onclick="switchTab('enc',this)"><span class="only-jp">📖 統計手法 百科事典</span><span class="only-en">📖 Methods Encyclopedia</span></div>
+  <div class="tab" onclick="switchTab('flow',this)"><span class="only-jp">🔀 分析フローチャート</span><span class="only-en">🔀 Analysis Flowchart</span></div>
+  <div class="tab" onclick="switchTab('wizard',this)"><span class="only-jp">🧭 手法診断ウィザード</span><span class="only-en">🧭 Method Selector</span></div>
+  <div class="tab" onclick="switchTab('basics',this)"><span class="only-jp">📐 統計の基礎</span><span class="only-en">📐 Statistical Fundamentals</span></div>
 </div>
 
 <!-- TAB 1: 百科事典 -->
@@ -373,24 +388,24 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
   <div class="enc-toolbar">
     <div class="search-box"><input type="text" id="sq" placeholder="検索..." oninput="filt()"></div>
     <div class="chips" id="chips">
-      <div class="chip on" style="background:var(--c2l);color:var(--c2);border-color:var(--c2m)" onclick="fc('compare',this)">📊 比較検定</div>
-      <div class="chip on" style="background:var(--c7l);color:var(--c7);border-color:var(--c7m)" onclick="fc('nonparam',this)">🔢 ノンパラ</div>
-      <div class="chip on" style="background:#fdf4ff;color:#6d28d9;border-color:#ddd6fe" onclick="fc('supplement',this)">✅ 検定補足</div>
-      <div class="chip on" style="background:var(--c3l);color:var(--c3);border-color:var(--c3m)" onclick="fc('regression',this)">📉 回帰</div>
-      <div class="chip on" style="background:var(--c4l);color:var(--c4);border-color:var(--c4m)" onclick="fc('structure',this)">🌀 構造探索</div>
-      <div class="chip on" style="background:var(--c5l);color:var(--c5);border-color:var(--c5m)" onclick="fc('causal',this)">⚗️ 因果推論</div>
-      <div class="chip on" style="background:var(--c6l);color:var(--c6);border-color:var(--c6m)" onclick="fc('bayes',this)">🎰 ベイズ</div>
-      <div class="chip on" style="background:var(--c1l);color:var(--c1);border-color:var(--c1m)" onclick="fc('ml',this)">🤖 機械学習</div>
-      <div class="chip on" style="background:var(--c8l);color:var(--c8);border-color:var(--c8m)" onclick="fc('time',this)">📈 時系列</div>
+      <div class="chip on" style="background:var(--c2l);color:var(--c2);border-color:var(--c2m)" onclick="fc('compare',this)"><span class="only-jp">📊 比較検定</span><span class="only-en">📊 Comparison</span></div>
+      <div class="chip on" style="background:var(--c7l);color:var(--c7);border-color:var(--c7m)" onclick="fc('nonparam',this)"><span class="only-jp">🔢 ノンパラ</span><span class="only-en">🔢 Non-param</span></div>
+      <div class="chip on" style="background:#fdf4ff;color:#6d28d9;border-color:#ddd6fe" onclick="fc('supplement',this)"><span class="only-jp">✅ 検定補足</span><span class="only-en">✅ Supplements</span></div>
+      <div class="chip on" style="background:var(--c3l);color:var(--c3);border-color:var(--c3m)" onclick="fc('regression',this)"><span class="only-jp">📉 回帰</span><span class="only-en">📉 Regression</span></div>
+      <div class="chip on" style="background:var(--c4l);color:var(--c4);border-color:var(--c4m)" onclick="fc('structure',this)"><span class="only-jp">🌀 構造探索</span><span class="only-en">🌀 Structure</span></div>
+      <div class="chip on" style="background:var(--c5l);color:var(--c5);border-color:var(--c5m)" onclick="fc('causal',this)"><span class="only-jp">⚗️ 因果推論</span><span class="only-en">⚗️ Causal</span></div>
+      <div class="chip on" style="background:var(--c6l);color:var(--c6);border-color:var(--c6m)" onclick="fc('bayes',this)"><span class="only-jp">🎰 ベイズ</span><span class="only-en">🎰 Bayesian</span></div>
+      <div class="chip on" style="background:var(--c1l);color:var(--c1);border-color:var(--c1m)" onclick="fc('ml',this)"><span class="only-jp">🤖 機械学習</span><span class="only-en">🤖 ML</span></div>
+      <div class="chip on" style="background:var(--c8l);color:var(--c8);border-color:var(--c8m)" onclick="fc('time',this)"><span class="only-jp">📈 時系列</span><span class="only-en">📈 Time Series</span></div>
     </div>
   </div>
   <div class="enc-main">
     <div class="map"><div class="mindmap">
-      <div class="root">統計分析手法 大全<p>カードをクリックで詳細 ／ 右上で検索・フィルタ</p></div>
+      <div class="root"><span class="only-jp">統計分析手法 大全</span><span class="only-en">Statistical Methods Reference</span><p class="only-jp">カードをクリックで詳細 ／ 右上で検索・フィルタ</p><p class="only-en">Click a card for details / search & filter above</p></div>
       <div class="conn"></div>
       <div class="row">
         <div class="cat cc2" data-cat="compare">
-          <div class="cath">📊 グループ比較・検定</div>
+          <div class="cath"><span class="only-jp">📊 グループ比較・検定</span><span class="only-en">📊 Group Comparison & Testing</span></div>
           <div class="grid">
             <div class="card" data-cat="compare" data-level="b" onclick="showEnc('ttest')"><div class="ct">t検定（独立2標本）</div><div class="ce">Independent t-test</div><div class="tags"><span class="mtag">2群</span><span class="mtag">連続値</span></div></div>
             <div class="card" data-cat="compare" data-level="b" onclick="showEnc('paired_t')"><div class="ct">対応ありt検定</div><div class="ce">Paired t-test</div><div class="tags"><span class="mtag">前後比較</span></div></div>
@@ -404,7 +419,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
           </div>
         </div>
         <div class="cat cc7" data-cat="nonparam">
-          <div class="cath">🔢 ノンパラメトリック</div>
+          <div class="cath"><span class="only-jp">🔢 ノンパラメトリック</span><span class="only-en">🔢 Non-parametric</span></div>
           <div class="grid">
             <div class="card" data-cat="nonparam" data-level="b" onclick="showEnc('mannwhitney')"><div class="ct">Mann-Whitney U検定</div><div class="ce">Mann-Whitney U</div><div class="tags"><span class="mtag">t検定の代替</span></div></div>
             <div class="card" data-cat="nonparam" data-level="b" onclick="showEnc('wilcoxon')"><div class="ct">Wilcoxon符号順位検定</div><div class="ce">Wilcoxon Signed-Rank</div><div class="tags"><span class="mtag">対応ありの代替</span></div></div>
@@ -417,7 +432,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       <!-- 相関分析 -->
       <div class="row">
         <div class="cat" data-cat="compare" style="align-items:center;">
-          <div class="cath" style="background:var(--c2l);color:var(--c2);border-color:var(--c2m);border:2px solid;">🔗 相関分析</div>
+          <div class="cath" style="background:var(--c2l);color:var(--c2);border-color:var(--c2m);border:2px solid;"><span class="only-jp">🔗 相関分析</span><span class="only-en">🔗 Correlation Analysis</span></div>
           <div class="grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
             <div class="card" data-cat="compare" data-level="b" onclick="showEnc('pearson')" style="width:185px"><div class="ct">Pearson相関係数</div><div class="ce">Pearson r</div><div class="tags"><span class="mtag">連続値</span><span class="mtag">線形関係</span></div></div>
             <div class="card" data-cat="nonparam" data-level="b" onclick="showEnc('spearman')" style="width:185px"><div class="ct">Spearman順位相関</div><div class="ce">Spearman's ρ</div><div class="tags"><span class="mtag">順序尺度</span></div></div>
@@ -428,7 +443,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       <!-- 検定の補足カテゴリ -->
       <div class="row">
         <div class="cat" style="align-items:center;" data-cat="supplement">
-          <div class="cath" style="background:#fdf4ff;color:#6d28d9;border-color:#ddd6fe;border:2px solid;">✅ 検定の補足（セットで使う）</div>
+          <div class="cath" style="background:#fdf4ff;color:#6d28d9;border-color:#ddd6fe;border:2px solid;"><span class="only-jp">✅ 検定の補足（セットで使う）</span><span class="only-en">✅ Testing Supplements (use together)</span></div>
           <div class="grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
             <div class="card" data-cat="supplement" onclick="showEnc('effect_size')" style="width:185px"><div class="ct">効果量</div><div class="ce">Cohen's d / η²</div><div class="tags"><span class="mtag">差の実質的大きさ</span></div></div>
             <div class="card" data-cat="supplement" onclick="showEnc('power')" style="width:185px"><div class="ct">検定力分析</div><div class="ce">Power Analysis</div><div class="tags"><span class="mtag">サンプルサイズ設計</span></div></div>
@@ -441,13 +456,13 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
             <div class="card" data-cat="supplement" onclick="showEnc('mice')" style="width:185px"><div class="ct">多重代入法</div><div class="ce">MICE</div><div class="tags"><span class="mtag">欠損データ処理</span></div></div>
           </div>
           <div style="font-size:10px;color:#7c3aed;background:#fdf4ff;border:1px solid #ddd6fe;border-radius:8px;padding:6px 14px;margin-top:4px;text-align:center;">
-            💡 検定後のセット：有意差あり → 効果量を確認 → 複数検定なら補正 → 信頼区間を報告
+            <span class="only-jp">💡 検定後のセット：有意差あり → 効果量を確認 → 複数検定なら補正 → 信頼区間を報告</span><span class="only-en">💡 After testing: significant → check effect size → correct for multiple tests → report CI</span>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="cat cc3" data-cat="regression">
-          <div class="cath">📉 回帰分析</div>
+          <div class="cath"><span class="only-jp">📉 回帰分析</span><span class="only-en">📉 Regression Analysis</span></div>
           <div class="grid">
             <div class="card" data-cat="regression" data-level="m" onclick="showEnc('ols')"><div class="ct">重回帰分析（OLS）</div><div class="ce">Multiple Linear Regression</div><div class="tags"><span class="mtag">連続値</span><span class="mtag">R²</span></div></div>
             <div class="card" data-cat="regression" data-level="m" onclick="showEnc('ridge')"><div class="ct">Ridge回帰</div><div class="ce">Ridge (L2)</div><div class="tags"><span class="mtag">多重共線性</span></div></div>
@@ -465,7 +480,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
           </div>
         </div>
         <div class="cat cc4" data-cat="structure">
-          <div class="cath">🌀 構造探索・次元削減</div>
+          <div class="cath"><span class="only-jp">🌀 構造探索・次元削減</span><span class="only-en">🌀 Structure & Dimensionality Reduction</span></div>
           <div class="grid">
             <div class="card" data-cat="structure" onclick="showEnc('pca')"><div class="ct">主成分分析</div><div class="ce">PCA</div><div class="tags"><span class="mtag">次元削減</span></div></div>
             <div class="card" data-cat="structure" onclick="showEnc('efa')"><div class="ct">探索的因子分析</div><div class="ce">EFA</div><div class="tags"><span class="mtag">潜在因子</span></div></div>
@@ -484,7 +499,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       </div>
       <div class="row">
         <div class="cat cc5" data-cat="causal">
-          <div class="cath">⚗️ 因果推論</div>
+          <div class="cath"><span class="only-jp">⚗️ 因果推論</span><span class="only-en">⚗️ Causal Inference</span></div>
           <div class="grid">
             <div class="card" data-cat="causal" onclick="showEnc('did')"><div class="ct">差の差分析</div><div class="ce">DID</div><div class="tags"><span class="mtag">政策評価</span></div></div>
             <div class="card" data-cat="causal" onclick="showEnc('psm')"><div class="ct">傾向スコアマッチング</div><div class="ce">PSM</div><div class="tags"><span class="mtag">選択バイアス除去</span></div></div>
@@ -497,7 +512,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
           </div>
         </div>
         <div class="cat cc6" data-cat="bayes">
-          <div class="cath">🎰 ベイズ統計</div>
+          <div class="cath"><span class="only-jp">🎰 ベイズ統計</span><span class="only-en">🎰 Bayesian Statistics</span></div>
           <div class="grid">
             <div class="card" data-cat="bayes" onclick="showEnc('bayes_theorem')"><div class="ct">ベイズの定理</div><div class="ce">Bayes' Theorem</div><div class="tags"><span class="mtag">事前・事後分布</span></div></div>
             <div class="card" data-cat="bayes" onclick="showEnc('bayesian_reg')"><div class="ct">ベイズ回帰</div><div class="ce">Bayesian Regression</div><div class="tags"><span class="mtag">係数の分布</span></div></div>
@@ -508,7 +523,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
           </div>
         </div>
         <div class="cat cc1" data-cat="ml">
-          <div class="cath">🤖 機械学習・予測</div>
+          <div class="cath"><span class="only-jp">🤖 機械学習・予測</span><span class="only-en">🤖 Machine Learning & Prediction</span></div>
           <div class="grid">
             <div class="card" data-cat="ml" onclick="showEnc('rf')"><div class="ct">ランダムフォレスト</div><div class="ce">Random Forest</div><div class="tags"><span class="mtag">非線形</span></div></div>
             <div class="card" data-cat="ml" onclick="showEnc('gbm')"><div class="ct">勾配ブースティング</div><div class="ce">XGBoost / LightGBM</div><div class="tags"><span class="mtag">高精度</span></div></div>
@@ -519,7 +534,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
           </div>
         </div>
         <div class="cat cc8" data-cat="time">
-          <div class="cath">📈 時系列・生存分析</div>
+          <div class="cath"><span class="only-jp">📈 時系列・生存分析</span><span class="only-en">📈 Time Series & Survival Analysis</span></div>
           <div class="grid">
             <div class="card" data-cat="time" onclick="showEnc('arima')"><div class="ct">ARIMA / SARIMA</div><div class="ce">ARIMA</div><div class="tags"><span class="mtag">時系列予測</span></div></div>
             <div class="card" data-cat="time" onclick="showEnc('var_model')"><div class="ct">VARモデル</div><div class="ce">Vector Autoregression</div><div class="tags"><span class="mtag">多変量時系列</span></div></div>
@@ -533,7 +548,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       </div>
     </div></div>
     <div class="panel" id="enc-panel">
-      <div class="ph" id="enc-ph"><div class="ico">📖</div><p>手法カードをクリックすると<br>詳細説明が表示されます</p></div>
+      <div class="ph" id="enc-ph"><div class="ico">📖</div><p class="only-jp">手法カードをクリックすると<br>詳細説明が表示されます</p><p class="only-en">Click a method card<br>to view details</p></div>
       <div class="dbody" id="enc-db"></div>
     </div>
   </div>
@@ -789,19 +804,22 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
 <div class="tabcontent" id="tab-basics" style="display:none;">
 <div class="basics-wrap">
 
-  <p class="basics-sub">忘れたときに見返す用。分散・SD・SE・信頼区間の連鎖と各検定との関係をまとめています。</p>
+  <p class="basics-sub only-jp">忘れたときに見返す用。分散・SD・SE・信頼区間の連鎖と各検定との関係をまとめています。</p>
+  <p class="basics-sub only-en-block">A quick-reference sheet for when you forget. Covers the Variance → SD → SE → CI chain and how each test relates to SE.</p>
 
   <!-- ① 統計量の連鎖 -->
-  <div class="basics-section-title">① 統計量の連鎖 — Variance → SD → SE → CI</div>
+  <div class="basics-section-title"><span class="only-jp">① 統計量の連鎖 — Variance → SD → SE → CI</span><span class="only-en">① Statistic Chain — Variance → SD → SE → CI</span></div>
   <div class="basics-flow-chain">
 
     <div class="bfc-node bfc-c1">
       <div class="bfc-num">1</div>
       <div class="bfc-jp">分散</div>
       <div class="bfc-en">Variance</div>
-      <div class="bfc-desc">各サンプルと平均の距離を二乗して平均したもの<br>そのまま足すと0になるので二乗する</div>
+      <div class="bfc-desc only-jp">各サンプルと平均の距離を二乗して平均したもの<br>そのまま足すと0になるので二乗する</div>
+      <div class="bfc-desc only-en-block">Average of squared distances between each sample and the mean.<br>Squaring prevents them from summing to zero.</div>
       <div class="bfc-formula">Σ(xᵢ − x̄)² / n</div>
-      <div class="bfc-example">例：[3,5,5,7,5] 平均=5<br>距離²=[4,0,0,4,0]<br>→ 分散 = 8/5 = <strong>1.6</strong></div>
+      <div class="bfc-example only-jp">例：[3,5,5,7,5] 平均=5<br>距離²=[4,0,0,4,0]<br>→ 分散 = 8/5 = <strong>1.6</strong></div>
+      <div class="bfc-example only-en-block">e.g. [3,5,5,7,5] mean=5<br>dist²=[4,0,0,4,0]<br>→ Variance = 8/5 = <strong>1.6</strong></div>
     </div>
 
     <div class="bfc-arrow">
@@ -814,9 +832,11 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       <div class="bfc-num">2</div>
       <div class="bfc-jp">標準偏差</div>
       <div class="bfc-en">Standard Deviation (SD)</div>
-      <div class="bfc-desc">分散の√。単位を元に戻したもの<br>「1人1人が平均からどのくらい離れているか」</div>
+      <div class="bfc-desc only-jp">分散の√。単位を元に戻したもの<br>「1人1人が平均からどのくらい離れているか」</div>
+      <div class="bfc-desc only-en-block">Square root of variance — restores the original units.<br>"How far is each individual from the mean?"</div>
       <div class="bfc-formula">SD = √Variance</div>
-      <div class="bfc-example">√1.6 = <strong>1.26</strong><br>→「1人1人が平均から約1.26点離れている」</div>
+      <div class="bfc-example only-jp">√1.6 = <strong>1.26</strong><br>→「1人1人が平均から約1.26点離れている」</div>
+      <div class="bfc-example only-en-block">√1.6 = <strong>1.26</strong><br>→ "Each person deviates ~1.26 pts from the mean"</div>
     </div>
 
     <div class="bfc-arrow">
@@ -829,9 +849,11 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       <div class="bfc-num">3</div>
       <div class="bfc-jp">標準誤差</div>
       <div class="bfc-en">Standard Error (SE)</div>
-      <div class="bfc-desc">「別のサンプルを集めたとき<strong>平均</strong>がどのくらいブレるか」<br>SDが大きい（個人差大）→ブレやすい<br>nが大きい（サンプル多）→安定する<br>この2つの性質をSD÷√nにまとめている</div>
+      <div class="bfc-desc only-jp">「別のサンプルを集めたとき<strong>平均</strong>がどのくらいブレるか」<br>SDが大きい（個人差大）→ブレやすい<br>nが大きい（サンプル多）→安定する<br>この2つの性質をSD÷√nにまとめている</div>
+      <div class="bfc-desc only-en-block">"How much would the <strong>mean</strong> fluctuate if we drew a new sample?"<br>Large SD (high variability) → more fluctuation<br>Large n (more data) → more stable<br>Both properties captured in SD ÷ √n</div>
       <div class="bfc-formula">SE = SD / √n</div>
-      <div class="bfc-example">SD=1.26, n=5<br>→ SE = 1.26 ÷ √5 = <strong>0.56</strong><br>→「別の5人を集めても平均は±0.56点程度しかブレない」</div>
+      <div class="bfc-example only-jp">SD=1.26, n=5<br>→ SE = 1.26 ÷ √5 = <strong>0.56</strong><br>→「別の5人を集めても平均は±0.56点程度しかブレない」</div>
+      <div class="bfc-example only-en-block">SD=1.26, n=5<br>→ SE = 1.26 ÷ √5 = <strong>0.56</strong><br>→ "Even a fresh sample of 5 gives a mean within ±0.56"</div>
     </div>
 
     <div class="bfc-arrow">
@@ -844,117 +866,140 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
       <div class="bfc-num">4</div>
       <div class="bfc-jp">信頼区間</div>
       <div class="bfc-en">Confidence Interval (CI)</div>
-      <div class="bfc-desc">真の平均が95%の確率で収まる範囲<br>1.96は正規分布の性質（平均±1.96SDに95%が入る）<br>n≥30なら中心極限定理で平均も正規分布に従う<br>→ SDの代わりにSEを使えばOK</div>
-      <div class="bfc-formula">95%CI = 平均 ± 1.96 × SE</div>
-      <div class="bfc-example">平均=5, SE=0.56<br>1.96×0.56 = 1.10<br>→ CI = [3.90, 6.10]<br>→「95%の確率で真の平均はこの範囲」</div>
+      <div class="bfc-desc only-jp">真の平均が95%の確率で収まる範囲<br>1.96は正規分布の性質（平均±1.96SDに95%が入る）<br>n≥30なら中心極限定理で平均も正規分布に従う<br>→ SDの代わりにSEを使えばOK</div>
+      <div class="bfc-desc only-en-block">Range within which the true mean falls 95% of the time.<br>1.96 comes from the normal distribution (mean ± 1.96 SD covers 95%).<br>For n ≥ 30, the CLT ensures the sample mean is normal.<br>→ Substitute SE for SD.</div>
+      <div class="bfc-formula">95%CI = <span class="only-jp">平均</span><span class="only-en">mean</span> ± 1.96 × SE</div>
+      <div class="bfc-example only-jp">平均=5, SE=0.56<br>1.96×0.56 = 1.10<br>→ CI = [3.90, 6.10]<br>→「95%の確率で真の平均はこの範囲」</div>
+      <div class="bfc-example only-en-block">mean=5, SE=0.56<br>1.96×0.56 = 1.10<br>→ CI = [3.90, 6.10]<br>→ "95% chance the true mean is in this range"</div>
     </div>
 
     <div class="bfc-arrow">
       <div class="bfc-arrow-line"></div>
       <div class="bfc-arrow-head"></div>
-      <div class="bfc-arrow-lbl" style="color:var(--c6)">正規分布<br>仮定不可</div>
+      <div class="bfc-arrow-lbl" style="color:var(--c6)"><span class="only-jp">正規分布<br>仮定不可</span><span class="only-en">normality<br>not met</span></div>
     </div>
 
     <div class="bfc-node bfc-c6">
       <div class="bfc-num">5</div>
       <div class="bfc-jp">ブートストラップCI</div>
       <div class="bfc-en">Bootstrap Confidence Interval</div>
-      <div class="bfc-desc">正規分布を仮定できない場合（Ridge回帰など）<br>同じデータから1000回復元抽出して統計量を計算<br>下位2.5%〜上位97.5%を信頼区間とする<br>「数式ではなく実際に繰り返してみて実測した範囲」</div>
-      <div class="bfc-formula">下位2.5% 〜 上位97.5%<br>（1000回リサンプリング）</div>
-      <div class="bfc-example">例：別府ダミーの係数を1000回計算<br>→ 下位2.5%=0.050, 上位97.5%=0.342<br>→「0をまたがないので有意」</div>
+      <div class="bfc-desc only-jp">正規分布を仮定できない場合（Ridge回帰など）<br>同じデータから1000回復元抽出して統計量を計算<br>下位2.5%〜上位97.5%を信頼区間とする<br>「数式ではなく実際に繰り返してみて実測した範囲」</div>
+      <div class="bfc-desc only-en-block">Used when normality cannot be assumed (e.g. Ridge regression).<br>Resample from the same data 1000 times, compute the statistic each time.<br>Use the 2.5th–97.5th percentile as the CI.<br>"Empirically measured by repetition — no formula needed."</div>
+      <div class="bfc-formula"><span class="only-jp">下位</span><span class="only-en">lower</span> 2.5% 〜 <span class="only-jp">上位</span><span class="only-en">upper</span> 97.5%<br>(<span class="only-jp">1000回リサンプリング</span><span class="only-en">1000 resamples</span>)</div>
+      <div class="bfc-example only-jp">例：別府ダミーの係数を1000回計算<br>→ 下位2.5%=0.050, 上位97.5%=0.342<br>→「0をまたがないので有意」</div>
+      <div class="bfc-example only-en-block">e.g. Beppu dummy coefficient over 1000 resamples<br>→ 2.5th pct=0.050, 97.5th pct=0.342<br>→ "Does not straddle 0 → significant"</div>
     </div>
 
   </div><!-- /basics-flow-chain -->
 
   <!-- ② 各手法とSEの関係 -->
-  <div class="basics-section-title" style="margin-top:28px;">② 各手法とSEの関係</div>
+  <div class="basics-section-title" style="margin-top:28px;"><span class="only-jp">② 各手法とSEの関係</span><span class="only-en">② How Each Method Relates to SE</span></div>
   <table class="basics-table">
     <thead>
       <tr>
-        <th>手法</th>
-        <th>SEとの関係・仕組み</th>
+        <th><span class="only-jp">手法</span><span class="only-en">Method</span></th>
+        <th><span class="only-jp">SEとの関係・仕組み</span><span class="only-en">Relationship to SE / Mechanism</span></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="method-name">t検定</span><span class="method-en">t-test</span></td>
-        <td>平均の差 ÷ SE = t値 → t分布でp値に変換<br>
+        <td><span class="method-name only-jp">t検定</span><span class="method-name only-en-block">t-test</span><span class="method-en">t-test</span></td>
+        <td><span class="only-jp">平均の差 ÷ SE = t値 → t分布でp値に変換<br>
           <span style="color:var(--muted);font-size:11px;">例：幸福度の差1.37 ÷ 合成SE0.292 = t値4.69 → p≒0.0000（偶然この差が起きる確率がほぼゼロ）</span><br>
-          <span style="color:var(--muted);font-size:11px;">nが大きいほどt分布は正規分布に近づく。t検定はANOVAの2グループ版で F = t² の関係がある</span></td>
+          <span style="color:var(--muted);font-size:11px;">nが大きいほどt分布は正規分布に近づく。t検定はANOVAの2グループ版で F = t² の関係がある</span></span>
+          <span class="only-en-block">Difference in means ÷ SE = t-statistic → converted to p via t-distribution<br>
+          <span style="color:var(--muted);font-size:11px;">e.g. happiness diff 1.37 ÷ pooled SE 0.292 = t=4.69 → p≈0.0000 (near-zero chance this occurs randomly)</span><br>
+          <span style="color:var(--muted);font-size:11px;">As n grows, t-distribution approaches normal. t-test is ANOVA for 2 groups: F = t²</span></span></td>
       </tr>
       <tr>
-        <td><span class="method-name">分散分析</span><span class="method-en">ANOVA</span></td>
-        <td>F値 = グループ間分散 ÷ グループ内分散 → F分布でp値に変換<br>
+        <td><span class="method-name only-jp">分散分析</span><span class="method-name only-en-block">ANOVA</span><span class="method-en">ANOVA</span></td>
+        <td><span class="only-jp">F値 = グループ間分散 ÷ グループ内分散 → F分布でp値に変換<br>
           <span style="color:var(--muted);font-size:11px;">グループ間分散：各グループの平均が全体平均から離れている度合い（二乗平均）</span><br>
           <span style="color:var(--muted);font-size:11px;">グループ内分散：各グループ内の個人差（SD）の平均</span><br>
-          <span style="color:var(--muted);font-size:11px;">F=1.0 → グループ分けに意味がない　F=8.53 → グループ間の差が個人差の8.53倍</span></td>
+          <span style="color:var(--muted);font-size:11px;">F=1.0 → グループ分けに意味がない　F=8.53 → グループ間の差が個人差の8.53倍</span></span>
+          <span class="only-en-block">F = between-group variance ÷ within-group variance → p via F-distribution<br>
+          <span style="color:var(--muted);font-size:11px;">Between-group variance: how far each group mean strays from the grand mean (squared)</span><br>
+          <span style="color:var(--muted);font-size:11px;">Within-group variance: average individual variability (SD) across groups</span><br>
+          <span style="color:var(--muted);font-size:11px;">F=1.0 → grouping adds nothing; F=8.53 → between-group difference is 8.53× individual variance</span></span></td>
       </tr>
       <tr>
-        <td><span class="method-name">多重比較</span><span class="method-en">Tukey HSD</span></td>
-        <td>ANOVAで「どこかに差がある」とわかった後に「どのペアに差があるか」を特定<br>
+        <td><span class="method-name only-jp">多重比較</span><span class="method-name only-en-block">Tukey HSD</span><span class="method-en">Tukey HSD</span></td>
+        <td><span class="only-jp">ANOVAで「どこかに差がある」とわかった後に「どのペアに差があるか」を特定<br>
           <span style="color:var(--muted);font-size:11px;">なぜt検定を繰り返してはダメか：α=0.05は「1回で偽陽性5%以内」の約束。15回繰り返すと1-(0.95)¹⁵=54%で偶然有意になる</span><br>
-          <span style="color:var(--muted);font-size:11px;">Tukey HSDは「15ペア全体として偽陽性5%以内」になるようp値の基準を厳しくする → p-adjはt検定のp値より大きくなる</span></td>
+          <span style="color:var(--muted);font-size:11px;">Tukey HSDは「15ペア全体として偽陽性5%以内」になるようp値の基準を厳しくする → p-adjはt検定のp値より大きくなる</span></span>
+          <span class="only-en-block">After ANOVA finds "some difference exists," identifies which specific pairs differ.<br>
+          <span style="color:var(--muted);font-size:11px;">Why not repeat t-tests? α=0.05 guarantees ≤5% false positive per test. With 15 tests: 1−(0.95)¹⁵=54% chance of a spurious result.</span><br>
+          <span style="color:var(--muted);font-size:11px;">Tukey HSD tightens the p-value threshold so the family-wise false-positive rate stays ≤5% → p-adj is larger than raw t-test p-values.</span></span></td>
       </tr>
       <tr>
-        <td><span class="method-name">重回帰分析</span><span class="method-en">OLS Regression</span></td>
-        <td>係数 ÷ SE = t値 → t分布でp値に変換<br>
-          <span style="color:var(--muted);font-size:11px;">係数・p値・R²で結果を解釈する</span></td>
+        <td><span class="method-name only-jp">重回帰分析</span><span class="method-name only-en-block">OLS Regression</span><span class="method-en">OLS Regression</span></td>
+        <td><span class="only-jp">係数 ÷ SE = t値 → t分布でp値に変換<br>
+          <span style="color:var(--muted);font-size:11px;">係数・p値・R²で結果を解釈する</span></span>
+          <span class="only-en-block">Coefficient ÷ SE = t-statistic → converted to p via t-distribution<br>
+          <span style="color:var(--muted);font-size:11px;">Interpret results via coefficients, p-values, and R²</span></span></td>
       </tr>
       <tr>
-        <td><span class="method-name">Ridge回帰</span><span class="method-en">Ridge Regression</span></td>
-        <td>正則化でSEが計算不可 → ブートストラップCIで不確実性を推定<br>
-          <span style="color:var(--muted);font-size:11px;">多重共線性がある場合に使う正則化回帰</span></td>
+        <td><span class="method-name only-jp">Ridge回帰</span><span class="method-name only-en-block">Ridge Regression</span><span class="method-en">Ridge Regression</span></td>
+        <td><span class="only-jp">正則化でSEが計算不可 → ブートストラップCIで不確実性を推定<br>
+          <span style="color:var(--muted);font-size:11px;">多重共線性がある場合に使う正則化回帰</span></span>
+          <span class="only-en-block">Regularization makes SE incalculable → use Bootstrap CI to estimate uncertainty<br>
+          <span style="color:var(--muted);font-size:11px;">Regularized regression for handling multicollinearity</span></span></td>
       </tr>
     </tbody>
   </table>
 
   <!-- ③ t検定 vs Mann-Whitney U -->
-  <div class="basics-section-title" style="margin-top:4px;">③ t検定 vs Mann-Whitney U検定</div>
+  <div class="basics-section-title" style="margin-top:4px;"><span class="only-jp">③ t検定 vs Mann-Whitney U検定</span><span class="only-en">③ t-test vs Mann-Whitney U Test</span></div>
   <div class="basics-compare-grid">
     <div class="bcmp-card" style="border-color:var(--c2m);background:var(--c2l);">
-      <div class="bcmp-title" style="color:var(--c2)">t検定</div>
-      <div class="bcmp-row"><span class="bcmp-label">比較対象</span>平均値</div>
-      <div class="bcmp-row"><span class="bcmp-label">前提</span>正規分布が必要</div>
-      <div class="bcmp-row"><span class="bcmp-label">弱点</span>外れ値に引っ張られる</div>
+      <div class="bcmp-title" style="color:var(--c2)"><span class="only-jp">t検定</span><span class="only-en">t-test</span></div>
+      <div class="bcmp-row"><span class="bcmp-label only-jp">比較対象</span><span class="bcmp-label only-en">Compares</span><span class="only-jp">平均値</span><span class="only-en">Means</span></div>
+      <div class="bcmp-row"><span class="bcmp-label only-jp">前提</span><span class="bcmp-label only-en">Requires</span><span class="only-jp">正規分布が必要</span><span class="only-en">Normality assumption</span></div>
+      <div class="bcmp-row"><span class="bcmp-label only-jp">弱点</span><span class="bcmp-label only-en">Weakness</span><span class="only-jp">外れ値に引っ張られる</span><span class="only-en">Sensitive to outliers</span></div>
     </div>
     <div class="bcmp-card" style="border-color:var(--c7m);background:var(--c7l);">
-      <div class="bcmp-title" style="color:var(--c7)">Mann-Whitney U検定</div>
-      <div class="bcmp-row"><span class="bcmp-label">比較対象</span>順位の偏り</div>
-      <div class="bcmp-row"><span class="bcmp-label">前提</span>正規分布不要</div>
-      <div class="bcmp-row"><span class="bcmp-label">強み</span>外れ値の影響を受けない</div>
+      <div class="bcmp-title" style="color:var(--c7)">Mann-Whitney U<span class="only-jp">検定</span><span class="only-en"> Test</span></div>
+      <div class="bcmp-row"><span class="bcmp-label only-jp">比較対象</span><span class="bcmp-label only-en">Compares</span><span class="only-jp">順位の偏り</span><span class="only-en">Rank distribution</span></div>
+      <div class="bcmp-row"><span class="bcmp-label only-jp">前提</span><span class="bcmp-label only-en">Requires</span><span class="only-jp">正規分布不要</span><span class="only-en">No normality needed</span></div>
+      <div class="bcmp-row"><span class="bcmp-label only-jp">強み</span><span class="bcmp-label only-en">Strength</span><span class="only-jp">外れ値の影響を受けない</span><span class="only-en">Robust to outliers</span></div>
     </div>
   </div>
 
   <div class="bcmp-why">
-    <div class="bcmp-why-title">なぜ正規分布が不要なのか（ノンパラメトリックの仕組み）</div>
-    全データをひとまとめにして小さい順にランキングする。100という外れ値も「1番大きい＝8位」になるだけで、それ以上の影響を持たない。<br>
+    <div class="bcmp-why-title"><span class="only-jp">なぜ正規分布が不要なのか（ノンパラメトリックの仕組み）</span><span class="only-en">Why No Normality Needed (How Non-Parametric Tests Work)</span></div>
+    <span class="only-jp">全データをひとまとめにして小さい順にランキングする。100という外れ値も「1番大きい＝8位」になるだけで、それ以上の影響を持たない。<br>
     順位は「大小関係」しか持たないため、分布の形に左右されない → だから<strong>ノンパラメトリック検定</strong>と呼ばれる。<br><br>
     <strong>U値</strong>：全国×別府の全ペア総当たりで「別府が上位だった回数」を数えたもの。最大値 = 188×113 = 21,244<br>
     <strong>p値</strong>：今回のU値が「差がないとき」に偶然生じる確率。U値が端に偏るほどp値は小さくなる<br>
-    <strong>効果量 r</strong>：U値だけでは差の大きさが不明 → r = |Z| / √N で補う（0.1未満:なし／0.1〜0.3:小／0.3〜0.5:中／0.5以上:大）
+    <strong>効果量 r</strong>：U値だけでは差の大きさが不明 → r = |Z| / √N で補う（0.1未満:なし／0.1〜0.3:小／0.3〜0.5:中／0.5以上:大）</span>
+    <span class="only-en-block">All data are pooled and ranked in ascending order. An outlier of 100 simply becomes "rank 8 (largest)" — no extra leverage beyond its rank.<br>
+    Ranks encode only ordering, so the result is independent of distribution shape → hence called a <strong>non-parametric test</strong>.<br><br>
+    <strong>U statistic</strong>: counts the number of times a Beppu value outranks a national value across all pairs. Maximum = 188×113 = 21,244.<br>
+    <strong>p-value</strong>: probability of observing this U value by chance when there is no true difference. The more extreme the U, the smaller the p.<br>
+    <strong>Effect size r</strong>: U alone does not tell you the magnitude → supplement with r = |Z| / √N (&lt;0.1: none / 0.1–0.3: small / 0.3–0.5: medium / ≥0.5: large)</span>
   </div>
 
   <!-- ④ 今回の判断ロジック -->
-  <div class="basics-section-title" style="margin-top:24px;">④ 検定方法を選ぶ判断ロジック（今回の例）</div>
+  <div class="basics-section-title" style="margin-top:24px;"><span class="only-jp">④ 検定方法を選ぶ判断ロジック（今回の例）</span><span class="only-en">④ Decision Logic for Choosing a Test (Example)</span></div>
   <div class="bcmp-decision">
     <table>
-      <thead><tr><th>確認したこと</th><th>結果</th><th>判断</th></tr></thead>
+      <thead><tr><th><span class="only-jp">確認したこと</span><span class="only-en">Check</span></th><th><span class="only-jp">結果</span><span class="only-en">Result</span></th><th><span class="only-jp">判断</span><span class="only-en">Decision</span></th></tr></thead>
       <tbody>
-        <tr><td>Shapiro-Wilk検定</td><td>両グループとも p &lt; 0.05</td><td>非正規分布と判定</td></tr>
-        <tr><td>W統計量</td><td>別府0.942、全国0.956</td><td>1に近く極端な歪みではない</td></tr>
-        <tr><td>サンプルサイズ</td><td>n=100超</td><td>t検定も中心極限定理で許容範囲</td></tr>
-        <tr><td>採用した検定</td><td colspan="2">Mann-Whitney U検定（より保守的な選択）→ t検定と同じ結論 → 結果の<strong>頑健性 (Robustness)</strong> が確認できた</td></tr>
+        <tr><td>Shapiro-Wilk<span class="only-jp">検定</span><span class="only-en"> test</span></td><td><span class="only-jp">両グループとも</span><span class="only-en">Both groups</span> p &lt; 0.05</td><td><span class="only-jp">非正規分布と判定</span><span class="only-en">Non-normal distribution</span></td></tr>
+        <tr><td>W<span class="only-jp">統計量</span><span class="only-en"> statistic</span></td><td><span class="only-jp">別府0.942、全国0.956</span><span class="only-en">Beppu 0.942, National 0.956</span></td><td><span class="only-jp">1に近く極端な歪みではない</span><span class="only-en">Close to 1 — not severely skewed</span></td></tr>
+        <tr><td><span class="only-jp">サンプルサイズ</span><span class="only-en">Sample size</span></td><td>n=100+</td><td><span class="only-jp">t検定も中心極限定理で許容範囲</span><span class="only-en">CLT makes t-test acceptable too</span></td></tr>
+        <tr><td><span class="only-jp">採用した検定</span><span class="only-en">Chosen test</span></td><td colspan="2"><span class="only-jp">Mann-Whitney U検定（より保守的な選択）→ t検定と同じ結論 → 結果の<strong>頑健性 (Robustness)</strong> が確認できた</span><span class="only-en-block">Mann-Whitney U (the more conservative choice) → same conclusion as t-test → confirms <strong>robustness</strong> of results</span></td></tr>
       </tbody>
     </table>
   </div>
 
   <!-- ⑤ p値早見表 -->
-  <div class="basics-section-title">⑤ p値の基準</div>
+  <div class="basics-section-title"><span class="only-jp">⑤ p値の基準</span><span class="only-en">⑤ p-value Reference</span></div>
   <div class="pval-table">
-    <div class="pval-badge" style="background:#fef9c3;color:#854d0e;border-color:#fde68a;">p &lt; 0.05 ★ 有意差あり</div>
-    <div class="pval-badge" style="background:#fed7aa;color:#9a3412;border-color:#fdba74;">p &lt; 0.01 ★★ 有意差あり</div>
-    <div class="pval-badge" style="background:#fecaca;color:#991b1b;border-color:#fca5a5;">p &lt; 0.001 ★★★ 有意差あり</div>
-    <div class="pval-badge" style="background:var(--bg);color:var(--muted);border-color:var(--border);">実務：p値で有意か確認 → 効果量rで差の大きさを解釈</div>
+    <div class="pval-badge" style="background:#fef9c3;color:#854d0e;border-color:#fde68a;">p &lt; 0.05 ★ <span class="only-jp">有意差あり</span><span class="only-en">Significant</span></div>
+    <div class="pval-badge" style="background:#fed7aa;color:#9a3412;border-color:#fdba74;">p &lt; 0.01 ★★ <span class="only-jp">有意差あり</span><span class="only-en">Significant</span></div>
+    <div class="pval-badge" style="background:#fecaca;color:#991b1b;border-color:#fca5a5;">p &lt; 0.001 ★★★ <span class="only-jp">有意差あり</span><span class="only-en">Significant</span></div>
+    <div class="pval-badge" style="background:var(--bg);color:var(--muted);border-color:var(--border);"><span class="only-jp">実務：p値で有意か確認 → 効果量rで差の大きさを解釈</span><span class="only-en">In practice: confirm significance with p-value → interpret magnitude with effect size r</span></div>
   </div>
 
 </div><!-- /basics-wrap -->
@@ -982,6 +1027,771 @@ function switchTab(id, el) {
   }
   el.classList.add('active');
   if (id === 'wizard') wizInit();
+}
+
+// ── 言語設定 ──────────────────────────────
+let LANG = 'jp';
+let _currentEncId = null;
+let _currentFlowId = null;
+
+const T = {
+  jp: {
+    copy:'コピー', copied:'✓ コピー完了',
+    shareUrl:'🔗 URLをシェア', shareCopied:'✓ URLコピー完了',
+    example:'💡 具体例', whenToUse:'使いどころ', formula:'数式',
+    notes:'注意点・ポイント', pythonCode:'Pythonコード例',
+    related:'関連手法', flowExamples:'具体例',
+    whatToDo:'やること', checklist:'チェックリスト',
+    methods:'使える統計手法', selectionFlow:'選択フロー',
+    chartGuide:'グラフ選択ガイド', interpretation:'解釈の3段階',
+    code:'コード例', back:'← 前の質問に戻る', restart:'🏠 最初から',
+    notFound:'ノードが見つかりません: ',
+    search:'検索...',
+    stepLabel:'STEP',
+    levelLabel:{b:'初級',m:'中級',a:'上級'},
+  },
+  en: {
+    copy:'Copy', copied:'✓ Copied',
+    shareUrl:'🔗 Share URL', shareCopied:'✓ URL Copied',
+    example:'💡 Example', whenToUse:'When to Use', formula:'Formula',
+    notes:'Notes & Key Points', pythonCode:'Python Code',
+    related:'Related Methods', flowExamples:'Examples',
+    whatToDo:'What to Do', checklist:'Checklist',
+    methods:'Applicable Methods', selectionFlow:'Decision Flow',
+    chartGuide:'Chart Selection Guide', interpretation:'3 Levels of Interpretation',
+    code:'Code Example', back:'← Back', restart:'🏠 Start Over',
+    notFound:'Node not found: ',
+    search:'Search...',
+    stepLabel:'STEP',
+    levelLabel:{b:'Beginner',m:'Intermediate',a:'Advanced'},
+  }
+};
+
+function setLang(l) {
+  LANG = l;
+  const isEn = l === 'en';
+  document.documentElement.lang = isEn ? 'en' : 'ja';
+  const btn = document.getElementById('lang-toggle');
+  if (btn) { btn.textContent = isEn ? '🇯🇵 日本語' : '🇺🇸 English'; btn.onclick = () => setLang(isEn ? 'jp' : 'en'); }
+  const sq = document.getElementById('sq');
+  if (sq) sq.placeholder = T[l].search;
+  // re-render open panels
+  if (_currentEncId) showEnc(_currentEncId, null);
+  if (_currentFlowId) showFlow(_currentFlowId);
+  const wt = document.getElementById('tab-wizard');
+  if (wt && wt.classList.contains('active')) wizRender(wizCurrent);
+}
+window.setLang = setLang;
+
+// ── English translations for D ──────────────
+const D_EN = {
+ttest:{
+  what:"Determines whether the difference in means between two independent groups is statistically significant. p < 0.05 indicates significance.",
+  example:"Ex: Comparing happiness scores (0–10) between a national survey and Beppu City. National mean 5.35 vs. Beppu 6.72 — Welch's t-test gave t = −4.69, p < 0.001, confirming a significant difference.",
+  when:["Compare means of 2 independent groups","Treatment group vs. control group","Compare scores between males and females"],
+  notes:["Welch's version (equal_var=False) is safe even when variances differ","Assumes normality — use Mann-Whitney U if violated","Caution with small samples (n < 30)"],
+},
+paired_t:{
+  what:"Tests the difference in the same subjects measured at two time points, or in matched-pair data.",
+  example:"Ex: Overtime hours measured before/after a work-style reform for the same 50 employees. Pre: 42 h/month, post: 31 h/month — paired t-test p = 0.003 confirmed a significant reduction.",
+  when:["Before/after change in the same subjects","Post-matching paired comparison"],
+},
+anova:{
+  what:"Simultaneously compares means across 3 or more groups. Repeating t-tests causes the multiple testing problem; ANOVA tests all groups at once.",
+  example:"Ex: Job satisfaction across Sales, Development, and Management (n=40 each). F(2,117) = 8.34, p < 0.001 — post-hoc Tukey HSD revealed the difference was between Sales and Management.",
+  when:["Compare means across 3+ groups","Use Tukey HSD to identify which groups differ"],
+  notes:["A significant result only says 'some difference exists' — post-hoc tests identify which pairs differ","Assumes equal variances (verify with Levene's test)"],
+},
+twoway_anova:{
+  what:"Tests the main effects of two factors and their interaction effect on the outcome simultaneously.",
+  example:"Ex: Testing how gender and employment type (regular/non-regular) affect salary satisfaction. The interaction was significant (p = 0.03) — non-regular female employees showed especially low satisfaction.",
+  notes:["If the interaction is significant, interpret main effects with caution"],
+},
+ancova:{
+  what:"Adds a continuous covariate to a group comparison for more equitable control. Estimates group differences after removing the covariate's influence.",
+  example:"Ex: Comparing promotion speed across departments while controlling for years of service. Even after controlling for tenure, the Marketing department promoted significantly faster.",
+},
+manova:{
+  what:"ANOVA with multiple dependent variables. Controlling for multiple DVs simultaneously reduces Type I error compared to running separate t-tests.",
+  example:"Ex: Comparing rural migrants vs. urban residents on 3 indicators: life satisfaction, health, and income satisfaction. Wilks' Lambda = 0.72, p = 0.001.",
+},
+chi2:{
+  what:"Tests whether two categorical variables are independent. Measures the discrepancy between observed and expected frequencies in a cross-tabulation.",
+  example:"Ex: Cross-tabulating gender vs. intention to change jobs. χ² = 6.43, p = 0.011 — men had a significantly higher turnover intention.",
+  formula:"χ² = Σ (observed − expected)² / expected",
+  notes:["If any cell has an expected frequency < 5, use Fisher's Exact Test instead"],
+},
+fisher:{
+  what:"An exact test replacing Chi-squared when expected cell counts are small. Used for 2×2 contingency tables with small samples.",
+  example:"Ex: 3 out of 20 in the treatment group vs. 0 out of 20 in the control group experienced a side effect. Fisher's Exact Test p = 0.231 — no significant difference.",
+},
+mcnemar:{
+  what:"Tests change in a binary response for the same subjects measured at two time points.",
+  example:"Ex: 100 consumers surveyed on brand preference before and after a campaign. 8 switched from 'like' to 'dislike', 23 from 'dislike' to 'like'. McNemar p = 0.018 — significant attitude change confirmed.",
+},
+mannwhitney:{
+  what:"Non-parametric alternative to the t-test. Compares two groups using ranks without assuming normality.",
+  example:"Ex: Comparing customer satisfaction (1–5 Likert scale) between stores A and B. Mann-Whitney U = 1823, p = 0.034 — Store A significantly higher.",
+  notes:["Strictly appropriate for ordinal scales such as Likert items","Effect size: rank-biserial correlation"],
+},
+wilcoxon:{
+  what:"Non-parametric alternative to the paired t-test. Used for before/after comparisons when normality is questionable.",
+  example:"Ex: Comparing sales rank (ordinal data) for 30 stores before and after an intervention. p = 0.007 — rank improved significantly post-intervention.",
+},
+kruskal:{
+  what:"Non-parametric alternative to one-way ANOVA. Compares 3+ groups without assuming normality.",
+  example:"Ex: Purchase intent (1–5) for low/medium/high-price products. Non-normal distribution → Kruskal-Wallis H = 12.4, p = 0.002 — significant difference across price tiers.",
+},
+friedman:{
+  what:"Non-parametric alternative to repeated-measures ANOVA. Used when the same subjects are measured under 3+ conditions.",
+  example:"Ex: 20 subjects evaluated 3 UI designs (1–7 scale). Friedman χ² = 9.8, p = 0.007 — significant difference between designs.",
+},
+spearman:{
+  what:"Measures the correlation between ordinal or non-normal data using ranks. Detects monotonic relationships.",
+  example:"Ex: Correlating employees' trust in supervisors (1–5) with organizational commitment (1–5). Spearman ρ = 0.61, p < 0.001 — moderate positive correlation.",
+  formula:"ρ = 1 − 6Σd² / (n(n²−1))",
+},
+kendall:{
+  what:"A rank correlation based on the ratio of concordant to discordant pairs. More reliable than Spearman for small samples.",
+  example:"Ex: Two critics each ranked 10 films. Kendall τ = 0.73 — high agreement. Kendall preferred over Spearman for small n.",
+},
+effect_size:{
+  what:"Quantifies the practical magnitude of a difference, independent of sample size. p-values depend on n; effect sizes do not.",
+  example:"Ex: Training effect: t-test p = 0.03 (significant) but Cohen's d = 0.18 (small). Another intervention: p = 0.08 (not significant) but d = 0.48 (medium). Effect size reveals practical importance that p-values miss.",
+  formula:"Cohen's d = (x̄₁−x̄₂)/SD_pooled\nSmall: 0.2 · Medium: 0.5 · Large: 0.8",
+},
+power:{
+  what:"The probability of detecting a true effect when it exists. Essential for sample size planning before data collection.",
+  example:"Ex: To detect Cohen's d = 0.5 with 80% power at α = 0.05, each group needs n = 64 (total n = 128). Calculating this upfront prevents wasted surveys.",
+  notes:["Power 0.80 (80%) is the conventional threshold","Calculate n from α = 0.05, power = 0.8, and expected effect size"],
+},
+multiple_correction:{
+  what:"Corrects for the inflated false positive rate when running multiple tests simultaneously.",
+  example:"Ex: 20 survey items all tested with t-tests — 3 items significant at p < 0.05. After Benjamini-Hochberg correction, only 2 remain significant. Without correction, there's a risk of reporting false positives.",
+  notes:["Bonferroni: α/number of tests (conservative)","FDR (Benjamini-Hochberg): more lenient, practical for large test sets","More critical as the number of tests increases"],
+},
+ols:{
+  what:"Predicts a continuous outcome from multiple predictors. Quantifies the effect of X on Y while holding other variables constant.",
+  example:"Ex: Predicting annual income (¥10k) from age, education, experience, and job type. R² = 0.58; experience coefficient = 12.3 (p < 0.001) → each additional year of experience adds ~¥123k.",
+  when:["Continuous outcome (happiness, income, sales, etc.)","No multicollinearity (VIF < 10)","Need to interpret statistical significance of each predictor","Want a simple, interpretable model"],
+  notes:["VIF < 10 required (no multicollinearity)","Check residual normality and homoscedasticity","Sample size > number of predictors × 10–15"],
+},
+ridge:{
+  what:"Regularized regression for when multicollinearity is present. Applies an L2 penalty to stabilize coefficient estimates.",
+  example:"Ex: Predicting customer satisfaction from 30 correlated survey items (VIF = 15–30). Ridge (α=10) achieved R² = 0.67; staff service had the highest coefficient (0.42).",
+  when:["Multiple predictors with VIF > 10","Many correlated predictors (e.g., similar survey questions)","Want to retain all variables with stable coefficients","Need all variables retained (unlike Lasso)"],
+  notes:["Standardization is mandatory","Coefficients are biased (shrunk toward zero)","No p-values are produced","α is selected automatically via RidgeCV"],
+},
+lasso:{
+  what:"Regularized regression that automatically sets unimportant variable coefficients to exactly zero, performing variable selection.",
+  example:"Ex: Building a churn prediction model with 100 customer attributes. Lasso automatically reduced to 18 variables, which were then re-fitted with OLS for an interpretable final model.",
+  when:["Too many predictors (need automatic selection)","Sample-to-predictor ratio < 10","Want data to choose which variables matter","Simultaneous variable selection and regression"],
+},
+elasticnet:{
+  what:"Combines L1 (Lasso) and L2 (Ridge) penalties. Performs variable selection while maintaining coefficient stability.",
+  example:"Ex: Predicting GDP growth from 50 regional characteristics with both multicollinearity and too many variables. ElasticNet (l1_ratio=0.7) handled both issues simultaneously.",
+},
+logistic:{
+  what:"Regression for binary outcomes (0/1). Models probability and interprets coefficients as odds ratios.",
+  example:"Ex: Predicting customer churn (1=churn, 0=stay). Satisfaction odds ratio = 0.62 → 1-point higher satisfaction reduces churn odds by 38%. Used to flag high-risk customers early.",
+  notes:["Odds ratio > 1: positive effect; < 1: negative effect"],
+},
+multinomial:{
+  what:"Logistic regression for outcomes with 3+ unordered categories. Estimates odds ratios relative to a reference class.",
+  example:"Ex: Predicting career choice (large firm/SME/startup) from GPA and internship experience. Using large firms as reference, people with internship experience had 2.8× higher odds of choosing a startup.",
+},
+ordinal_reg:{
+  what:"Regression for ordinal outcomes (e.g., 1–5 satisfaction ratings). Accounts for the ordering of categories.",
+  example:"Ex: Predicting customer satisfaction (1=very dissatisfied to 5=very satisfied) from wait time, staff attitude, and price satisfaction. Proportional odds model.",
+  notes:["Also called the proportional odds model","Theoretically most appropriate for Likert-scale outcomes"],
+},
+poisson:{
+  what:"Generalized linear model for count data (frequency, number of occurrences). Assumes variance equals mean.",
+  example:"Ex: Predicting weekly store visits (count data) from coupon distribution, weather, and day of week. Coupon IRR = 1.34 → coupon presence increases visits by 34%.",
+},
+negbin:{
+  what:"Extension of Poisson regression for overdispersed count data (variance >> mean).",
+  example:"Ex: Likes on SNS posts have greater variance than Poisson assumes. Negative binomial improved model fit and stabilized the follower count coefficient.",
+},
+quantile:{
+  what:"Regression targeting a specified quantile (e.g., median) rather than the mean. Robust to outliers.",
+  example:"Ex: Comparing median income regression (50th percentile) with 90th percentile. Mean regression is distorted by high-earner outliers; quantile regression estimates education effects separately for each income stratum.",
+},
+stepwise:{
+  what:"Sequentially adds or removes variables based on AIC or BIC to select the best model.",
+  example:"Ex: Stepwise selection from 15 candidate predictors for a sales forecast model. Selected 6 variables with AIC = 234.5. AIC improves with each useful variable added.",
+  notes:["AIC: prioritizes predictive accuracy","BIC: prioritizes model simplicity","Stepwise has theoretical critics — Lasso is a modern alternative"],
+},
+mixed:{
+  what:"Models both fixed effects (overall trends) and random effects (individual/group-level variation) simultaneously. Appropriate for hierarchical data.",
+  example:"Ex: Analyzing academic performance across 50 schools (30 students each). ICC = 0.18 → 18% of performance variance is explained by school-level differences.",
+  when:["Repeated measurements of the same individuals","Hierarchical data: students within schools, patients within hospitals"],
+  notes:["Fixed effects: overall average trend","Random effects: individual/group deviations from that trend"],
+},
+glmm:{
+  what:"Extends mixed-effects models to non-normal outcomes (binary, count, etc.).",
+  example:"Ex: Predicting readmission risk (0/1) for patients nested within 30 hospitals. GLMM estimated the fixed treatment effect odds ratio = 0.73 (p = 0.02) while accounting for hospital-level variation.",
+},
+pca:{
+  what:"Compresses many variables into a smaller set of composite variables ordered by information content. Useful for dimensionality reduction and addressing multicollinearity.",
+  example:"Ex: 30-item work engagement survey reduced with PCA. PC1 (42% variance): vigor & dedication factor; PC2 (18%): absorption factor. 2 components explain 60% of variance.",
+  notes:["Standardization is mandatory","Use a scree plot to decide the number of components"],
+},
+efa:{
+  what:"Discovers latent factors underlying many observed variables. Used in scale development.",
+  example:"Ex: 20-item customer loyalty scale analyzed with EFA. After varimax rotation, 3 factors emerged: emotional attachment, behavioral continuity, and advocacy intention. All loadings > 0.5.",
+  notes:["Determine number of factors via scree plot or parallel analysis","Rotation (varimax, promax) makes factors more interpretable"],
+},
+cfa:{
+  what:"Tests whether a hypothesized factor structure fits the data. Typically follows EFA to confirm findings.",
+  example:"Ex: The 3-factor structure from EFA confirmed with CFA. CFI = 0.96, RMSEA = 0.054 — good fit. All factor loadings > 0.5 confirming construct validity.",
+  notes:["CFI > 0.95 and RMSEA < 0.06 are standard fit benchmarks"],
+},
+sem:{
+  what:"Models complex causal structures including latent variables in a single framework. Estimates direct and indirect effects simultaneously.",
+  example:"Ex: Testing job satisfaction → organizational commitment → turnover intention. The indirect effect (β = −0.31) exceeded the direct effect, indicating commitment is a key mediator.",
+  notes:["Visualize as a path diagram","Large samples (n ≥ 200) recommended"],
+},
+mediation:{
+  what:"Tests whether the effect of X on Y is transmitted through a mediating variable M (X→M→Y). Estimates the size of the indirect effect.",
+  example:"Ex: Telework adoption (X) → productivity (Y) mediated by work-life balance satisfaction (M). Direct effect non-significant; indirect effect = 0.24 (95% CI: 0.11–0.38) — full mediation confirmed.",
+  notes:["Use bootstrap to estimate CI for the indirect effect (more reliable than Sobel test)"],
+},
+moderation:{
+  what:"Tests whether the relationship between X and Y changes depending on a moderating variable Z. Implemented by adding an interaction term.",
+  example:"Ex: Does brand awareness moderate the effect of ad spend on sales? Interaction term significant (β = 0.31, p = 0.02) → higher brand awareness amplifies the effect of advertising.",
+},
+kmeans:{
+  what:"Partitions data into K clusters. Most popular clustering method. Effective for persona discovery.",
+  example:"Ex: Segmenting customers into 4 groups from purchase data. Silhouette coefficient identified K=4 as optimal. Groups: high frequency/high value, high frequency/low value, low frequency/high value, low frequency/low value.",
+  notes:["K must be specified in advance (use elbow method or silhouette score)","Standardization mandatory","Fix random_state for reproducibility"],
+},
+hierarchical:{
+  what:"Builds a dendrogram by iteratively merging data points. K does not need to be specified in advance.",
+  example:"Ex: Hierarchically clustering 20 product categories by purchase pattern similarity. Dendrogram inspection guided the choice of 4 groups — unlike K-means, K need not be pre-specified.",
+},
+tsne:{
+  what:"Compresses high-dimensional data to 2–3 dimensions for visualization. Captures non-linear structure better than PCA.",
+  example:"Ex: 100-dimensional customer behavior vectors compressed with t-SNE. The 5 K-means segments visually separated in 2D, confirming cluster validity.",
+  notes:["Fix random_state for reproducibility","UMAP is faster than t-SNE","Absolute distances in the 2D embedding are not meaningful"],
+},
+canonical:{
+  what:"Finds linear combinations of two variable sets that maximize their correlation. Analyzes relationships between two groups of variables.",
+  example:"Ex: Marketing activities (ad spend, promotions, price) vs. outcomes (sales, satisfaction, NPS). First canonical correlation = 0.78 — ad spend strongly linked to sales and NPS.",
+},
+discriminant:{
+  what:"Finds a linear combination that best separates groups. Used for both classification and dimensionality reduction.",
+  example:"Ex: Classifying premium, standard, and at-risk customers using usage frequency, satisfaction, and contract length. Accuracy = 82%; usage frequency was the most discriminating variable.",
+},
+irt:{
+  what:"Simultaneously estimates item characteristics (difficulty, discrimination) and respondent latent traits. Standard in educational and psychological measurement.",
+  example:"Ex: IRT analysis of 20 engagement survey items. 2 items with discrimination parameter < 0.3 were removed as they failed to differentiate engagement levels.",
+  when:["Analyze item properties of questionnaire scales","Test design and standardization"],
+},
+did:{
+  what:"Estimates a causal effect by taking the difference-in-differences between the treated and control groups before and after an intervention.",
+  example:"Ex: Comparing employment in counties that raised minimum wage (treated) vs. those that did not (control). Post-raise employment was 2.1% higher in treated counties — raising the minimum wage did not reduce jobs.",
+  notes:["Requires parallel trends assumption","Pre-intervention data is required"],
+},
+psm:{
+  what:"Removes selection bias by matching treated and control units with the same propensity score (probability of receiving treatment).",
+  example:"Ex: Estimating the effect of college attendance on lifetime earnings. Simple comparison: ¥12M difference. After PSM: ¥8M. Removing selection bias from family background brought the estimate closer to the true causal effect.",
+  notes:["Can only control for observed confounders"],
+},
+iv:{
+  what:"Uses an instrumental variable (correlated with X but not directly with Y) to estimate causal effects in the presence of endogeneity.",
+  example:"Ex: Estimating the causal effect of education on wages. Using mandatory schooling laws as an instrument to address the endogeneity of ability. 2SLS: 8% wage increase per additional year of education.",
+  notes:["Finding a good instrument is the main challenge","Estimated via two-stage least squares (2SLS)"],
+},
+rdd:{
+  what:"Estimates a causal effect as the discontinuous jump at a threshold that determines treatment assignment.",
+  example:"Ex: At age 65, the medical co-payment rate changes. Comparing visit rates just below and above the threshold shows a ~12% drop — the co-pay change strongly affected medical behavior.",
+},
+synth:{
+  what:"Estimates the counterfactual for a single treated unit by constructing a weighted average of donor units.",
+  example:"Ex: Tokyo introduced smoking regulations in 2018. A synthetic Tokyo (weighted average of other prefectures) was constructed; actual smoking rates were 4.2% lower post-regulation.",
+  when:["Evaluating a policy intervention affecting a single unit (city, country, etc.)"],
+},
+dag:{
+  what:"A directed graph representing causal relationships between variables. Used to clarify which variables should (and should not) be controlled.",
+  example:"Ex: When estimating the effect of income on happiness, a DAG clarifies that health is a confounder that must be controlled, preventing overestimation of the income effect.",
+  notes:["Distinguish variables that should be controlled from colliders (which should not be controlled)"],
+},
+hlm:{
+  what:"Analyzes data where individuals are nested within groups. Simultaneously estimates individual-level and group-level effects.",
+  example:"Ex: Analyzing academic performance across 1,000 schools (30,000 students). ICC = 0.22 → 22% of performance variance is explained by school differences.",
+  notes:["Use ICC (intraclass correlation) to determine whether multilevel modeling is needed"],
+},
+panel:{
+  what:"Analyzes data on the same individuals, firms, or regions observed over multiple time periods. Fixed effects models control for unobserved time-invariant individual heterogeneity.",
+  example:"Ex: Panel data on 47 prefectures over 10 years to estimate the effect of tourism policy on economic growth. Fixed effects control for prefecture-specific characteristics. 1% more tourism spending → +0.08% GDP growth.",
+  notes:["Fixed effects (FE): controls for time-invariant individual heterogeneity","Random effects (RE): more efficient but stronger exogeneity assumption","Use Hausman test to choose FE vs. RE"],
+},
+bayes_theorem:{
+  what:"Updates prior beliefs with data (likelihood) to obtain a posterior probability. The foundation of Bayesian statistics.",
+  example:"Ex: A disease affects 1% of people. A test has 95% sensitivity and 90% specificity. Despite testing positive, Bayes' theorem gives only an 8.7% true probability of disease — illustrating how low base rates cause many false positives.",
+  notes:["Frequentist: 'data varies; hypothesis is fixed'","Bayesian: 'update the probability of the hypothesis as data arrives'"],
+},
+bayesian_reg:{
+  what:"Estimates regression coefficients as probability distributions rather than point estimates. Naturally quantifies uncertainty; works well for small samples.",
+  example:"Ex: Sales forecast for a new product. Prior set from similar past products. With only n=30 initial data points, a reasonable estimate was possible with a 95% credible interval quantifying uncertainty.",
+},
+mcmc:{
+  what:"Approximates intractable posterior distributions by sampling. Hamiltonian Monte Carlo (HMC) is a more efficient modern variant.",
+  example:"Ex: Estimating consumers' willingness to pay (WTP) with a complex utility model. MCMC with 4 chains, R-hat < 1.01 — convergence confirmed. Posterior median: ¥3,500 (95% credible interval: ¥2,800–¥4,300).",
+  notes:["PyMC and Stan are popular MCMC frameworks","Always check convergence: R-hat < 1.01 and ESS"],
+},
+bayes_factor:{
+  what:"Compares the evidence for two hypotheses. Unlike p-values, it can also quantify support for the null hypothesis.",
+  example:"Ex: Testing whether a new hiring criterion reduces turnover. BF₁₀ = 12.3 → the data support the effect hypothesis 12× more than the null. Uniquely, BF can also support the null.",
+  formula:"BF₁₀ = P(data|H1) / P(data|H0)\nBF > 10: strong evidence · BF > 100: decisive",
+},
+credible_interval:{
+  what:"An interval within which the true parameter falls with the stated probability. Interpreted more intuitively than frequentist confidence intervals.",
+  example:"Ex: The 95% credible interval for a new policy's effect is [+2.1%, +8.3%]. The true effect has a 95% probability of lying in this range — more intuitive for decision-making than frequentist CIs.",
+  notes:["Frequentist 95% CI: 'if we repeated the study 100 times, 95% of CIs would contain the true value'","Bayesian 95% credible interval: 'the true parameter has a 95% probability of being in this range'","The latter is the more natural interpretation"],
+},
+hierarchical_bayes:{
+  what:"Shares information across groups (partial pooling) to stabilize estimates for small groups.",
+  example:"Ex: Estimating ad effectiveness across 50 regions. Small-n regions (n=15) are pulled toward the overall mean (shrinkage); large-n regions (n=200) retain their own estimates. Partial pooling enables fair comparison.",
+  notes:["Estimates for small groups are shrunk toward the overall mean (shrinkage estimation)"],
+},
+rf:{
+  what:"Predicts by aggregating votes from many decision trees. Captures non-linear relationships and provides variable importance.",
+  example:"Ex: Predicting housing prices from 30 variables. Random forest (100 trees) R² = 0.89. Top 3 important variables: age of building, distance to nearest station, floor area. Automatically captured non-linear relationships.",
+},
+gbm:{
+  what:"An ensemble method that sequentially adds weak learners to fit residuals. Often achieves the highest accuracy on tabular data.",
+  example:"Ex: Credit card fraud detection (0.5% fraud — highly imbalanced). XGBoost AUC = 0.987; outperformed random forest (AUC = 0.971). Early stopping prevented overfitting.",
+  notes:["Use early stopping to prevent overfitting"],
+},
+svm:{
+  what:"Finds the decision boundary that maximizes the margin between classes. Handles non-linear problems with the kernel trick.",
+  example:"Ex: Classifying positive/negative sentiment from text. TF-IDF → 5,000 dimensions → SVM. Effective in high dimensions: accuracy 85%, F1 = 0.84.",
+},
+cross_val:{
+  what:"Splits data into k folds; trains on k−1 and tests on 1, repeating k times. Essential for reliable generalization estimates.",
+  example:"Ex: 5-fold CV AUC scores for a churn model: [0.82, 0.85, 0.81, 0.84, 0.83] → mean 0.83 ± 0.015. More reliable than a single train-test split.",
+  notes:["k=5 or 10 is standard","Use TimeSeriesSplit for time series data"],
+},
+shap:{
+  what:"Uses game theory (Shapley values) to compute each variable's contribution to individual predictions. Enables interpretability of black-box models.",
+  example:"Ex: Explaining a mortgage rejection. Applicant A: debt-to-income ratio (SHAP = +0.32, largest contributor) and short tenure (+0.18) were the main reasons. Makes black-box decisions explainable to individuals.",
+},
+bootstrap:{
+  what:"Approximates the sampling distribution of a statistic by repeatedly resampling with replacement from the original data.",
+  example:"Ex: Estimating the 95% CI for the median (analytically difficult). After 1,000 bootstrap resamples, the 95% percentile interval was [42.3, 67.8].",
+},
+permutation:{
+  what:"Constructs the null distribution by randomly shuffling labels, then computes a p-value. No distributional assumptions needed.",
+  example:"Ex: Validating variable importance: shuffling the age variable 30 times and measuring the resulting drop in AUC. Mean AUC drop of 0.067 confirms age is important.",
+},
+arima:{
+  what:"Time series forecasting model using past values (AR) and past forecast errors (MA) to predict future values.",
+  example:"Ex: Monthly new customer acquisitions (36 months) modeled with ARIMA(2,1,1). AIC-based order selection; 12-month forecast with 95% prediction intervals provided a quantitative basis for staffing plans.",
+  formula:"ARIMA(p,d,q): p = AR order, d = differencing, q = MA order",
+},
+var_model:{
+  what:"Simultaneously models multiple time series variables. Estimates how each variable depends on past values of all other variables.",
+  example:"Ex: GDP growth, unemployment, and inflation modeled jointly with VAR(2). Impulse response functions showed that an interest rate shock takes ~4 months to affect unemployment.",
+},
+granger:{
+  what:"Tests whether lagged values of X significantly improve forecasts of Y. Tests 'temporal precedence', not strict causality.",
+  example:"Ex: Does brand mention volume on social media Granger-cause next week's sales? Lag-2 model F = 6.23, p = 0.0002 → social mentions are a useful leading indicator.",
+},
+cointegration:{
+  what:"Tests whether two non-stationary (unit root) time series share a long-run equilibrium relationship.",
+  example:"Ex: Ad spend and sales are both I(1) but cointegration test p = 0.03 → long-run equilibrium exists. Increasing ad spend consistently pushes sales higher in the long run.",
+},
+survival:{
+  what:"Estimates the time-to-event distribution (e.g., churn, death) including censored observations. Foundational method in survival analysis.",
+  example:"Ex: SaaS service retention analysis. 12-month survival rate = 68%. Log-rank test comparing plans A and B: Plan B had significantly higher retention (p = 0.02).",
+},
+cox:{
+  what:"Estimates the effect of covariates on the hazard rate. The multivariate regression equivalent in survival analysis.",
+  example:"Ex: Predictors of SaaS churn. Login frequency HR = 0.82 → each additional login reduces churn risk by 18%. Support requests HR = 1.35 → more requests signal higher churn risk.",
+},
+changepoint:{
+  what:"Automatically detects time points at which statistical properties (mean, variance) of a time series change.",
+  example:"Ex: Change-point detection on 60 months of sales data identified structural breaks in April 2021 (COVID impact) and January 2023 (new product launch).",
+},
+pearson:{
+  what:"Measures the strength and direction of the linear relationship between two continuous variables. Ranges from −1 to +1.",
+  example:"Ex: Correlation between employee income and happiness. r = 0.42, p < 0.001 — moderate positive correlation. Note: correlation ≠ causation.",
+  when:["Explore relationships between two continuous variables","Pre-regression check of variable relationships","Visualize multi-variable correlation structure as a heatmap"],
+  notes:["Assumes normality and no outliers (distorted if violated)","Use Spearman for ordinal or non-normal data","r² (coefficient of determination) = proportion of Y's variance explained by X"],
+},
+shapiro:{
+  what:"Tests whether data follow a normal distribution. Should be checked before parametric tests (t-test, ANOVA, regression).",
+  example:"Ex: Testing normality of happiness scores. W = 0.94, p = 0.023 → not normally distributed. Therefore Mann-Whitney U was chosen over the t-test. With n > 30, the CLT allows t-tests to be used approximately.",
+  when:["Pre-test normality check before parametric tests","Diagnosing normality of regression residuals","Especially important for n < 50 (large samples tend to reject normality trivially)"],
+  formula:"Null hypothesis: 'data are normally distributed'\np < 0.05 → not normal (consider non-parametric tests)",
+  notes:["For n > 50, even slight skewness can give p < 0.05 — use QQ plots alongside","Kolmogorov-Smirnov is another option (better for large samples)","In practice, n ≥ 30 is often treated as 'approximately normal'"],
+},
+levene_test:{
+  what:"Tests whether multiple groups have equal variances. Used as a pre-condition check for ANOVA. Welch's t-test (equal_var=False) is safe regardless of variance equality.",
+  example:"Ex: Checking equal variances across 3 departments for a satisfaction score ANOVA. Levene p = 0.032 → variances not equal → Welch's ANOVA used instead of standard ANOVA.",
+  when:["Pre-ANOVA or pre-t-test variance check","Compare variances across multiple groups","Required when Welch's version is unavailable"],
+  notes:["Welch's t-test (equal_var=False) is always safe, making Levene's test less critical for t-tests","If ANOVA p < 0.05 → use Welch's ANOVA or Kruskal-Wallis"],
+},
+mice:{
+  what:"Instead of imputing a single value, MICE uses other variables to predict and impute missing values multiple times, preserving uncertainty.",
+  example:"Ex: 300-person survey with 52 missing income values (17%). Simple mean imputation understates variance. MICE (10 imputations) → 10 separate regressions → combined with Rubin's rules for accurate standard errors.",
+  when:["Missing rate 5–30% (< 5% can use listwise deletion)","Missingness may not be completely at random (check for MAR/MCAR)","The missing variable is important for the analysis"],
+  notes:["Listwise deletion (removing rows with missing data) reduces sample size and can introduce bias","Mean/median imputation underestimates variance","Missing rate > 30% requires careful interpretation"],
+},
+confidence_interval:{
+  what:"Reports not just a point estimate (e.g., mean = 5.3) but the uncertainty around it. The 95% CI means: in 100 identical studies, 95 would contain the true value. Modern statistics requires CIs alongside p-values.",
+  example:"Ex: Difference in customer satisfaction before and after an intervention = +1.8 points, 95% CI = [+0.9, +2.7]. The CI excludes 0 (significant) and its lower bound (+0.9) confirms at least a 0.9-point improvement — more informative than a p-value alone.",
+  notes:["p-value: binary 'difference exists/doesn't'; CI: shows the range and magnitude of the difference","CI not containing 0 → significant difference (for OLS)","Narrower CI → more precise estimate (larger sample)"],
+},
+};
+
+// ── English translations for FD ──────────────
+const FD_EN = {
+nominal:{
+  what:"Data representing names or categories with no inherent order or magnitude. Numbers assigned to categories are labels only — arithmetic operations on them are meaningless.",
+  example:"Ex: Gender (male/female/other), disability type (physical/mental/intellectual), district name. These are converted to dummy variables (0/1) for analysis.",
+  ex:["Gender (male/female/other)","Disability type (physical/mental/intellectual)","Prefecture or district name","Color, brand name"],
+  notes:["Convert to dummy variables (0/1) for regression","Don't forget drop_first=True in get_dummies() (prevents multicollinearity)","Only valid summary statistic: mode"],
+  methods:["Chi-squared test","Fisher's Exact Test","Cross-tabulation","Logistic regression (as dummy variable)"],
+},
+ordinal:{
+  what:"Data where order is meaningful but the distance between categories is not necessarily equal. The gap between '1→2' may differ from '4→5'.",
+  example:"Ex: 5-point customer satisfaction scale (1=very dissatisfied to 5=very satisfied), disability grade, educational attainment. Order matters but equal intervals cannot be assumed.",
+  ex:["5-point Likert scale (1–5)","Educational attainment (primary/secondary/university)","Disability grade (1st–6th)","Satisfaction and importance ratings"],
+  notes:["Strictly, t-tests and regression are inappropriate (unequal intervals)","In social sciences, 5+ point Likert scales are conventionally treated as continuous","For strict analysis: Mann-Whitney, Spearman correlation"],
+  methods:["Mann-Whitney U test","Kruskal-Wallis test","Spearman rank correlation","Ordinal logistic regression"],
+},
+interval:{
+  what:"Data where differences are meaningful and equal, but there is no absolute zero. '0' does not mean 'none of the quantity'.",
+  ex:["Happiness score 0–10 (0 means 'not at all happy', not an absence of happiness)","Temperature (0°C does not mean zero cold)","Calendar year"],
+  notes:["Expressing 'Beppu happiness is 1.3× the national level' is technically incorrect","The correct expression is 'higher by 1.37 points'","Most methods (t-test, regression, correlation) are applicable"],
+  methods:["t-test","ANOVA","Multiple/Ridge regression","Pearson correlation"],
+},
+ratio:{
+  what:"Data with an absolute zero where all arithmetic operations (add, subtract, multiply, divide) are meaningful. The most information-rich data type.",
+  example:"Ex: Age (0 years is truly zero), income (¥0 means no income), store visits, body weight. Ratio comparisons like 'income is twice the average' are valid.",
+  ex:["Age (0 means truly zero)","Income, count, frequency","Height, weight","Distance, time"],
+  notes:["Ratio comparisons (e.g., 'twice the average') are valid","Log transformation corrects distributional skew","All statistical methods are applicable"],
+  methods:["All statistical methods are applicable"],
+},
+step1:{
+  what:"The most important step: articulating 'what do I want to find out?' before any analysis. Deciding this first prevents confusion in method selection later.",
+  example:"Ex: First setting the goal 'Is happiness higher in Beppu than nationally for people with disabilities?' then defining: outcome = happiness score, candidate predictors = environmental and demographic variables, comparison axis = national vs. Beppu.",
+  points:["Define one outcome variable (what you want to predict/explain)","List candidate predictor variables","Decide on the comparison axis (group comparison, relationship, or prediction)","Clarify the causal or correlational nature of the claim"],
+  notes:["The correct order is 'select the analysis needed for the goal', not 'do all interesting analyses'","Deciding the goal after seeing results is HARKing (Hypothesizing After Results Known) — scientifically problematic"],
+},
+step2:{
+  what:"Understand the full picture of the data before any analysis. This step discovers outliers, missing values, and distributional skew. Skipping EDA silently corrupts results.",
+  example:"Ex: After loading data, check df.shape → (301, 87). df.dtypes confirms numeric/string columns. df.isna().sum() identifies columns with many missing values. df.describe() reveals happiness distribution (mean 5.8, min 0, max 10).",
+  checklist:["df.shape → number of rows and columns","df.dtypes → data types (numeric vs. string)","df.isna().sum() → count of missing values","df.describe() → summary statistics (mean, SD, min, max)","value_counts() → unique values in categorical variables","histogram → distribution of the outcome variable","groupby + mean → group-level means"],
+},
+step3:{
+  what:"Clean the data into a form ready for analysis. The quality of this step determines the quality of the entire analysis.",
+  example:"Ex: National data used numeric codes (gender: 1=male, 2=female) → converted to text with map(). Age in years → binned into age groups with pd.cut(). Variant spellings of disability types unified with OR conditions.",
+  checklist:["Handle missing values (fillna, dropna, or imputation)","Standardize labels (e.g., 'Male' vs. 'male')","Convert numeric codes to text labels (map)","Bin continuous age into age groups (pd.cut)","Encode categoricals as dummy variables (get_dummies)","Merge multiple files (pd.concat, merge)","Add target and source columns"],
+},
+vif:{
+  what:"Run this check before multiple regression. When predictors are highly correlated (multicollinearity), coefficient estimates become unstable and interpretation fails. VIF = 1: no correlation; VIF > 10: danger.",
+  example:"Ex: 30 satisfaction survey items as predictors showed VIF = 15–30 throughout. Highly correlated similar questions were the cause. OLS abandoned in favor of Ridge regression.",
+  what2:"VIF (Variance Inflation Factor) = quantifies how much each predictor is correlated with all other predictors. VIF=1 is uncorrelated; VIF>10 is a danger signal.",
+  notes:["VIF=∞ means perfect linear dependence (e.g., outcome variable entered as a predictor)","Fix 1: Remove one of the highly correlated variables","Fix 2: Switch to Ridge regression","Fix 3: Use PCA for dimensionality reduction, then regress"],
+},
+control:{
+  what:"When claiming 'A affects B', a third variable C (confounder) may influence both. Adding control variables to the model estimates 'the effect of A on B, holding C constant'.",
+  example:"Ex: Beppu had 37% minors in its sample (vs. 0% nationally). After adding age, gender, and disability type as controls, the model estimated the regional effect after removing demographic differences.",
+  ex:["Age affects happiness → control for age","Gender affects response patterns → add gender as a dummy variable","Disability type affects satisfaction → control for disability type"],
+  notes:["Use a DAG to structure confounders before deciding on control variables","Colliders (variables caused by both X and Y) must NOT be controlled — they introduce bias","Control variables require a theoretical justification (don't add indiscriminately)"],
+},
+interpret:{
+  what:"Organize results into three levels: what can be stated firmly, what can be said as a tendency, and what cannot be claimed. Skipping this leads to overstatement.",
+  example:"Ex: 'Beppu happiness significantly higher than national (t-test p < 0.001)' → can be stated firmly. 'Even after controlling for age and disability type, Beppu dummy is positive (Ridge coef = +0.20)' → can be said as a tendency. 'Inclusive environment causes higher happiness' → cannot be claimed from cross-sectional data.",
+  levels:[
+    "✅ Can be stated firmly: t-test shows significant difference, descriptive stats show higher mean (facts within the data)",
+    "⚠️ Can be said as a tendency: X coefficient remains positive after adding controls (conditional tendency)",
+    "❌ Cannot be claimed: causal relationships (cross-sectional data cannot support), population representativeness (without random sampling)"
+  ],
+  notes:["Cross-sectional data (a snapshot in time) cannot establish causality","Longitudinal data, DID, RDD etc. are needed before approaching causal claims","Convergence of multiple analyses pointing the same direction strengthens evidence"],
+},
+viz:{
+  what:"Choose graphs based on 'what do I want to communicate?' The appropriate chart type changes with the message.",
+  example:"Ex: t-test results → bar chart with error bars for national vs. Beppu comparison. Ridge coefficients → horizontal bar chart ranking influence. Happiness distribution → overlapping histograms. 3-variable summary → bubble chart (X=t-test diff, Y=Ridge coef, size=p-value).",
+  guide:[
+    "Compare 2-group means → bar chart with error bars",
+    "Show the distribution shape → histogram, violin plot, or box plot",
+    "Relationship between 2 variables → scatter plot (with regression line)",
+    "Multi-variable correlation → heatmap",
+    "3 variables simultaneously → bubble chart (X, Y, size)",
+    "Multi-category overview → radar chart",
+    "Group × item ratings → stacked bar chart or heatmap",
+    "Change over time → line chart"
+  ],
+},
+branch_ttest:{
+  what:"When testing the difference between 2 groups, the method depends on the data distribution and whether measurements are paired.",
+  example:"Ex: Comparing satisfaction scores (1–5) between 2 groups. If scores are approximately normal (n ≥ 100) → Welch's t-test. If strictly ordinal (Likert scale) → Mann-Whitney U. Reporting both results demonstrates robustness.",
+  tree:[
+    "Continuous, approximately normal → Welch's t-test (equal_var=False)",
+    "Ordinal or non-normal → Mann-Whitney U test",
+    "Same subjects measured before and after → Paired t-test",
+    "Paired + non-normal → Wilcoxon Signed-Rank test"
+  ],
+  notes:["Check normality with Shapiro-Wilk test or QQ plot","With large samples (n > 30), the CLT allows the normality assumption to be relaxed"],
+},
+branch_anova:{
+  what:"When comparing 3+ groups, repeated t-tests cause the multiple testing problem. Use ANOVA to test all groups at once.",
+  example:"Ex: Comparing happiness across 5 disability subgroups. Use f_oneway() for F and p → if significant, use pairwise_tukeyhsd() to identify which pairs differ.",
+  tree:[
+    "1 factor, normal, equal variances → One-way ANOVA + Tukey HSD",
+    "1 factor, non-normal → Kruskal-Wallis test",
+    "2 factors (with interaction) → Two-way ANOVA",
+    "Repeated measures (same subjects × conditions) → Repeated-measures ANOVA or Friedman",
+    "Control for a covariate → ANCOVA",
+    "Multiple outcome variables → MANOVA"
+  ],
+},
+branch_chi2:{
+  what:"How to choose a test for categorical × categorical data.",
+  example:"Ex: Testing the relationship between gender (M/F) and job change intention (yes/no). Create a 2×2 cross-tabulation. If all expected cell frequencies ≥ 5 → Chi-squared test. If any expected cell frequency < 5 → Fisher's Exact Test.",
+  tree:[
+    "2×2 or larger, expected frequency ≥ 5 → Chi-squared test",
+    "2×2, expected frequency < 5 → Fisher's Exact Test",
+    "Paired data (before/after binary change) → McNemar's test",
+    "3+ group categorical comparison → Chi-squared (same approach)"
+  ],
+},
+branch_paired:{
+  what:"When comparing the same subjects under 2 or more conditions. More powerful than independent-samples tests because individual variation is removed.",
+  example:"Ex: Comparing sales for the same 30 stores before and after an intervention. Same store pre/post → paired t-test. If normality is questionable (skewed histogram) → Wilcoxon Signed-Rank test.",
+  tree:[
+    "Continuous, normal → Paired t-test",
+    "Continuous, non-normal → Wilcoxon Signed-Rank test",
+    "Binary (categorical) → McNemar's test",
+    "3+ conditions, continuous → Repeated-measures ANOVA",
+    "3+ conditions, non-normal → Friedman test"
+  ],
+},
+branch_ml:{
+  what:"Use when prediction accuracy is the priority, or to capture non-linear relationships. Trade-off: less interpretable than statistical models.",
+  example:"Ex: Predicting happiness while needing interpretation → Random Forest + SHAP. Maximizing accuracy → XGBoost + CV. Unsure which model → compare AUC via 5-fold CV first.",
+  tree:[
+    "Interpretability required → Ridge/Lasso or Random Forest (interpret with SHAP values)",
+    "Maximum accuracy → Gradient Boosting (XGBoost, LightGBM)",
+    "High-dimensional data, classification → SVM",
+    "All ML models → cross-validation for evaluation is mandatory"
+  ],
+  notes:["SHAP values explain 'which variables matter for each prediction'","Compare models using cross-validation"],
+},
+branch_dim:{
+  what:"How to choose methods for exploring or compressing the structure of multi-variable data.",
+  example:"Ex: Exploring whether 30 survey items actually measure 3–4 latent constructs → EFA. Confirming the EFA structure in new data → CFA. Estimating a causal path from environment → social participation → happiness simultaneously → SEM.",
+  tree:[
+    "Linear compression of variables → PCA (after standardization)",
+    "Exploratory search for latent factors (no hypothesis) → EFA",
+    "Confirm a hypothesized factor structure → CFA",
+    "Latent variables + causal paths → SEM",
+    "Dimensionality reduction for visualization → t-SNE / UMAP"
+  ],
+},
+branch_cluster:{
+  what:"When you want to segment data into groups. The choice depends on whether the number of clusters is known in advance.",
+  example:"Ex: Discovering natural customer segments from purchase behavior. First use hierarchical clustering to inspect the dendrogram → K=4 looks appropriate. Then finalize with K-means. Use t-SNE to confirm visual separation in 2D.",
+  tree:[
+    "Can specify K in advance (or use elbow method) → K-means (choose K with silhouette score)",
+    "Don't want to pre-specify K → Hierarchical clustering (inspect dendrogram)",
+    "Visualization purpose (2D) → t-SNE / UMAP → then K-means",
+    "Predict group membership for new data → LDA (discriminant analysis)"
+  ],
+  notes:["Standardization is mandatory","Use elbow method and silhouette score to find optimal K"],
+},
+branch_medmod:{
+  what:"Methods for analyzing 'why' (mediation) and 'under what conditions' (moderation) relationships between variables.",
+  example:"Ex: Does healthcare quality (X) → happiness (Y) work through mental health (M)? → Mediation analysis. Does the same relationship differ by disability type (Z)? → Moderation analysis (add interaction term).",
+  tree:[
+    "Test whether M mediates the X→Y relationship → Mediation analysis (via bootstrap)",
+    "Test whether the X→Y relationship changes depending on Z → Moderation analysis (add interaction term)",
+    "Both mediation and moderation simultaneously → Moderated mediation (PROCESS macro)",
+    "Full complex causal pathway → SEM"
+  ],
+},
+branch_causal:{
+  what:"Methods for claiming 'X causes Y'. Generally requires more than cross-sectional data.",
+  example:"Ex: Comparing happiness before/after a regional revitalization policy in treated vs. untreated cities → DID. Policy applies to people aged 65+ (threshold) → RDD.",
+  tree:[
+    "Pre/post intervention data available → Difference-in-Differences (DID)",
+    "Same unit observed over multiple time periods → Panel data analysis (fixed effects)",
+    "Treatment determined by a threshold (age, score) → Regression Discontinuity Design (RDD)",
+    "Selection bias is a concern → Propensity Score Matching (PSM)",
+    "Endogeneity problem → Instrumental Variables (IV)",
+    "Single-unit intervention → Synthetic Control method",
+    "Organizing causal structure → Start with a DAG"
+  ],
+  notes:["Causal inference ideally requires a 'natural experiment' (close to random assignment)","With cross-sectional data, limit claims to 'consistent with a tendency'"],
+},
+branch_time:{
+  what:"How to choose methods for data that change over time or track when events occur.",
+  example:"Ex: 5 years of monthly happiness survey data → ARIMA/SARIMA for forecasting. Identifying when an intervention took effect → change-point detection. Analyzing duration of service use → Kaplan-Meier + Cox regression.",
+  tree:[
+    "Single time series forecast → ARIMA (check stationarity) / SARIMA (seasonal)",
+    "Multiple interacting time series → VAR model",
+    "Lead-lag relationships between series → Granger causality test",
+    "Long-run equilibrium relationship → Cointegration test",
+    "Time to event (survival analysis) → Kaplan-Meier (visualization)",
+    "Predictors of survival time → Cox Proportional Hazards model",
+    "Detect structural breaks in a time series → Change-point detection (ruptures)"
+  ],
+},
+assumption_check:{
+  what:"Statistical tests have underlying assumptions. Using a method without checking them can produce incorrect results. At minimum, verify these 4 points.",
+  example:"Ex: Before comparing 2 groups on happiness with t-test: ① Normality → Shapiro-Wilk p = 0.023 (non-normal) ② No missing values ③ Removed 1 outlier. Result: Mann-Whitney U chosen. Checking assumptions led to the correct method.",
+  tree:[
+    "① Normality check → Shapiro-Wilk (n < 50) or QQ plot. p < 0.05 → consider non-parametric",
+    "② Equal variances check → Levene's test. p < 0.05 → use Welch's version (equal_var=False)",
+    "③ Missing values → df.isna().sum(). Missing rate ≥ 5% → consider MICE imputation",
+    "④ Outlier check → box plot or IQR method. Choose tests robust to outliers"
+  ],
+  notes:["With n ≥ 30, CLT makes the normality assumption less critical","Welch's t-test (equal_var=False) is always safe — makes Levene's test less necessary","Document assumption check results and report them in papers and reports"],
+},
+branch_ols:{
+  what:"The standard regression method when the outcome is continuous and there is no multicollinearity (VIF < 10). Quantifies the effect of X on Y with all other variables held constant, reported as coefficients and p-values.",
+  example:"Ex: Regressing annual income on age, experience, education, and job type. After confirming all VIF < 5, OLS yielded experience coefficient = 12.3 (p < 0.001) — clear, interpretable result.",
+  tree:[
+    "VIF < 10 confirmed → run OLS regression",
+    "Coefficient p-value < 0.05 → that variable significantly affects the outcome",
+    "Check R² for overall explanatory power (R² ≥ 0.3 is practically useful)",
+    "Check residual plot for homoscedasticity and normality",
+    "Use adjusted R² to compare models"
+  ],
+  notes:["Report effect size (standardized coefficients) alongside p-values","Sample size > predictors × 10–15 as a guideline","Check residual normality with a QQ plot"],
+},
+branch_ridge:{
+  what:"Use when VIF > 10 is detected in multiple predictors (multicollinearity). An alternative to OLS that stabilizes coefficients. Particularly effective when predictors are highly correlated (e.g., similar survey questions).",
+  example:"Ex: Regressing happiness on 22 satisfaction scores with VIF = 15–30. Ridge (α=100) gave R² = 0.51. Mental health had the highest coefficient (0.64) and was judged most influential.",
+  tree:[
+    "Multiple predictors with VIF > 10 → choose Ridge regression",
+    "Standardize all variables (StandardScaler) before fitting",
+    "Use RidgeCV to automatically select optimal α (penalty strength)",
+    "Compare variable importance by size of standardized coefficients",
+    "Check overall explanatory power with R²"
+  ],
+  notes:["Standardization is mandatory (otherwise coefficients are incomparable)","Coefficients are biased toward zero","No p-values — assess direction and relative magnitude of coefficients","Sign and relative size are still interpretable"],
+},
+branch_lasso:{
+  what:"Use when there are too many predictors. Automatically sets unimportant coefficients to exactly zero. Unlike Ridge (which only shrinks), Lasso performs exact variable selection.",
+  example:"Ex: Building a customer purchase prediction model with 100 variables. Lasso auto-selected 23 variables. Re-fit OLS on those 23 for an interpretable final model.",
+  tree:[
+    "Too many predictors (sample/predictors < 10) → consider Lasso",
+    "Multicollinearity also present → ElasticNet (L1+L2)",
+    "Variables with coefficient=0 → 'ineffective' and excluded",
+    "Re-run OLS on the remaining variables for better interpretability"
+  ],
+  notes:["Standardization is mandatory","α selected via LassoCV with cross-validation","Lasso is most powerful when there are many variables","A two-stage approach (Lasso selection → OLS estimation) is common"],
+},
+branch_logistic:{
+  what:"Use when the outcome is binary (0/1). Feels very similar to multiple regression, but coefficients are interpreted as odds ratios.",
+  example:"Ex: Predicting customer churn (1=churn, 0=stay). Login frequency, satisfaction, and tenure as predictors. Satisfaction odds ratio = 0.62 → 1-point higher satisfaction reduces churn odds by 38%.",
+  tree:[
+    "Binary outcome (0/1) → logistic regression",
+    "3+ unordered classes → multinomial logistic regression",
+    "Ordinal outcome (e.g., 1–5 grades) → ordinal logistic regression",
+    "Apply exp() to coefficients to get odds ratios",
+    "Odds ratio > 1: positive effect; < 1: negative effect"
+  ],
+  notes:["Use L1/L2 regularized LogisticRegression if multicollinearity is strong","Evaluate predictive performance with ROC-AUC","Cross-validation is important with small samples to prevent overfitting"],
+},
+};
+
+// ── English translations for WIZARD ──────────
+const WIZARD_EN = {
+start:{ q:"What is your analysis goal?", sub:"The right method depends fundamentally on your goal. Clarifying 'what do you want to achieve?' is the most important step.", options:["📊 Compare differences between groups","📉 Predict an outcome / estimate variable effects (regression)","🌀 Explore structure or patterns in data","⚗️ Claim a causal relationship","📈 Time series / forecasting / time-to-event","🤖 Maximize predictive accuracy"] },
+compare_start:{ q:"What type of data is your outcome variable?", sub:"The type of outcome variable determines which test to use. For numeric outcomes, test differences in means; for categorical, test differences in proportions or distributions.", options:["Numeric (score, amount, age, etc.)","Categorical (yes/no, group membership, etc.)"] },
+compare_numeric:{ q:"How many groups are you comparing?", sub:"The t-test is for exactly 2 groups. Repeating t-tests for 3+ groups causes the 'multiple testing problem' — inflating the false positive rate.", options:["2 groups","3 or more groups"] },
+compare_2g:{ q:"Are the same subjects measured twice (before/after comparison)?", sub:"When the same subjects are measured twice (paired), individual variation cancels out, enabling a more precise comparison than independent-samples tests.", options:["Yes (same subjects, before/after)","No (two separate independent groups)"] },
+compare_2g_paired:{ q:"Is the data approximately normally distributed? (Does the histogram look bell-shaped?)", sub:"Normality determines whether to use a parametric or non-parametric test. With n ≥ 30, the CLT allows normality to be assumed.", options:["Yes / Not sure","No (skewed or ordinal scale)"] },
+compare_2g_indep:{ q:"Is the data approximately normally distributed?", sub:"Normality changes the method. Likert scales (1–5) are strictly ordinal, making non-parametric tests more appropriate — though social scientists conventionally use t-tests too.", options:["Yes / n ≥ 30 and unsure","No (skewed or Likert scale)"] },
+compare_3g:{ q:"Are the same subjects measured under multiple conditions?", sub:"When the same subjects appear under multiple conditions (repeated measures), individual variation can be removed to give a more precise test of condition differences.", options:["Yes (same subjects across multiple conditions)","No (separate independent groups)"] },
+compare_3g_repeated:{ q:"Is the data approximately normally distributed?", sub:"Repeated-measures ANOVA assumes normality and sphericity. If these are doubtful, use the non-parametric Friedman test.", options:["Yes","No"] },
+compare_3g_indep:{ q:"Is the data approximately normally distributed?", sub:"Normality determines the method. If the distribution is heavily skewed or data are ordinal, a non-parametric test is appropriate.", options:["Yes","No"] },
+compare_3g_factors:{ q:"How many factors (ways of grouping) do you have?", sub:"The number of factors changes the model. With 2 factors, you can also test for an 'interaction effect' — whether the combination of A and B produces a special additional effect.", options:["1 factor (e.g., by department)","2 factors (e.g., department × gender)","Control for a covariate (e.g., remove age effect before comparing)","Multiple outcome variables"] },
+compare_cat:{ q:"Your outcome is categorical. What comparison do you want?", sub:"Categorical × categorical comparisons use cross-tabulation tests. The method differs depending on whether the comparison involves before/after change in the same subjects.", options:["Categorical × categorical (cross-tabulation)","Before/after change in the same person's categorical response"] },
+compare_cat_cat:{ q:"Is the expected frequency in each cell of the cross-table ≥ 5?", sub:"Chi-squared requires 'expected frequency ≥ 5 per cell'. With small samples, some cells may fall below 5, degrading the test. (If unsure, try Chi-squared first; switch if you get a warning.)", options:["Yes (n ≥ 40 approximately)","No / small sample"] },
+regression_start:{ q:"What type of data is your outcome variable (what you want to predict)?", sub:"The type of outcome variable fundamentally changes the regression model. Continuous → linear regression; categorical → classification; count data → a special distribution model.", options:["Continuous (score, amount, age, etc.)","Binary 0/1 (yes/no, did/didn't)","3+ unordered categories","Ordinal scale (1–5 ratings, etc.)","Count data (number of occurrences)"] },
+reg_continuous:{ q:"How many predictor variables do you have?", sub:"Too many variables relative to sample size causes overfitting, making coefficients unstable. A safe guideline: sample size ÷ predictors should be ≥ 10–15.", options:["Few (sample size / predictors > 15)","Many (sample size / predictors ≤ 15)"] },
+reg_vif:{ q:"Are the predictors strongly correlated with each other? (Check VIF)", sub:"VIF (Variance Inflation Factor) measures how correlated each predictor is with all others. VIF > 10 makes coefficient estimates unstable and individual effects indistinguishable. 'Strong' means multiple predictors with VIF > 10.", options:["Weak (VIF < 10)","Strong (multiple predictors with VIF > 10)"] },
+reg_ols_group:{ q:"Is there a hierarchical structure in your data?", sub:"If individuals are nested within groups (students in schools, patients in hospitals, residents in districts), standard OLS violates the independence assumption. Mixed-effects models handle this correctly.", options:["No (standard data structure)","Yes (individuals nested within groups)"] },
+reg_count:{ q:"Is your count data overdispersed?", sub:"Poisson regression assumes variance = mean. Real count data often has variance much larger than the mean (overdispersion), in which case negative binomial regression is more appropriate.", options:["No (variance ≈ mean)","Yes (variance >> mean)"] },
+structure_start:{ q:"What do you want to explore?", sub:"Structure exploration methods differ greatly depending on whether you are confirming a hypothesis or discovering patterns from data. Start by clarifying what you want to find.", options:["Latent dimensions or factors underlying many variables","Group similar samples together (clustering)","Correlation / association structure between variables","Whether M mediates the X→Y path","Whether the X→Y relationship varies depending on Z"] },
+structure_factor:{ q:"Do you have a hypothesis about the factor structure?", sub:"Exploratory (EFA): use when you don't know how many factors exist. Confirmatory (CFA): use when you have a hypothesis about the factor structure to test.", options:["No, explore it freely","Yes, confirm a hypothesis"] },
+structure_cfa_or_sem:{ q:"Will you also estimate causal paths between latent variables?", sub:"CFA estimates only the measurement model (relationships between latent and observed variables). SEM additionally estimates causal paths between latent variables.", options:["No (measurement model only)","Yes (full causal path diagram)"] },
+structure_cluster:{ q:"Can you specify the number of clusters (K) in advance?", sub:"K-means requires K to be specified in advance. If you don't know 'how many natural groups exist', hierarchical clustering lets you inspect a dendrogram first.", options:["Yes (or use elbow method)","No (want to inspect dendrogram first)"] },
+causal_start:{ q:"What data do you have available?", sub:"Causal inference methods depend entirely on the data available. Cross-sectional data alone makes causal claims difficult — longitudinal data or natural experiments are needed.", options:["Pre/post intervention data from multiple time points","Cross-sectional data only (single time-point snapshot)","Treatment determined by a threshold (age, score, etc.)"] },
+causal_longitudinal:{ q:"What is the data structure?", sub:"Even with multiple time points, the available methods differ depending on whether both treated and control groups are available, or only a single unit.", options:["Both treatment and control groups available","Single unit (city, firm) time series only","Same individuals tracked over multiple time periods"] },
+causal_cross:{ q:"Cross-sectional data cannot establish causality. What is your goal?", sub:"With cross-sectional data (single time-point snapshot), causality cannot be claimed. Here are the best available options for estimating associations while controlling for confounders.", options:["Estimate X→Y while controlling for confounders","Remove selection bias to compare groups","Endogeneity problem (reverse causality or omitted variables)"] },
+time_start:{ q:"What do you want to do?", sub:"Even within time series data, the required methods differ completely depending on whether the goal is prediction, causal inference, structural break detection, or survival analysis.", options:["Forecast future values","Analyze time to an event (survival analysis)","Detect structural breaks or change points in a time series","Examine temporal lead-lag relationships between variables"] },
+time_forecast:{ q:"How many time series variables do you want to forecast?", sub:"For a single time series, ARIMA is the standard. When multiple variables influence each other, VAR models them jointly.", options:["1 variable (single time series)","Multiple variables (mutually influencing)"] },
+ml_start:{ q:"What is your outcome variable (what you want to predict)?", sub:"In machine learning, the type of outcome variable is the first decision point. Predicting a continuous value (regression) vs. predicting a class label (classification) requires different algorithms.", options:["Continuous (sales, score, etc.)","Categorical (0/1, class label)"] },
+ml_reg:{ q:"Is interpretability required?", sub:"Deciding whether you need to explain 'why that prediction' is critical. Random Forest + SHAP balances accuracy and interpretability. For accuracy-only, XGBoost is very powerful.", options:["Yes (need to explain the prediction)","No (accuracy is the priority)"] },
+ml_cls:{ q:"Is interpretability required?", sub:"For classification too, the need to explain 'why that prediction' shapes the method. In domains like healthcare and finance where accountability is required, interpretability is essential.", options:["Yes (need to explain the prediction)","No (accuracy is the priority)"] },
+r_ttest:{ method:"Welch's t-test (independent 2-sample)", reason:"The standard method for comparing continuous outcomes between 2 groups when data are approximately normal. equal_var=False makes it safe even when variances differ.", also:["Also report effect size (Cohen's d)","If testing multiple items at once, don't forget multiple comparison correction"] },
+r_paired_t:{ method:"Paired t-test", reason:"For before/after comparisons on the same subjects. Removing individual variation gives higher statistical power than an independent-samples t-test." },
+r_mannwhitney:{ method:"Mann-Whitney U test", reason:"Non-parametric alternative to the t-test for non-normal distributions or Likert scales. Compares 2 groups using ranks." },
+r_wilcoxon:{ method:"Wilcoxon Signed-Rank test", reason:"Non-parametric alternative to the paired t-test. Use for before/after comparisons when normality is questionable." },
+r_anova:{ method:"One-way ANOVA + Tukey HSD", reason:"Compares means across 3+ groups at once. If significant, Tukey HSD identifies which specific pairs differ.", also:["Verify equal variances with Levene's test","If non-normal, use Kruskal-Wallis test"] },
+r_twoway_anova:{ method:"Two-way ANOVA", reason:"Tests main effects and interaction of 2 factors simultaneously. Useful for detecting combination effects such as 'department × gender'." },
+r_ancova:{ method:"ANCOVA (Analysis of Covariance)", reason:"Compares groups after controlling for a covariate such as age or baseline score. Enables a 'fairer comparison'." },
+r_manova:{ method:"MANOVA (Multivariate ANOVA)", reason:"Compares multiple outcome variables across groups simultaneously. Fewer multiple testing issues than running separate t-tests." },
+r_repeated_anova:{ method:"Repeated-measures ANOVA", reason:"Compares 3+ conditions for the same subjects. Removes individual variation to detect condition differences more sensitively." },
+r_friedman:{ method:"Friedman test", reason:"Non-parametric alternative to repeated-measures ANOVA. Use when the same subjects are measured under 3+ conditions and normality is questionable." },
+r_kruskal:{ method:"Kruskal-Wallis test", reason:"Non-parametric alternative to ANOVA. Alternative method for 3+ group comparisons when normality is questionable." },
+r_chi2:{ method:"Chi-squared test", reason:"Tests independence from a cross-tabulation of categorical × categorical data. Reliable when all cells have expected frequency ≥ 5." },
+r_fisher:{ method:"Fisher's Exact Test", reason:"Exact test when the Chi-squared assumption cannot be met due to a small sample. Most suitable for 2×2 tables." },
+r_mcnemar:{ method:"McNemar's test", reason:"Tests whether a binary response changed between two time points for the same subjects. Used for attitude change before/after an intervention." },
+r_ols:{ method:"Multiple Regression (OLS)", reason:"The standard regression method for continuous outcomes with no multicollinearity. Interpret results using coefficients, p-values, and R².", also:["Check residual normality and homoscedasticity with plots","Add demographic variables as control variables"] },
+r_ols_control:{ method:"Multiple Regression with control variables (OLS)", reason:"The best available approach for cross-sectional data to control for confounders. Cannot claim causality, but allows reporting 'tendency after holding other variables constant'.", also:["Use a DAG to decide which control variables to add","Limit claims to 'consistent with a tendency' — do not claim causality"] },
+r_ridge:{ method:"Ridge Regression", reason:"Regression method for when multicollinearity (VIF > 10) is present. L2 penalty stabilizes coefficients. Standardization is mandatory.", also:["No p-values, but direction and relative magnitude of coefficients are interpretable","α is selected via cross-validation with RidgeCV"] },
+r_lasso:{ method:"Lasso Regression (variable selection)", reason:"Automatically sets unimportant variable coefficients to zero when there are too many predictors. Automatically selects important variables.", also:["Standardization is mandatory","Re-run OLS on selected variables for better interpretability"] },
+r_logistic:{ method:"Logistic Regression", reason:"Regression for binary outcomes (0/1). Coefficients are interpreted as odds ratios (exp(β))." },
+r_multinomial:{ method:"Multinomial Logistic Regression", reason:"For outcomes with 3+ unordered categories. Estimates odds ratios relative to a reference class." },
+r_ordinal:{ method:"Ordinal Logistic Regression", reason:"For ordinal outcomes (e.g., 1–5 ratings). Accounts for the ordering of categories. Theoretically the most appropriate choice." },
+r_poisson:{ method:"Poisson Regression", reason:"GLM for count outcomes (frequencies) when variance ≈ mean." },
+r_negbin:{ method:"Negative Binomial Regression", reason:"Extension of Poisson regression for overdispersed count data (variance >> mean)." },
+r_mixed:{ method:"Linear Mixed Effects Model (LME)", reason:"Appropriate for hierarchical data where individuals are nested within schools, districts, etc. Estimates fixed and random effects simultaneously." },
+r_efa:{ method:"Exploratory Factor Analysis (EFA)", reason:"Discovers how many latent constructs many survey items are measuring. Essential for scale development.", also:["Determine number of factors via scree plot or parallel analysis","Apply varimax rotation for more interpretable factors"] },
+r_cfa:{ method:"Confirmatory Factor Analysis (CFA)", reason:"Validates a factor structure found with EFA or a theoretically derived hypothesis. CFI > 0.95 and RMSEA < 0.06 are standard benchmarks." },
+r_sem:{ method:"Structural Equation Modeling (SEM)", reason:"Estimates complex causal paths including latent variables (direct and indirect effects) in a single model. Integrates CFA and regression." },
+r_kmeans:{ method:"K-means Clustering", reason:"Partitions data into K groups. Use elbow method and silhouette score to select K. Standardization is mandatory.", also:["Use elbow method to search for K","Verify clusters visually with t-SNE 2D plot"] },
+r_hierarchical:{ method:"Hierarchical Clustering", reason:"Visually confirms cluster structure with a dendrogram without pre-specifying K. Suitable for small to medium datasets." },
+r_corr_heatmap:{ method:"Correlation Analysis + Heatmap", reason:"Visualizing a correlation matrix as a heatmap is the most intuitive way to understand the correlation structure between variables.", also:["Continuous variables → Pearson correlation","Ordinal variables → Spearman correlation","Correlation ≠ causation — be careful"] },
+r_mediation:{ method:"Mediation Analysis", reason:"Tests the existence and magnitude of an indirect effect (X→M→Y) via bootstrap. Used to elucidate causal pathways." },
+r_moderation:{ method:"Moderation Analysis (Interaction)", reason:"Tests whether the X→Y relationship changes depending on Z's value via an interaction term. Reveals 'under what conditions the effect holds'." },
+r_did:{ method:"Difference-in-Differences (DID)", reason:"Estimates causal effects from pre/post changes in treatment vs. control groups. A leading method for policy evaluation. Parallel trends assumption must be verified." },
+r_panel:{ method:"Panel Data Analysis (Fixed Effects model)", reason:"Tracks the same individuals over multiple time periods. Fixed effects control for time-invariant individual heterogeneity, enabling near-causal estimation." },
+r_synth:{ method:"Synthetic Control method", reason:"Evaluates policy effects on a single unit (city, firm) by constructing a counterfactual from a weighted average of other units." },
+r_psm:{ method:"Propensity Score Matching (PSM)", reason:"Removes selection bias by matching units with the same propensity score. Used for causal estimation in observational studies." },
+r_iv:{ method:"Instrumental Variables (IV / 2SLS)", reason:"Resolves endogeneity from reverse causality or omitted variable bias using an instrumental variable. Finding a good instrument is the main challenge." },
+r_rdd:{ method:"Regression Discontinuity Design (RDD)", reason:"When treatment is determined by a threshold (age, score, etc.), estimates the causal effect as the discontinuous jump at that threshold." },
+r_arima:{ method:"ARIMA / SARIMA", reason:"Single time series forecasting. Determine order from ACF/PACF; use SARIMA if there is seasonality." },
+r_var:{ method:"VAR Model", reason:"For multiple time series that mutually influence each other, VAR models them jointly. Impulse response functions analyze dynamic interactions." },
+r_survival:{ method:"Kaplan-Meier + Cox Proportional Hazards Model", reason:"Use Kaplan-Meier to visualize the survival curve; use Cox PH to estimate the effects of predictors on survival time." },
+r_changepoint:{ method:"Change Point Detection", reason:"Automatically detects time points at which statistical properties (mean, variance) of a time series change. Identifies the impact of policy changes or events." },
+r_granger:{ method:"Granger Causality Test", reason:"Tests whether lagged values of X significantly improve forecasts of Y. Tests 'temporal precedence', not strict causality." },
+r_rf_shap:{ method:"Random Forest + SHAP values", reason:"Balances predictive accuracy and interpretability. Random Forest predicts; SHAP explains 'why that prediction'." },
+r_gbm:{ method:"Gradient Boosting (XGBoost / LightGBM)", reason:"Often achieves the highest accuracy on tabular data. Early stopping prevents overfitting; cross-validation evaluates the model." },
+};
+
+// ── Helper: get D entry with EN overlay ──────
+function getD(id) {
+  const base = D[id]; if (!base) return null;
+  return LANG === 'en' && D_EN[id] ? Object.assign({}, base, D_EN[id]) : base;
+}
+function getFD(id) {
+  const base = FD[id]; if (!base) return null;
+  return LANG === 'en' && FD_EN[id] ? Object.assign({}, base, FD_EN[id]) : base;
+}
+function getWiz(id) {
+  const base = WIZARD[id]; if (!base) return null;
+  return LANG === 'en' && WIZARD_EN[id] ? Object.assign({}, base, WIZARD_EN[id]) : base;
 }
 
 const D={
@@ -2826,15 +3636,15 @@ function copyCode(btn) {
   const codeEl = btn.closest('.code-wrap').querySelector('.code');
   const text = codeEl.innerText || codeEl.textContent;
   navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ コピー完了';
+    btn.textContent = T[LANG].copied;
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => { btn.textContent = T[LANG].copy; btn.classList.remove('copied'); }, 2000);
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
-    btn.textContent = '✓ コピー完了'; btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+    btn.textContent = T[LANG].copied; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = T[LANG].copy; btn.classList.remove('copied'); }, 2000);
   });
 }
 
@@ -2844,7 +3654,7 @@ function codeBlock(code, lang='Python') {
   return `<div class="code-wrap">
     <div class="code-header">
       <span class="code-lang">${lang}</span>
-      <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+      <button class="copy-btn" onclick="copyCode(this)">${T[LANG].copy}</button>
     </div>
     <div class="code">${escaped}</div>
   </div>`;
@@ -2855,15 +3665,16 @@ function shareURL(key) {
   const url = location.origin + location.pathname + '?method=' + key;
   navigator.clipboard.writeText(url).catch(() => {});
   const btn = document.getElementById('share-btn-'+key);
-  if (btn) { btn.textContent = '✓ URLコピー完了'; btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '🔗 URLをシェア'; btn.classList.remove('copied'); }, 2000); }
+  if (btn) { btn.textContent = T[LANG].shareCopied; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = T[LANG].shareUrl; btn.classList.remove('copied'); }, 2000); }
 }
 
 // ── 百科事典パネル描画 ────────────────────
 let encEl = null;
 function showEnc(id, fromEl) {
-  const d = D[id];
+  const d = getD(id);
   if (!d) return;
+  _currentEncId = id;
   if (encEl) encEl.classList.remove('active');
   encEl = fromEl || (typeof event !== 'undefined' && event ? event.currentTarget : null);
   if (encEl) encEl.classList.add('active');
@@ -2872,26 +3683,26 @@ function showEnc(id, fromEl) {
   const c = d.c || 'var(--c1)';
   const bg = d.bg || 'var(--c1l)';
   const lv = LEVELS[id];
-  const lvBadge = lv ? `<span class="level-badge ${LEVEL_CLASS[lv]}">${LEVEL_LABEL[lv]}</span>` : '';
+  const lvBadge = lv ? `<span class="level-badge ${LEVEL_CLASS[lv]}">${T[LANG].levelLabel[lv]}</span>` : '';
   let h = `<div class="hero" style="background:${bg};border:1.5px solid;border-color:${c}20">
     <h2 style="color:${c}">${d.t}${lvBadge}</h2>
     <div class="en">${d.en||''}</div>
     <span style="font-size:10px;background:${bg};border:1px solid ${c}30;color:${c};padding:2px 10px;border-radius:20px;font-weight:600">${d.cat||''}</span>
     <p style="margin-top:10px">${d.what||''}</p>
   </div>`;
-  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:13px;line-height:1.85;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
-  if(d.when&&d.when.length){h+=`<div class="ds"><h3>使いどころ</h3><ul>${d.when.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.formula){h+=`<div class="ds"><h3>数式</h3><div class="formula">${d.formula.replace(/\n/g,'<br>')}</div></div>`;}
-  if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点・ポイント</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.code){h+=`<div class="ds"><h3>Pythonコード例</h3>${codeBlock(d.code)}</div>`;}
+  if(d.example){h+=`<div class="ds"><h3>${T[LANG].example}</h3><p style="font-size:13px;line-height:1.85;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+  if(d.when&&d.when.length){h+=`<div class="ds"><h3>${T[LANG].whenToUse}</h3><ul>${d.when.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.formula){h+=`<div class="ds"><h3>${T[LANG].formula}</h3><div class="formula">${d.formula.replace(/\n/g,'<br>')}</div></div>`;}
+  if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>${T[LANG].notes}</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.code){h+=`<div class="ds"><h3>${T[LANG].pythonCode}</h3>${codeBlock(d.code)}</div>`;}
   // 関連手法
   const rel = RELATED[id];
   if(rel&&rel.length){
-    const chips = rel.filter(k=>D[k]).map(k=>`<button class="related-chip" onclick="showEnc('${k}')">${D[k].t}</button>`).join('');
-    h+=`<div class="related-section"><div class="related-title">関連手法</div><div class="related-chips">${chips}</div></div>`;
+    const chips = rel.filter(k=>D[k]).map(k=>`<button class="related-chip" onclick="showEnc('${k}')">${getD(k).t}</button>`).join('');
+    h+=`<div class="related-section"><div class="related-title">${T[LANG].related}</div><div class="related-chips">${chips}</div></div>`;
   }
   // シェアボタン
-  h+=`<div><button id="share-btn-${id}" class="share-btn" onclick="shareURL('${id}')">🔗 URLをシェア</button></div>`;
+  h+=`<div><button id="share-btn-${id}" class="share-btn" onclick="shareURL('${id}')">${T[LANG].shareUrl}</button></div>`;
   document.getElementById('enc-ph').style.display='none';
   const db = document.getElementById('enc-db');
   db.innerHTML = h;
@@ -2902,8 +3713,9 @@ function showEnc(id, fromEl) {
 
 let flowEl = null;
 function showFlow(id) {
-  const d = FD[id];
+  const d = getFD(id);
   if (!d) return;
+  _currentFlowId = id;
   if (flowEl) flowEl.classList.remove('factive');
   flowEl = typeof event !== 'undefined' && event ? event.currentTarget : null;
   if (flowEl) flowEl.classList.add('factive');
@@ -2914,16 +3726,16 @@ function showFlow(id) {
     <p style="margin-top:8px">${d.what||''}</p>
     ${d.what2 ? `<p style="margin-top:8px">${d.what2}</p>` : ''}
   </div>`;
-  if(d.example){h+=`<div class="ds"><h3>💡 具体例</h3><p style="font-size:13px;line-height:1.85;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
-  if(d.ex&&d.ex.length){h+=`<div class="ds"><h3>具体例</h3><ul>${d.ex.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.points&&d.points.length){h+=`<div class="ds"><h3>やること</h3><ul>${d.points.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.checklist&&d.checklist.length){h+=`<div class="ds"><h3>チェックリスト</h3><ul>${d.checklist.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.methods&&d.methods.length){h+=`<div class="ds"><h3>使える統計手法</h3><ul>${d.methods.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.tree&&d.tree.length){h+=`<div class="ds"><h3>選択フロー</h3><ul>${d.tree.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.guide&&d.guide.length){h+=`<div class="ds"><h3>グラフ選択ガイド</h3><ul>${d.guide.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.levels&&d.levels.length){h+=`<div class="ds"><h3>解釈の3段階</h3><ul>${d.levels.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>注意点・ポイント</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
-  if(d.code){h+=`<div class="ds"><h3>コード例</h3>${codeBlock(d.code)}</div>`;}
+  if(d.example){h+=`<div class="ds"><h3>${T[LANG].example}</h3><p style="font-size:13px;line-height:1.85;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;color:#92400e">${d.example}</p></div>`;}
+  if(d.ex&&d.ex.length){h+=`<div class="ds"><h3>${T[LANG].flowExamples}</h3><ul>${d.ex.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.points&&d.points.length){h+=`<div class="ds"><h3>${T[LANG].whatToDo}</h3><ul>${d.points.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.checklist&&d.checklist.length){h+=`<div class="ds"><h3>${T[LANG].checklist}</h3><ul>${d.checklist.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.methods&&d.methods.length){h+=`<div class="ds"><h3>${T[LANG].methods}</h3><ul>${d.methods.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.tree&&d.tree.length){h+=`<div class="ds"><h3>${T[LANG].selectionFlow}</h3><ul>${d.tree.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.guide&&d.guide.length){h+=`<div class="ds"><h3>${T[LANG].chartGuide}</h3><ul>${d.guide.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.levels&&d.levels.length){h+=`<div class="ds"><h3>${T[LANG].interpretation}</h3><ul>${d.levels.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.notes&&d.notes.length){h+=`<div class="ds"><h3>${T[LANG].notes}</h3><ul>${d.notes.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;}
+  if(d.code){h+=`<div class="ds"><h3>${T[LANG].code}</h3>${codeBlock(d.code)}</div>`;}
   document.getElementById('flow-ph').style.display='none';
   const db = document.getElementById('flow-db');
   db.innerHTML = h;
@@ -2958,9 +3770,9 @@ function wizInit() {
 
 function wizRender(nodeId) {
   wizCurrent = nodeId;
-  const node = WIZARD[nodeId];
-  if (!node) { 
-    document.getElementById('wiz-main').innerHTML = '<p>ノードが見つかりません: ' + nodeId + '</p>';
+  const node = getWiz(nodeId);
+  if (!node) {
+    document.getElementById('wiz-main').innerHTML = '<p>' + T[LANG].notFound + nodeId + '</p>';
     return;
   }
   const main = document.getElementById('wiz-main');
@@ -2969,11 +3781,11 @@ function wizRender(nodeId) {
   if (node.type === 'question') {
     main.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div class="wiz-step" style="margin-bottom:0">STEP ${step}</div>
+        <div class="wiz-step" style="margin-bottom:0">${T[LANG].stepLabel} ${step}</div>
         ${wizHistory.length > 0 ? `
           <div style="display:flex;gap:8px;">
-            <button class="wiz-restart-btn" style="padding:4px 12px;font-size:11px;" onclick="wizBackOne()">← 前の質問に戻る</button>
-            <button class="wiz-restart-btn" style="padding:4px 12px;font-size:11px;" onclick="wizRestart()">🏠 最初から</button>
+            <button class="wiz-restart-btn" style="padding:4px 12px;font-size:11px;" onclick="wizBackOne()">${T[LANG].back}</button>
+            <button class="wiz-restart-btn" style="padding:4px 12px;font-size:11px;" onclick="wizRestart()">${T[LANG].restart}</button>
           </div>
         ` : ''}
       </div>
@@ -2989,26 +3801,25 @@ function wizRender(nodeId) {
       </div>
     `;
   } else if (node.type === 'result') {
-    // 最後の履歴アイテムに「→ この手法に決定」を設定
     if (wizHistory.length > 0) {
-      wizHistory[wizHistory.length - 1].reason = `→ <strong>${node.method}</strong> に決定！`;
+      wizHistory[wizHistory.length - 1].reason = `→ <strong>${node.method}</strong>`;
     }
     main.innerHTML = `
-      <div class="wiz-step">🎯 結論</div>
+      <div class="wiz-step">🎯 ${LANG === 'en' ? 'Result' : '結論'}</div>
       <div class="wiz-result">
         <div class="wiz-result-title">✅ ${node.method}</div>
-        <div class="wiz-result-subtitle">あなたのデータと目的に最適な手法</div>
+        <div class="wiz-result-subtitle">${LANG === 'en' ? 'Best method for your data and goal' : 'あなたのデータと目的に最適な手法'}</div>
         <div class="wiz-result-reason">${node.reason}</div>
         ${node.also && node.also.length ? `
           <div class="wiz-also">
-            <div class="wiz-also-title">合わせてやること</div>
+            <div class="wiz-also-title">${LANG === 'en' ? 'Also consider' : '合わせてやること'}</div>
             <ul>${node.also.map(a => `<li>${a}</li>`).join('')}</ul>
           </div>
         ` : ''}
         ${node.code ? `<div class="wiz-code">${node.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-          ${node.encKey ? `<button class="wiz-link-btn" onclick="wizGoToEnc('${node.encKey}')">📖 百科事典で詳細を見る →</button>` : ''}
-          <button class="wiz-restart-btn" onclick="wizRestart()">🔄 最初からやり直す</button>
+          ${node.encKey ? `<button class="wiz-link-btn" onclick="wizGoToEnc('${node.encKey}')">${LANG === 'en' ? '📖 View details in Encyclopedia →' : '📖 百科事典で詳細を見る →'}</button>` : ''}
+          <button class="wiz-restart-btn" onclick="wizRestart()">🔄 ${LANG === 'en' ? 'Start Over' : '最初からやり直す'}</button>
         </div>
       </div>
     `;
@@ -3017,16 +3828,14 @@ function wizRender(nodeId) {
 }
 
 function wizAnswer(nextId, label, question) {
-  const nextNode = WIZARD[nextId];
+  const nextNode = getWiz(nextId);
   let reason = '';
   if (nextNode) {
     if (nextNode.type === 'result') {
-      // 結論ノードの場合は手法名を先に見せる（result renderで更新される）
-      reason = '→ 手法を特定中...';
+      reason = LANG === 'en' ? '→ Identifying method...' : '→ 手法を特定中...';
     } else if (nextNode.type === 'question') {
-      // 次の質問のテーマを簡潔に表示
       const preview = nextNode.q.length > 28 ? nextNode.q.slice(0, 28) + '...' : nextNode.q;
-      reason = `→ 次：${preview}`;
+      reason = (LANG === 'en' ? '→ Next: ' : '→ 次：') + preview;
     }
   }
   wizHistory.push({ q: question, a: label, nodeId: wizCurrent, reason: reason });
@@ -3036,7 +3845,9 @@ function wizAnswer(nextId, label, question) {
 function wizRenderHistory() {
   const hist = document.getElementById('wiz-history');
   if (wizHistory.length === 0) {
-    hist.innerHTML = '<p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p>';
+    hist.innerHTML = LANG === 'en'
+      ? '<p style="font-size:12px;color:var(--muted)">Answer questions to see<br>your history here</p>'
+      : '<p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p>';
     return;
   }
   hist.innerHTML = wizHistory.map((item, i) => `
@@ -3066,7 +3877,9 @@ function wizBackOne() {
 
 function wizRestart() {
   wizHistory = [];
-  document.getElementById('wiz-history').innerHTML = '<p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p>';
+  document.getElementById('wiz-history').innerHTML = LANG === 'en'
+    ? '<p style="font-size:12px;color:var(--muted)">Answer questions to see<br>your history here</p>'
+    : '<p style="font-size:12px;color:var(--muted)">質問に答えると<br>ここに履歴が表示されます</p>';
   wizRender('start');
 }
 
