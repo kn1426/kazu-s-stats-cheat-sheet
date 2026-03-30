@@ -220,6 +220,76 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
 .fn-check .fnode-ico{background:#a5f3fc;}
 .fn-check .fnode-title{color:#0891b2;}
 
+/* ===== 統計の基礎タブ ===== */
+#tab-basics.active{display:block;overflow-y:auto;}
+.basics-wrap{padding:28px 32px;max-width:1100px;margin:0 auto;}
+.basics-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid var(--border);}
+.basics-h2{font-size:17px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.basics-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+
+/* 連鎖フロー */
+.basics-flow-chain{display:flex;align-items:flex-start;gap:0;overflow-x:auto;padding:4px 0 16px;-webkit-overflow-scrolling:touch;}
+.bfc-node{min-width:200px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 15px;position:relative;flex-shrink:0;}
+.bfc-num{position:absolute;top:-10px;left:14px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;}
+.bfc-jp{font-size:14px;font-weight:800;margin-bottom:2px;margin-top:4px;}
+.bfc-en{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:8px;}
+.bfc-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:8px;}
+.bfc-formula{background:#f8f9ff;border:1px solid #e0e7ff;border-radius:5px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c1);text-align:center;line-height:1.6;}
+.bfc-example{margin-top:7px;font-size:11px;background:var(--bg);border-radius:5px;padding:6px 10px;line-height:1.6;color:var(--text);}
+.bfc-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px;flex-shrink:0;gap:2px;margin-top:30px;}
+.bfc-arrow-line{width:28px;height:2px;background:var(--border);}
+.bfc-arrow-head{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--border);}
+.bfc-arrow-lbl{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;margin-top:3px;}
+.bfc-node.bfc-c1{border-color:var(--c1m);}
+.bfc-node.bfc-c1 .bfc-num{background:var(--c1);}
+.bfc-node.bfc-c1 .bfc-jp{color:var(--c1);}
+.bfc-node.bfc-c2{border-color:var(--c2m);}
+.bfc-node.bfc-c2 .bfc-num{background:var(--c2);}
+.bfc-node.bfc-c2 .bfc-jp{color:var(--c2);}
+.bfc-node.bfc-c3{border-color:var(--c3m);}
+.bfc-node.bfc-c3 .bfc-num{background:var(--c3);}
+.bfc-node.bfc-c3 .bfc-jp{color:var(--c3);}
+.bfc-node.bfc-c4{border-color:var(--c4m);}
+.bfc-node.bfc-c4 .bfc-num{background:var(--c4);}
+.bfc-node.bfc-c4 .bfc-jp{color:var(--c4);}
+.bfc-node.bfc-c5{border-color:var(--c5m);}
+.bfc-node.bfc-c5 .bfc-num{background:var(--c5);}
+.bfc-node.bfc-c5 .bfc-jp{color:var(--c5);}
+.bfc-node.bfc-c6{border-color:var(--c6m);}
+.bfc-node.bfc-c6 .bfc-num{background:var(--c6);}
+.bfc-node.bfc-c6 .bfc-jp{color:var(--c6);}
+
+/* 手法×SE テーブル */
+.basics-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:24px;}
+.basics-table th{background:var(--bg);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:8px 12px;text-align:left;border-bottom:2px solid var(--border);}
+.basics-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.7;}
+.basics-table tr:last-child td{border-bottom:none;}
+.basics-table tr:hover td{background:var(--bg);}
+.btag{display:inline-block;font-size:10px;font-family:'JetBrains Mono',monospace;padding:1px 7px;border-radius:4px;font-weight:700;margin-right:4px;white-space:nowrap;}
+.btag-b{background:var(--c1l);color:var(--c1);border:1px solid var(--c1m);}
+.btag-o{background:var(--c4l);color:var(--c4);border:1px solid var(--c4m);}
+.method-name{font-weight:800;font-size:13px;display:block;margin-bottom:2px;}
+.method-en{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+
+/* t検定 vs Mann-Whitney 比較 */
+.basics-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.bcmp-card{border-radius:10px;padding:16px;border:1.5px solid;}
+.bcmp-title{font-size:14px;font-weight:900;margin-bottom:12px;}
+.bcmp-row{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;font-size:12px;line-height:1.6;}
+.bcmp-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;min-width:56px;flex-shrink:0;color:var(--muted);}
+.bcmp-why{background:var(--bg);border-radius:7px;padding:11px 13px;font-size:12px;line-height:1.75;margin-top:12px;}
+.bcmp-why-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px;}
+.bcmp-decision{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:24px;}
+.bcmp-decision-title{font-size:12px;font-weight:800;margin-bottom:10px;color:var(--text);}
+.bcmp-decision table{width:100%;border-collapse:collapse;font-size:11px;}
+.bcmp-decision th{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;padding:5px 10px;background:var(--bg);border-bottom:1px solid var(--border);text-align:left;}
+.bcmp-decision td{padding:7px 10px;border-bottom:1px solid var(--border);line-height:1.6;}
+.bcmp-decision tr:last-child td{border-bottom:none;}
+
+/* p値早見表 */
+.pval-table{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.pval-badge{border-radius:8px;padding:10px 16px;font-size:12px;font-weight:700;border:1.5px solid;}
+
 /* ===== モバイル対応 ===== */
 @media (max-width: 768px) {
   body{height:auto;overflow:auto;overflow-x:hidden;}
@@ -271,6 +341,16 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
   .wiz-result{max-width:100%;}
   .wiz-panel{border-left:none;border-top:1px solid var(--border);padding:16px;}
   .wiz-hist{padding:16px;}
+
+  /* 統計の基礎タブ */
+  #tab-basics.active{display:block;}
+  .basics-layout{display:block;}
+  .basics-col-left,.basics-col-right{width:100%;}
+  .basics-flow-chain{flex-direction:column;align-items:flex-start;padding:16px;}
+  .bfc-node{min-width:unset;width:100%;}
+  .bfc-arrow{transform:rotate(90deg);margin:2px auto;}
+  .basics-methods-table{display:block;overflow-x:auto;}
+  .basics-compare-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -285,6 +365,7 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
   <div class="tab active" onclick="switchTab('enc',this)">📖 統計手法 百科事典</div>
   <div class="tab" onclick="switchTab('flow',this)">🔀 分析フローチャート</div>
   <div class="tab" onclick="switchTab('wizard',this)">🧭 手法診断ウィザード</div>
+  <div class="tab" onclick="switchTab('basics',this)">📐 統計の基礎</div>
 </div>
 
 <!-- TAB 1: 百科事典 -->
@@ -704,6 +785,187 @@ body{background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--text
   </div>
 </div>
 
+<!-- TAB 4: 統計の基礎 -->
+<div class="tabcontent" id="tab-basics" style="display:none;">
+<div class="basics-wrap">
+
+  <p class="basics-sub">忘れたときに見返す用。分散・SD・SE・信頼区間の連鎖と各検定との関係をまとめています。</p>
+
+  <!-- ① 統計量の連鎖 -->
+  <div class="basics-section-title">① 統計量の連鎖 — Variance → SD → SE → CI</div>
+  <div class="basics-flow-chain">
+
+    <div class="bfc-node bfc-c1">
+      <div class="bfc-num">1</div>
+      <div class="bfc-jp">分散</div>
+      <div class="bfc-en">Variance</div>
+      <div class="bfc-desc">各サンプルと平均の距離を二乗して平均したもの<br>そのまま足すと0になるので二乗する</div>
+      <div class="bfc-formula">Σ(xᵢ − x̄)² / n</div>
+      <div class="bfc-example">例：[3,5,5,7,5] 平均=5<br>距離²=[4,0,0,4,0]<br>→ 分散 = 8/5 = <strong>1.6</strong></div>
+    </div>
+
+    <div class="bfc-arrow">
+      <div class="bfc-arrow-line"></div>
+      <div class="bfc-arrow-head"></div>
+      <div class="bfc-arrow-lbl">√</div>
+    </div>
+
+    <div class="bfc-node bfc-c2">
+      <div class="bfc-num">2</div>
+      <div class="bfc-jp">標準偏差</div>
+      <div class="bfc-en">Standard Deviation (SD)</div>
+      <div class="bfc-desc">分散の√。単位を元に戻したもの<br>「1人1人が平均からどのくらい離れているか」</div>
+      <div class="bfc-formula">SD = √Variance</div>
+      <div class="bfc-example">√1.6 = <strong>1.26</strong><br>→「1人1人が平均から約1.26点離れている」</div>
+    </div>
+
+    <div class="bfc-arrow">
+      <div class="bfc-arrow-line"></div>
+      <div class="bfc-arrow-head"></div>
+      <div class="bfc-arrow-lbl">÷√n</div>
+    </div>
+
+    <div class="bfc-node bfc-c3">
+      <div class="bfc-num">3</div>
+      <div class="bfc-jp">標準誤差</div>
+      <div class="bfc-en">Standard Error (SE)</div>
+      <div class="bfc-desc">「別のサンプルを集めたとき<strong>平均</strong>がどのくらいブレるか」<br>SDが大きい（個人差大）→ブレやすい<br>nが大きい（サンプル多）→安定する<br>この2つの性質をSD÷√nにまとめている</div>
+      <div class="bfc-formula">SE = SD / √n</div>
+      <div class="bfc-example">SD=1.26, n=5<br>→ SE = 1.26 ÷ √5 = <strong>0.56</strong><br>→「別の5人を集めても平均は±0.56点程度しかブレない」</div>
+    </div>
+
+    <div class="bfc-arrow">
+      <div class="bfc-arrow-line"></div>
+      <div class="bfc-arrow-head"></div>
+      <div class="bfc-arrow-lbl">×1.96</div>
+    </div>
+
+    <div class="bfc-node bfc-c4">
+      <div class="bfc-num">4</div>
+      <div class="bfc-jp">信頼区間</div>
+      <div class="bfc-en">Confidence Interval (CI)</div>
+      <div class="bfc-desc">真の平均が95%の確率で収まる範囲<br>1.96は正規分布の性質（平均±1.96SDに95%が入る）<br>n≥30なら中心極限定理で平均も正規分布に従う<br>→ SDの代わりにSEを使えばOK</div>
+      <div class="bfc-formula">95%CI = 平均 ± 1.96 × SE</div>
+      <div class="bfc-example">平均=5, SE=0.56<br>1.96×0.56 = 1.10<br>→ CI = [3.90, 6.10]<br>→「95%の確率で真の平均はこの範囲」</div>
+    </div>
+
+    <div class="bfc-arrow">
+      <div class="bfc-arrow-line"></div>
+      <div class="bfc-arrow-head"></div>
+      <div class="bfc-arrow-lbl" style="color:var(--c6)">正規分布<br>仮定不可</div>
+    </div>
+
+    <div class="bfc-node bfc-c6">
+      <div class="bfc-num">5</div>
+      <div class="bfc-jp">ブートストラップCI</div>
+      <div class="bfc-en">Bootstrap Confidence Interval</div>
+      <div class="bfc-desc">正規分布を仮定できない場合（Ridge回帰など）<br>同じデータから1000回復元抽出して統計量を計算<br>下位2.5%〜上位97.5%を信頼区間とする<br>「数式ではなく実際に繰り返してみて実測した範囲」</div>
+      <div class="bfc-formula">下位2.5% 〜 上位97.5%<br>（1000回リサンプリング）</div>
+      <div class="bfc-example">例：別府ダミーの係数を1000回計算<br>→ 下位2.5%=0.050, 上位97.5%=0.342<br>→「0をまたがないので有意」</div>
+    </div>
+
+  </div><!-- /basics-flow-chain -->
+
+  <!-- ② 各手法とSEの関係 -->
+  <div class="basics-section-title" style="margin-top:28px;">② 各手法とSEの関係</div>
+  <table class="basics-table">
+    <thead>
+      <tr>
+        <th>手法</th>
+        <th>English</th>
+        <th>SEとの関係・仕組み</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="method-name">t検定</span><span class="method-en">t-test</span></td>
+        <td><span class="btag btag-b">compare</span></td>
+        <td>平均の差 ÷ SE = t値 → t分布でp値に変換<br>
+          <span style="color:var(--muted);font-size:11px;">例：幸福度の差1.37 ÷ 合成SE0.292 = t値4.69 → p≒0.0000（偶然この差が起きる確率がほぼゼロ）</span><br>
+          <span style="color:var(--muted);font-size:11px;">nが大きいほどt分布は正規分布に近づく。t検定はANOVAの2グループ版で F = t² の関係がある</span></td>
+      </tr>
+      <tr>
+        <td><span class="method-name">分散分析</span><span class="method-en">ANOVA</span></td>
+        <td><span class="btag btag-b">compare</span></td>
+        <td>F値 = グループ間分散 ÷ グループ内分散 → F分布でp値に変換<br>
+          <span style="color:var(--muted);font-size:11px;">グループ間分散：各グループの平均が全体平均から離れている度合い（二乗平均）</span><br>
+          <span style="color:var(--muted);font-size:11px;">グループ内分散：各グループ内の個人差（SD）の平均</span><br>
+          <span style="color:var(--muted);font-size:11px;">F=1.0 → グループ分けに意味がない　F=8.53 → グループ間の差が個人差の8.53倍</span></td>
+      </tr>
+      <tr>
+        <td><span class="method-name">多重比較</span><span class="method-en">Tukey HSD</span></td>
+        <td><span class="btag btag-o">post-hoc</span></td>
+        <td>ANOVAで「どこかに差がある」とわかった後に「どのペアに差があるか」を特定<br>
+          <span style="color:var(--muted);font-size:11px;">なぜt検定を繰り返してはダメか：α=0.05は「1回で偽陽性5%以内」の約束。15回繰り返すと1-(0.95)¹⁵=54%で偶然有意になる</span><br>
+          <span style="color:var(--muted);font-size:11px;">Tukey HSDは「15ペア全体として偽陽性5%以内」になるようp値の基準を厳しくする → p-adjはt検定のp値より大きくなる</span></td>
+      </tr>
+      <tr>
+        <td><span class="method-name">重回帰分析</span><span class="method-en">OLS Regression</span></td>
+        <td><span class="btag btag-b">regression</span></td>
+        <td>係数 ÷ SE = t値 → t分布でp値に変換<br>
+          <span style="color:var(--muted);font-size:11px;">係数・p値・R²で結果を解釈する</span></td>
+      </tr>
+      <tr>
+        <td><span class="method-name">Ridge回帰</span><span class="method-en">Ridge Regression</span></td>
+        <td><span class="btag btag-o">regularize</span></td>
+        <td>正則化でSEが計算不可 → ブートストラップCIで不確実性を推定<br>
+          <span style="color:var(--muted);font-size:11px;">多重共線性がある場合に使う正則化回帰</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ③ t検定 vs Mann-Whitney U -->
+  <div class="basics-section-title" style="margin-top:4px;">③ t検定 vs Mann-Whitney U検定</div>
+  <div class="basics-compare-grid">
+    <div class="bcmp-card" style="border-color:var(--c2m);background:var(--c2l);">
+      <div class="bcmp-title" style="color:var(--c2)">t検定</div>
+      <div class="bcmp-row"><span class="bcmp-label">比較対象</span>平均値</div>
+      <div class="bcmp-row"><span class="bcmp-label">前提</span>正規分布が必要</div>
+      <div class="bcmp-row"><span class="bcmp-label">弱点</span>外れ値に引っ張られる</div>
+    </div>
+    <div class="bcmp-card" style="border-color:var(--c7m);background:var(--c7l);">
+      <div class="bcmp-title" style="color:var(--c7)">Mann-Whitney U検定</div>
+      <div class="bcmp-row"><span class="bcmp-label">比較対象</span>順位の偏り</div>
+      <div class="bcmp-row"><span class="bcmp-label">前提</span>正規分布不要</div>
+      <div class="bcmp-row"><span class="bcmp-label">強み</span>外れ値の影響を受けない</div>
+    </div>
+  </div>
+
+  <div class="bcmp-why">
+    <div class="bcmp-why-title">なぜ正規分布が不要なのか（ノンパラメトリックの仕組み）</div>
+    全データをひとまとめにして小さい順にランキングする。100という外れ値も「1番大きい＝8位」になるだけで、それ以上の影響を持たない。<br>
+    順位は「大小関係」しか持たないため、分布の形に左右されない → だから<strong>ノンパラメトリック検定</strong>と呼ばれる。<br><br>
+    <strong>U値</strong>：全国×別府の全ペア総当たりで「別府が上位だった回数」を数えたもの。最大値 = 188×113 = 21,244<br>
+    <strong>p値</strong>：今回のU値が「差がないとき」に偶然生じる確率。U値が端に偏るほどp値は小さくなる<br>
+    <strong>効果量 r</strong>：U値だけでは差の大きさが不明 → r = |Z| / √N で補う（0.1未満:なし／0.1〜0.3:小／0.3〜0.5:中／0.5以上:大）
+  </div>
+
+  <!-- ④ 今回の判断ロジック -->
+  <div class="basics-section-title" style="margin-top:24px;">④ 検定方法を選ぶ判断ロジック（今回の例）</div>
+  <div class="bcmp-decision">
+    <table>
+      <thead><tr><th>確認したこと</th><th>結果</th><th>判断</th></tr></thead>
+      <tbody>
+        <tr><td>Shapiro-Wilk検定</td><td>両グループとも p &lt; 0.05</td><td>非正規分布と判定</td></tr>
+        <tr><td>W統計量</td><td>別府0.942、全国0.956</td><td>1に近く極端な歪みではない</td></tr>
+        <tr><td>サンプルサイズ</td><td>n=100超</td><td>t検定も中心極限定理で許容範囲</td></tr>
+        <tr><td>採用した検定</td><td colspan="2">Mann-Whitney U検定（より保守的な選択）→ t検定と同じ結論 → 結果の<strong>頑健性 (Robustness)</strong> が確認できた</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ⑤ p値早見表 -->
+  <div class="basics-section-title">⑤ p値の基準</div>
+  <div class="pval-table">
+    <div class="pval-badge" style="background:#fef9c3;color:#854d0e;border-color:#fde68a;">p &lt; 0.05 ★ 有意差あり</div>
+    <div class="pval-badge" style="background:#fed7aa;color:#9a3412;border-color:#fdba74;">p &lt; 0.01 ★★ 有意差あり</div>
+    <div class="pval-badge" style="background:#fecaca;color:#991b1b;border-color:#fca5a5;">p &lt; 0.001 ★★★ 有意差あり</div>
+    <div class="pval-badge" style="background:var(--bg);color:var(--muted);border-color:var(--border);">実務：p値で有意か確認 → 効果量rで差の大きさを解釈</div>
+  </div>
+
+</div><!-- /basics-wrap -->
+</div><!-- /tab-basics -->
+
 <script>
 function switchTab(id, el) {
   const isMobile = window.innerWidth <= 768;
@@ -722,6 +984,7 @@ function switchTab(id, el) {
     if (id === 'enc') target.style.display = 'grid';
     else if (id === 'flow') target.style.display = 'grid';
     else if (id === 'wizard') target.style.display = 'grid';
+    else if (id === 'basics') { target.style.display = 'block'; target.style.overflow = 'auto'; }
   }
   el.classList.add('active');
   if (id === 'wizard') wizInit();
